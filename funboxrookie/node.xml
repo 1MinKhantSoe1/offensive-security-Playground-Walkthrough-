@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node>
+<version>6</version>
+<dict>
+  <key>title</key><string>FunboxRookie</string>
+  <key>nodeid</key><string>c888ffc7-5783-4717-b18e-f8941e5b57c6</string>
+  <key>modified_time</key><integer>1676902964</integer>
+  <key>version</key><integer>6</integer>
+  <key>content_type</key><string>application/x-notebook-dir</string>
+  <key>created_time</key><integer>1676902964</integer>
+  <key>order</key><integer>9</integer>
+</dict>
+</node>
