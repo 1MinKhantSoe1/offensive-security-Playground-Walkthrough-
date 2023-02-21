@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node>
+<version>6</version>
+<dict>
+  <key>title</key><string>Seppuku</string>
+  <key>nodeid</key><string>5e053137-1050-4599-b890-8f8a17a4b19c</string>
+  <key>modified_time</key><integer>1677021507</integer>
+  <key>version</key><integer>6</integer>
+  <key>content_type</key><string>application/x-notebook-dir</string>
+  <key>created_time</key><integer>1677021507</integer>
+  <key>order</key><integer>13</integer>
+</dict>
+</node>
