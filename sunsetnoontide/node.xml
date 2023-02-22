@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node>
+<version>6</version>
+<dict>
+  <key>title</key><string>SunsetNoontide</string>
+  <key>nodeid</key><string>8b2e1c62-77ea-4f5c-9ce5-83ad2d57ef94</string>
+  <key>modified_time</key><integer>1677101227</integer>
+  <key>version</key><integer>6</integer>
+  <key>content_type</key><string>application/x-notebook-dir</string>
+  <key>created_time</key><integer>1677101227</integer>
+  <key>order</key><integer>15</integer>
+</dict>
+</node>

