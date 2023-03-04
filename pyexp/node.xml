@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node>
+<version>6</version>
+<dict>
+  <key>title</key><string>Pyexp</string>
+  <key>nodeid</key><string>84da25c3-c23f-44ac-8e92-81419e112ef8</string>
+  <key>modified_time</key><integer>1677967229</integer>
+  <key>version</key><integer>6</integer>
+  <key>content_type</key><string>application/x-notebook-dir</string>
+  <key>created_time</key><integer>1677967229</integer>
+  <key>order</key><integer>26</integer>
+</dict>
+</node>
