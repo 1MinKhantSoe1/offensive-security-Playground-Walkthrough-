@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node>
+<version>6</version>
+<dict>
+  <key>title</key><string>Sumo</string>
+  <key>nodeid</key><string>f779a985-146f-4b92-812b-e1ed032053a6</string>
+  <key>modified_time</key><integer>1678392040</integer>
+  <key>version</key><integer>6</integer>
+  <key>content_type</key><string>application/x-notebook-dir</string>
+  <key>created_time</key><integer>1678392040</integer>
+  <key>order</key><integer>27</integer>
+</dict>
+</node>
